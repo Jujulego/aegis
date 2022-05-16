@@ -12,11 +12,17 @@
     "access": "public"
   },
   "scripts": {
+    "lint": "eslint {src,tests}/**/*.*",
     "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "27.5.1",
     "@types/node": "16.11.35",
+    "@typescript-eslint/eslint-plugin": "5.23.0",
+    "@typescript-eslint/parser": "5.23.0",
+    "eslint": "8.15.0",
+    "eslint-plugin-jest": "26.2.2",
+    "eslint-plugin-workspaces": "0.7.0",
     "jest": "28.1.0",
     "ts-jest": "28.0.2",
     "ts-node": "10.7.0",

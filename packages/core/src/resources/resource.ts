@@ -94,5 +94,5 @@ export class Resource<T> extends EventTarget {
 
   get state(): ResourceState<T> {
     return this._state;
-  };
+  }
 }
