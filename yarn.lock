@@ -1555,8 +1555,6 @@ __metadata:
   resolution: "aegis-tools@workspace:tools"
   dependencies:
     "@jujulego/flow": 1.1.0
-    "@swc/cli": 0.1.57
-    "@swc/core": 1.2.185
     "@types/gulp": 4.0.9
     "@types/gulp-sourcemaps": 0.0.35
     gulp: 4.0.2
@@ -1564,6 +1562,9 @@ __metadata:
     gulp-swc: 1.2.3
     gulp-typescript: 6.0.0-alpha.1
     typescript: 4.6.4
+  peerDependencies:
+    "@swc/cli": 0.1.57
+    "@swc/core": 1.2.185
   languageName: unknown
   linkType: soft
 
@@ -1577,7 +1578,7 @@ __metadata:
     eslint: 8.15.0
     eslint-plugin-jest: 26.2.2
     eslint-plugin-workspaces: 0.7.0
-    typescript: ^4.6.4
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -7766,7 +7767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.6.4, typescript@npm:^4.6.4":
+"typescript@npm:4.6.4":
   version: 4.6.4
   resolution: "typescript@npm:4.6.4"
   bin:
@@ -7776,7 +7777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.6.4#~builtin<compat/typescript>":
   version: 4.6.4
   resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=7ad353"
   bin:
