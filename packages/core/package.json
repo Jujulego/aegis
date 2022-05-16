@@ -11,18 +11,42 @@
   "publishConfig": {
     "access": "public"
   },
+  "sideEffects": false,
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    "node": {
+      "module": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "module": "./dist/esm/index.js",
+    "types": "./dist/types/index.d.ts",
+    "default": "./dist/esm/index.js"
+  },
   "scripts": {
     "lint": "eslint {src,tests}/**/*.*",
+    "clean": "gulp clean",
+    "build": "gulp build",
+    "watch": "gulp watch",
     "test": "jest"
   },
   "devDependencies": {
+    "@jujulego/flow": "1.1.0",
+    "@swc/cli": "0.1.57",
+    "@swc/core": "1.2.185",
+    "@types/gulp": "4.0.9",
     "@types/jest": "27.5.1",
     "@types/node": "16.11.35",
     "@typescript-eslint/eslint-plugin": "5.23.0",
     "@typescript-eslint/parser": "5.23.0",
+    "aegis-tools": "1.0.0",
+    "del": "6.1.0",
     "eslint": "8.15.0",
     "eslint-plugin-jest": "26.2.2",
     "eslint-plugin-workspaces": "0.7.0",
+    "gulp": "4.0.2",
+    "gulp-cli": "2.3.0",
     "jest": "28.1.0",
     "ts-jest": "28.0.2",
     "ts-node": "10.7.0",

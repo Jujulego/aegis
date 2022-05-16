@@ -1,0 +1,27 @@
+{
+  "name": "aegis-tools",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "peerDependencies": {
+    "@swc/cli": "0.1.57",
+    "@swc/core": "1.2.185"
+  },
+  "dependencies": {
+    "@jujulego/flow": "1.1.0",
+    "@types/gulp": "4.0.9",
+    "@types/gulp-sourcemaps": "0.0.35",
+    "gulp": "4.0.2",
+    "gulp-sourcemaps": "3.0.0",
+    "gulp-swc": "1.2.3",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "typescript": "4.6.4"
+  }
+}

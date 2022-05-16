@@ -5,10 +5,16 @@
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": "git@github.com:Jujulego/aegis.git",
   "packageManager": "yarn@3.2.1",
+  "browserslist": [
+    "defaults",
+    "not ie 11"
+  ],
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "tools"
   ],
   "devDependencies": {
+    "@jujulego/jill": "1.2.1",
     "@typescript-eslint/eslint-plugin": "5.23.0",
     "@typescript-eslint/parser": "5.23.0",
     "eslint": "8.15.0",
