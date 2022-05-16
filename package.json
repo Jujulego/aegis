@@ -4,5 +4,8 @@
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@neoxia.com>",
   "repository": "git@github.com:Jujulego/aegis.git",
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.1",
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
 }
