@@ -2,9 +2,12 @@
   "name": "aegis",
   "private": true,
   "license": "MIT",
-  "author": "Julien Capellari <julien.capellari@neoxia.com>",
+  "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": "git@github.com:Jujulego/aegis.git",
   "packageManager": "yarn@3.2.1",
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "typescript": "^4.6.4"
   }
