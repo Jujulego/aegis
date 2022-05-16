@@ -1,0 +1,8 @@
+{
+  "name": "aegis",
+  "private": true,
+  "license": "MIT",
+  "author": "Julien Capellari <julien.capellari@neoxia.com>",
+  "repository": "git@github.com:Jujulego/aegis.git",
+  "packageManager": "yarn@3.2.1"
+}
