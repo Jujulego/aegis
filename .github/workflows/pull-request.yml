@@ -1,7 +1,7 @@
-name: 'Publish'
+name: 'Pull Request'
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -23,11 +23,11 @@ jobs:
 
       - name: List workspaces to lint
         id: lint
-        run: echo "::set-output name=matrix::$(yarn jill list --with-script lint --json)"
+        run: echo "::set-output name=matrix::$(yarn jill list --with-script lint --affected origin/${{ github.base_ref }} --json)"
 
       - name: List workspaces to test
         id: test
-        run: echo "::set-output name=matrix::$(yarn jill list --with-script test --json)"
+        run: echo "::set-output name=matrix::$(yarn jill list --with-script test --affected origin/${{ github.base_ref }} --json)"
 
     outputs:
       matrix-lint: ${{ steps.lint.outputs.matrix }}
@@ -113,52 +113,3 @@ jobs:
         with:
           name: ${{ matrix.slug }}-coverage
           path: ${{ matrix.root }}/coverage
-
-  publish:
-    runs-on: ubuntu-latest
-    environment: npm
-    needs: [lint, test]
-
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v3.0.2
-
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3.1.1
-        with:
-          node-version: 16
-          cache: yarn
-
-      - name: Install
-        run: yarn install --immutable
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-          path: packages
-
-      - name: Git setup
-        run: |
-          git config --global user.name 'Boobrie'
-          git config --global user.email 'boobrie@users.noreply.github.com'
-
-      - name: Apply version update
-        run: |
-          yarn version apply --all
-
-          if `git diff --quiet --exit-code`
-          then
-            echo "::warning::Nothing changed !"
-          else
-            git commit -am "chore: update bundles & version numbers"
-          fi
-
-      - name: Push
-        run: git push
-
-      - name: Publish
-        run: yarn workspaces foreach --no-private npm publish --access public --tolerate-republish
-        env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
