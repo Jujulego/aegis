@@ -1,0 +1,156 @@
+name: 'Publish'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: List workspaces to lint
+        id: lint
+        run: echo "::set-output name=matrix::$(yarn jill list --with-script lint --json)"
+
+      - name: List workspaces to test
+        id: test
+        run: echo "::set-output name=matrix::$(yarn jill list --with-script test --json)"
+
+    outputs:
+      matrix-lint: ${{ steps.lint.outputs.matrix }}
+      matrix-test: ${{ steps.test.outputs.matrix }}
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    if: ${{ fromJson(needs.setup.outputs.matrix-lint)[0] }}
+
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix-lint) }}
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn workspace ${{ matrix.name }} lint
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: ${{ fromJson(needs.setup.outputs.matrix-lint)[0] }}
+
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix-test) }}
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn workspace ${{ matrix.name }} test
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.slug }}-coverage
+          path: ${{ matrix.root }}/coverage
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn jill each build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: packages/*/dist/*
+
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    needs: [lint, test]
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: packages
+
+      - name: Git setup
+        run: |
+          git config --global user.name 'Boobrie'
+          git config --global user.email 'boobrie@users.noreply.github.com'
+
+      - name: Apply version update
+        run: |
+          yarn version apply --all
+
+          if `git diff --quiet --exit-code`
+          then
+            echo "::warning::Nothing changed !"
+          else
+            git commit -am "chore: update bundles & version numbers"
+          fi
+
+      - name: Push
+        run: git push
+
+      - name: Publish
+        run: yarn workspaces foreach --no-private npm publish --access public --tolerate-republish
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
