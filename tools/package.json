@@ -10,12 +10,10 @@
   "scripts": {
     "build": "tsc --build"
   },
-  "peerDependencies": {
-    "@swc/cli": "0.1.57",
-    "@swc/core": "1.2.186"
-  },
   "dependencies": {
     "@jujulego/flow": "1.1.0",
+    "@swc/cli": "0.1.57",
+    "@swc/core": "1.2.186",
     "@types/gulp": "4.0.9",
     "@types/gulp-sourcemaps": "0.0.35",
     "gulp": "4.0.2",
