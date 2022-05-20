@@ -1,6 +1,7 @@
 // Interface
-export interface Store {
+export interface AegisStore {
   // Methods
   get<T>(entity: string, id: string): T | undefined;
-  update<T>(entity: string, id: string, data: T): T;
+  set<T>(entity: string, id: string, data: T): void;
+  delete<T>(entity: string, id: string): void;
 }
