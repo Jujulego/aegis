@@ -43,7 +43,7 @@ export class QueryUpdateEvent<T> extends Event {
 export type ResourceUpdateEventListener<T> = (event: QueryUpdateEvent<T>) => void;
 
 // Resource
-export interface Query<T> extends EventTarget {
+export interface AegisQuery<T> extends EventTarget {
   // Methods
   dispatchEvent(event: QueryUpdateEvent<T>): boolean;
   addEventListener(type: 'update', callback: ResourceUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void;
@@ -53,7 +53,7 @@ export interface Query<T> extends EventTarget {
 /**
  * Contains query data and status.
  */
-export class Query<T> extends EventTarget {
+export class AegisQuery<T> extends EventTarget {
   // Attributes
   private _state: QueryState<T> = { status: 'pending' };
 
