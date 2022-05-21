@@ -18,36 +18,34 @@ export type QueryState<T> = QueryStatePending<T> | QueryStateCompleted<T> | Quer
 export type QueryStatus = QueryState<unknown>['status'];
 
 // Events
-export interface QueryUpdateEvent<T> extends Event {
+/**
+ * Emitted when a query is updated
+ */
+export class QueryUpdateEvent<T> extends Event {
   // Attributes
   type: 'update';
 
   /**
    * Updated query's state
    */
-  readonly newState: Readonly<QueryState<T>>
-}
+  readonly newState: Readonly<QueryState<T>>;
 
-/**
- * Emitted when a query is updated
- */
-export class QueryUpdateEvent<T> extends Event {
   // Constructor
-  constructor(
-    readonly newState: Readonly<QueryState<T>>
-  ) {
+  constructor(newState: Readonly<QueryState<T>>) {
     super('update');
+
+    this.newState = newState;
   }
 }
 
-export type ResourceUpdateEventListener<T> = (event: QueryUpdateEvent<T>) => void;
+export type QueryUpdateEventListener<T> = (event: QueryUpdateEvent<T>) => void;
 
 // Resource
 export interface AegisQuery<T> extends EventTarget {
   // Methods
   dispatchEvent(event: QueryUpdateEvent<T>): boolean;
-  addEventListener(type: 'update', callback: ResourceUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void;
-  removeEventListener(type: 'update', callback: ResourceUpdateEventListener<T>, options?: EventListenerOptions | boolean): void;
+  addEventListener(type: 'update', callback: QueryUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void;
+  removeEventListener(type: 'update', callback: QueryUpdateEventListener<T>, options?: EventListenerOptions | boolean): void;
 }
 
 /**
