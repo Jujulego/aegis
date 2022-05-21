@@ -42,7 +42,7 @@
     "@typescript-eslint/parser": "5.25.0",
     "aegis-tools": "1.0.0",
     "del": "6.1.0",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-plugin-jest": "26.2.2",
     "eslint-plugin-workspaces": "0.7.0",
     "gulp": "4.0.2",
