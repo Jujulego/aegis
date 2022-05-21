@@ -15,8 +15,6 @@ export class AegisStorageStore extends AegisStore {
   }
 
   private _registerWindowEvent() {
-    if (!window) return;
-
     window.addEventListener('storage', (event) => {
       if (event.storageArea === this.storage && event.key && event.newValue) {
         if (!event.key.startsWith('aegis:')) return;
@@ -41,7 +39,7 @@ export class AegisStorageStore extends AegisStore {
     const old = this.get<T>(entity, id);
 
     this.storage.setItem(this._key(entity, id), JSON.stringify(data));
-    this.dispatchEvent(new StoreUpdateEvent<T>(entity, id, data));
+    this.dispatchEvent(new StoreUpdateEvent<T>(entity, id, data, old));
 
     return old;
   }

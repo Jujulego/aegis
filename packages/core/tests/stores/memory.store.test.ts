@@ -1,31 +1,31 @@
 import { AegisMemoryStore, StoreUpdateEvent } from '../../src';
 
 // Setup
-let memory: AegisMemoryStore;
+let store: AegisMemoryStore;
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
 
 beforeEach(() => {
-  memory = new AegisMemoryStore();
+  store = new AegisMemoryStore();
 
   updateEventSpy.mockReset();
-  memory.addEventListener('update', updateEventSpy);
+  store.addEventListener('update', updateEventSpy);
 });
 
 // Tests
 describe('AegisMemoryStore.get', () => {
   it('should return undefined for unknown entity', () => {
-    expect(memory.get('unknown', 'unknown')).toBeUndefined();
+    expect(store.get('unknown', 'unknown')).toBeUndefined();
   });
 });
 
 describe('AegisMemoryStore.set', () => {
   it('should store given entity', () => {
-    expect(memory.set('test', 'set', 1)).toBeUndefined();
-    expect(memory.get<number>('test', 'set')).toBe(1);
+    expect(store.set('test', 'set', 1)).toBeUndefined();
+    expect(store.get<number>('test', 'set')).toBe(1);
   });
 
   it('should emit event with new entity', async () => {
-    memory.set('test', 'set', 1);
+    store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith(expect.any(StoreUpdateEvent));
@@ -37,14 +37,14 @@ describe('AegisMemoryStore.set', () => {
   });
 
   it('should update given entity', () => {
-    expect(memory.set('test', 'set', 1)).toBeUndefined();
-    expect(memory.set('test', 'set', 2)).toBe(1);
-    expect(memory.get<number>('test', 'set')).toBe(2);
+    expect(store.set('test', 'set', 1)).toBeUndefined();
+    expect(store.set('test', 'set', 2)).toBe(1);
+    expect(store.get<number>('test', 'set')).toBe(2);
   });
 
   it('should emit event with new and old entities', async () => {
-    memory.set('test', 'set', 1);
-    memory.set('test', 'set', 2);
+    store.set('test', 'set', 1);
+    store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
     expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
@@ -54,5 +54,17 @@ describe('AegisMemoryStore.set', () => {
       newValue: 2,
       oldValue: 1,
     }));
+  });
+});
+
+describe('AegisMemoryStore.delete', () => {
+  it('should do nothing if entity does not exists', () => {
+    expect(store.delete('test', 'delete')).toBeUndefined();
+  });
+
+  it('should delete exiting entity', () => {
+    store.set('test', 'delete', 1);
+    expect(store.delete<number>('test', 'delete')).toBe(1);
+    expect(store.get<number>('test', 'delete')).toBeUndefined();
   });
 });
