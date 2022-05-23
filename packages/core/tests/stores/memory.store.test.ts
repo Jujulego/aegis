@@ -13,18 +13,18 @@ beforeEach(() => {
 
 // Tests
 describe('AegisMemoryStore.get', () => {
-  it('should return undefined for unknown entity', () => {
+  it('should return undefined for unknown entities', () => {
     expect(store.get('unknown', 'unknown')).toBeUndefined();
   });
 });
 
 describe('AegisMemoryStore.set', () => {
-  it('should store given entity', () => {
+  it('should store given entities', () => {
     expect(store.set('test', 'set', 1)).toBeUndefined();
     expect(store.get<number>('test', 'set')).toBe(1);
   });
 
-  it('should emit event with new entity', async () => {
+  it('should emit event with new entities', async () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
@@ -36,7 +36,7 @@ describe('AegisMemoryStore.set', () => {
     }));
   });
 
-  it('should update given entity', () => {
+  it('should update given entities', () => {
     expect(store.set('test', 'set', 1)).toBeUndefined();
     expect(store.set('test', 'set', 2)).toBe(1);
     expect(store.get<number>('test', 'set')).toBe(2);
@@ -58,11 +58,11 @@ describe('AegisMemoryStore.set', () => {
 });
 
 describe('AegisMemoryStore.delete', () => {
-  it('should do nothing if entity does not exists', () => {
+  it('should do nothing if entities does not exists', () => {
     expect(store.delete('test', 'delete')).toBeUndefined();
   });
 
-  it('should delete exiting entity', () => {
+  it('should delete exiting entities', () => {
     store.set('test', 'delete', 1);
     expect(store.delete<number>('test', 'delete')).toBe(1);
     expect(store.get<number>('test', 'delete')).toBeUndefined();

@@ -1,7 +1,6 @@
 // Types
-interface QueryStatePending<T> {
+interface QueryStatePending {
   readonly status: 'pending';
-  readonly data?: T;
 }
 
 interface QueryStateCompleted<T> {
@@ -14,7 +13,7 @@ interface QueryStateError {
   readonly data: Error;
 }
 
-export type QueryState<T> = QueryStatePending<T> | QueryStateCompleted<T> | QueryStateError;
+export type QueryState<T> = QueryStatePending | QueryStateCompleted<T> | QueryStateError;
 export type QueryStatus = QueryState<unknown>['status'];
 
 // Events
@@ -25,22 +24,15 @@ export class QueryUpdateEvent<T> extends Event {
   // Attributes
   type: 'update';
 
-  /**
-   * Updated query's state
-   */
-  readonly newState: Readonly<QueryState<T>>;
-
   // Constructor
-  constructor(newState: Readonly<QueryState<T>>) {
+  constructor(readonly state: Readonly<QueryState<T>>) {
     super('update');
-
-    this.newState = newState;
   }
 }
 
 export type QueryUpdateEventListener<T> = (event: QueryUpdateEvent<T>) => void;
 
-// Resource
+// Query
 export interface AegisQuery<T> extends EventTarget {
   // Methods
   dispatchEvent(event: QueryUpdateEvent<T>): boolean;
