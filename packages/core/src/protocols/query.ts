@@ -1,6 +1,6 @@
 import { TypedEventTarget } from '../event-target';
 
-import { QueryState, QueryStatus } from './types';
+import { QueryState, QueryStatus } from './state';
 import { QueryUpdateEvent, QueryUpdateEventListener } from './query-update.event';
 
 // Query

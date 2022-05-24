@@ -1,5 +1,5 @@
 import { TypedEventTarget } from '../event-target';
-import { AegisQuery } from '../protocols';
+import { AegisQuery, AegisQueryItem } from '../protocols';
 import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
@@ -27,12 +27,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
   }
 
   // Methods
-  /**
-   * Will update stored item with query result, and keep it to track pending status & error
-   * @param id
-   * @param query
-   */
-  registerItemQuery(id: string, query: AegisQuery<T>): void {
+  private _registerItemQuery(id: string, query: AegisQuery<T>): void {
     this._queries.set(id, query);
 
     // Store query result
@@ -49,5 +44,18 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
 
   getItem(id: string): AegisItem<T> {
     return new AegisItem<T>(this, id, this._queries.get(id));
+  }
+
+  /**
+   * Will update stored item with query result, and keep it to track pending status & error
+   * @param id
+   * @param query
+   */
+  queryItem(id: string, sender: AegisQueryItem<T>): AegisItem<T> {
+    if (this._queries.get(id)?.status !== 'completed') {
+      this._registerItemQuery(id, sender(id));
+    }
+
+    return this.getItem(id);
   }
 }

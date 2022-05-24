@@ -1,6 +1,6 @@
 import { TypedEvent, TypedEventListener } from '../event-target';
 
-import { QueryState } from './types';
+import { QueryState } from './state';
 
 /**
  * Emitted when a query is updated
