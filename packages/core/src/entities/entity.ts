@@ -77,21 +77,6 @@ export class AegisEntity<T> extends EventTarget {
 
   // Methods
   /**
-   * Will update stored item with query result
-   * @param id
-   * @param query
-   */
-  registerItemMutation(id: string, query: AegisQuery<T>): void {
-    // Store query result
-    query.addEventListener('update', (event) => {
-      if (event.state.status === 'completed') {
-        this.store.set(this.name, id, event.state.data);
-        this._queries.delete(id);
-      }
-    });
-  }
-
-  /**
    * Will update stored item with query result, and keep it to track pending status & error
    * @param id
    * @param query
@@ -103,6 +88,7 @@ export class AegisEntity<T> extends EventTarget {
     query.addEventListener('update', (event) => {
       if (event.state.status === 'completed') {
         this.store.set(this.name, id, event.state.data);
+        this._queries.delete(id);
       }
     });
 
@@ -111,6 +97,6 @@ export class AegisEntity<T> extends EventTarget {
   }
 
   getItem(id: string): AegisItem<T> {
-    return new AegisItem<T>(this, id);
+    return new AegisItem<T>(this, id, this._queries.get(id));
   }
 }
