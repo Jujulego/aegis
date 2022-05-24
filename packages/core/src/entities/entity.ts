@@ -1,65 +1,16 @@
+import { TypedEventTarget } from '../event-target';
 import { AegisQuery } from '../protocols';
 import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
-
-// Events
-export class EntityUpdateEvent<T = unknown> extends Event {
-  // Constructor
-  constructor(
-    readonly entity: AegisEntity<T>,
-    readonly storeEvent: StoreUpdateEvent<T>,
-  ) {
-    super('update');
-  }
-
-  // Properties
-  get id(): string {
-    return this.storeEvent.id;
-  }
-
-  get newValue(): Readonly<T> {
-    return this.storeEvent.newValue;
-  }
-
-  get oldValue(): Readonly<T> | undefined {
-    return this.storeEvent.oldValue;
-  }
-}
-
-export class EntityQueryEvent<T = unknown> extends Event {
-  // Attributes
-  type: 'query';
-
-  // Constructor
-  constructor(
-    readonly entity: AegisEntity<T>,
-    readonly id: string,
-    readonly query: AegisQuery<T>,
-  ) {
-    super('query');
-  }
-}
-
-export type EntityUpdateEventListener<T = unknown> = (event: EntityUpdateEvent<T>) => void;
-export type EntityQueryEventListener<T = unknown> = (event: EntityQueryEvent<T>) => void;
+import { EntityUpdateEvent } from './entity-update.event';
+import { EntityQueryEvent } from './entity-query.event';
 
 // Entity
-export interface AegisEntity<T> extends EventTarget {
-  // Methods
-  dispatchEvent(event: EntityUpdateEvent<T>): boolean;
-  addEventListener(type: 'update', callback: EntityUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void;
-  removeEventListener(type: 'update', callback: EntityUpdateEventListener<T>, options?: EventListenerOptions | boolean): void;
-
-  dispatchEvent(event: EntityQueryEvent<T>): boolean;
-  addEventListener(type: 'query', callback: EntityQueryEventListener<T>, options?: AddEventListenerOptions | boolean): void;
-  removeEventListener(type: 'query', callback: EntityQueryEventListener<T>, options?: EventListenerOptions | boolean): void;
-}
-
 /**
  * Manages queries and data of a single entity
  */
-export class AegisEntity<T> extends EventTarget {
+export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | EntityQueryEvent<T>> {
   // Attributes
   private readonly _queries = new Map<string, AegisQuery<T>>();
 

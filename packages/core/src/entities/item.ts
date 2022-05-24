@@ -1,73 +1,12 @@
-import { AegisQuery, QueryState, QueryStatus } from '../protocols';
+import { AegisQuery } from '../protocols';
 
-import { AegisEntity, EntityUpdateEvent } from './entity';
-
-// Events
-export class ItemUpdateEvent<T = unknown> extends Event {
-  // Constructor
-  constructor(
-    readonly item: AegisItem<T>,
-    readonly entityEvent: EntityUpdateEvent<T>,
-  ) {
-    super('update');
-  }
-
-  // Properties
-  get entity(): AegisEntity<T> {
-    return this.item.entity;
-  }
-
-  get newValue(): Readonly<T> {
-    return this.entityEvent.newValue;
-  }
-
-  get oldValue(): Readonly<T> | undefined {
-    return this.entityEvent.oldValue;
-  }
-}
-
-export class ItemQueryEvent<T = unknown> extends Event {
-  // Attributes
-  type: 'query';
-
-  // Constructor
-  constructor(
-    readonly item: AegisItem<T>,
-    readonly query: AegisQuery<T>,
-  ) {
-    super('query');
-  }
-
-  // Properties
-  get entity(): AegisEntity<T> {
-    return this.item.entity;
-  }
-
-  get status(): QueryStatus {
-    return this.query.status;
-  }
-
-  get state(): Readonly<QueryState<T>> {
-    return this.query.state;
-  }
-}
-
-export type ItemUpdateEventListener<T = unknown> = (event: ItemUpdateEvent<T>) => void;
-export type ItemQueryEventListener<T = unknown> = (event: ItemQueryEvent<T>) => void;
+import { AegisEntity } from './entity';
+import { TypedEventTarget } from '../event-target';
+import { ItemUpdateEvent } from './item-update.event';
+import { ItemQueryEvent } from './item-query.event';
 
 // Item
-export interface AegisItem<T> extends EventTarget {
-  // Methods
-  dispatchEvent(event: EntityUpdateEvent<T>): boolean;
-  addEventListener(type: 'update', callback: ItemUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void;
-  removeEventListener(type: 'update', callback: ItemUpdateEventListener<T>, options?: EventListenerOptions | boolean): void;
-
-  dispatchEvent(event: ItemQueryEvent<T>): boolean;
-  addEventListener(type: 'query', callback: ItemQueryEventListener<T>, options?: AddEventListenerOptions | boolean): void;
-  removeEventListener(type: 'query', callback: ItemQueryEventListener<T>, options?: EventListenerOptions | boolean): void;
-}
-
-export class AegisItem<T> extends EventTarget {
+export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T> | ItemQueryEvent<T>> {
   // Attributes
   private _query?: WeakRef<AegisQuery<T>>;
 
