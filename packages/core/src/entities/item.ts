@@ -3,10 +3,9 @@ import { AegisQuery } from '../protocols';
 import { AegisEntity } from './entity';
 import { TypedEventTarget } from '../event-target';
 import { ItemUpdateEvent } from './item-update.event';
-import { ItemQueryEvent } from './item-query.event';
 
 // Item
-export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T> | ItemQueryEvent<T>> {
+export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T>> {
   // Attributes
   private _query?: WeakRef<AegisQuery<T>>;
 
@@ -27,6 +26,12 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T> | ItemQuer
     this.entity.addEventListener('query', (event) => {
       this._storeQuery(event.query);
     });
+
+    this.entity.addEventListener('update', (event) => {
+      if (event.id === this.id) {
+        this.dispatchEvent(new ItemUpdateEvent<T>(this));
+      }
+    });
   }
 
   // Methods
@@ -34,10 +39,10 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T> | ItemQuer
     this._query = new WeakRef(query);
 
     query.addEventListener('update', () => {
-      this.dispatchEvent(new ItemQueryEvent<T>(this, query));
+      this.dispatchEvent(new ItemUpdateEvent<T>(this));
     });
 
-    this.dispatchEvent(new ItemQueryEvent<T>(this, query));
+    this.dispatchEvent(new ItemUpdateEvent<T>(this));
   }
 
   // Properties
@@ -45,15 +50,15 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T> | ItemQuer
     return this._query?.deref();
   }
 
-  get data() {
+  get data(): T | undefined {
     return this.entity.store.get<T>(this.entity.name, this.id);
   }
 
-  get isPending() {
+  get isPending(): boolean {
     return this.lastQuery?.status === 'pending';
   }
 
-  get lastError() {
+  get lastError(): Error | undefined {
     if (this.lastQuery?.state?.status === 'error') {
       return this.lastQuery.state.data;
     }
