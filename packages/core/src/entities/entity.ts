@@ -42,17 +42,23 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     this.dispatchEvent(new EntityQueryEvent(this, id, query));
   }
 
+  /**
+   * Return an AegisItem object for the entity's item with the given id
+   * @param id
+   */
   getItem(id: string): AegisItem<T> {
     return new AegisItem<T>(this, id, this._queries.get(id));
   }
 
   /**
-   * Will update stored item with query result, and keep it to track pending status & error
+   * Return an AegisItem object for the entity's item with the given id.
+   * If no query is running for the asked item, it uses sender to refresh it.
+   *
    * @param id
-   * @param query
+   * @param sender function used to send to query
    */
   queryItem(id: string, sender: AegisQueryItem<T>): AegisItem<T> {
-    if (this._queries.get(id)?.status !== 'completed') {
+    if (this._queries.get(id)?.status !== 'pending') {
       this._registerItemQuery(id, sender(id));
     }
 
