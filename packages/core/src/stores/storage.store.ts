@@ -1,4 +1,5 @@
-import { AegisStore, StoreUpdateEvent } from './store';
+import { AegisStore} from './store';
+import { StoreUpdateEvent } from './store-update.event';
 
 // Class
 export class AegisStorageStore extends AegisStore {
