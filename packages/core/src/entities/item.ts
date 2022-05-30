@@ -24,7 +24,9 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T>> {
 
     // Listen for query update
     this.entity.addEventListener('query', (event) => {
-      this._storeQuery(event.query);
+      if (event.id === this.id) {
+        this._storeQuery(event.query);
+      }
     });
 
     this.entity.addEventListener('update', (event) => {
@@ -46,16 +48,16 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T>> {
   }
 
   // Properties
-  get lastQuery(): AegisQuery<T> | undefined {
-    return this._query?.deref();
-  }
-
   get data(): T | undefined {
     return this.entity.store.get<T>(this.entity.name, this.id);
   }
 
   get isPending(): boolean {
     return this.lastQuery?.status === 'pending';
+  }
+
+  get lastQuery(): AegisQuery<T> | undefined {
+    return this._query?.deref();
   }
 
   get lastError(): Error | undefined {

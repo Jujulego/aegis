@@ -17,8 +17,8 @@ export class ItemUpdateEvent<T = unknown> extends TypedEvent<'update'> {
     return this.item.entity;
   }
 
-  get lastQuery(): AegisQuery<T> | undefined {
-    return this.item.lastQuery;
+  get id(): string {
+    return this.item.id;
   }
 
   get data(): T | undefined {
@@ -27,6 +27,10 @@ export class ItemUpdateEvent<T = unknown> extends TypedEvent<'update'> {
 
   get isPending(): boolean {
     return this.item.isPending;
+  }
+
+  get lastQuery(): AegisQuery<T> | undefined {
+    return this.item.lastQuery;
   }
 
   get lastError(): Error | undefined {
