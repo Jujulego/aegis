@@ -24,4 +24,5 @@ export interface TypedEventTarget<E extends TypedEvent> extends EventTarget {
   removeEventListener(type: E['type'], callback: TypedEventListener<E>, options?: EventListenerOptions | boolean): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class TypedEventTarget<E extends TypedEvent> extends EventTarget {}

@@ -23,7 +23,7 @@ describe('new AegisQuery', () => {
 });
 
 describe('AegisQuery.addEventListener', () => {
-  const cb = () => {};
+  const cb = jest.fn();
 
   beforeEach(() => {
     jest.spyOn(EventTarget.prototype, 'addEventListener');
