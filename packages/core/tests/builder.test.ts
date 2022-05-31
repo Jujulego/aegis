@@ -1,9 +1,9 @@
 import { $entity, $store, AegisEntity, AegisItem, AegisMemoryStore, AegisQuery, AegisStorageStore } from '../src';
 
 // Types
-interface Test {
+interface TestEntity {
   id: string;
-  result: boolean;
+  data: boolean;
 }
 
 // Tests
@@ -43,7 +43,7 @@ describe('$store', () => {
 
 describe( '$entity', () => {
   it('should create an entity aegis object', () => {
-    const ent = $entity<Test>('test', $store.memory);
+    const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id);
 
     expect(ent.$entity).toBeInstanceOf(AegisEntity);
     expect(ent.$entity.name).toBe('test');
@@ -52,11 +52,11 @@ describe( '$entity', () => {
 
   describe('$entity.$get', () => {
     it('should register an item query at given name', () => {
-      const query = new AegisQuery<Test>();
+      const query = new AegisQuery<TestEntity>();
       const sender = jest.fn(() => query);
 
       // Call builder
-      const ent = $entity<Test>('test', $store.memory)
+      const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id)
         .$get('getItem', sender);
 
       expect(ent).toHaveProperty('getItem', expect.any(Function));

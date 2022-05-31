@@ -6,17 +6,25 @@ import { AegisItem } from './item';
 import { EntityUpdateEvent } from './entity-update.event';
 import { EntityQueryEvent } from './entity-query.event';
 
+// Types
+export type EntityIdExtractor<T> = (entity: T) => string;
+
 // Entity
 /**
  * Manages queries and data of a single entity
  */
 export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | EntityQueryEvent<T>> {
   // Attributes
-  private readonly _queries = new Map<string, AegisQuery<T>>();
+  private readonly _extractor: EntityIdExtractor<T>;
+  private readonly _itemQueries = new Map<string, AegisQuery<T>>();
+  private readonly _listQueries = new Map<string, AegisQuery<T[]>>();
 
   // Constructor
-  constructor(readonly name: string, readonly store: AegisStore) {
+  constructor(readonly name: string, readonly store: AegisStore, extractor: EntityIdExtractor<T>) {
     super();
+
+    // Attributes
+    this._extractor = extractor;
 
     // Transmit store events
     this.store.addEventListener('update', (event: StoreUpdateEvent<T>) => {
@@ -27,14 +35,32 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
   }
 
   // Methods
+  private _registerListQuery(id: string, query: AegisQuery<T[]>): void {
+    this._listQueries.set(id, query);
+
+    // Store query result
+    query.addEventListener('update', (event) => {
+      if (event.state.status === 'completed') {
+        for (const ent of event.state.data) {
+          this.store.set(this.name, this._extractor(ent), ent);
+        }
+
+        this._listQueries.delete(id);
+      }
+    });
+
+    // Dispatch query event
+    // this.dispatchEvent(new EntityQueryEvent(this, id, query));
+  }
+
   private _registerItemQuery(id: string, query: AegisQuery<T>): void {
-    this._queries.set(id, query);
+    this._itemQueries.set(id, query);
 
     // Store query result
     query.addEventListener('update', (event) => {
       if (event.state.status === 'completed') {
         this.store.set(this.name, id, event.state.data);
-        this._queries.delete(id);
+        this._itemQueries.delete(id);
       }
     });
 
@@ -47,7 +73,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param id
    */
   getItem(id: string): AegisItem<T> {
-    return new AegisItem<T>(this, id, this._queries.get(id));
+    return new AegisItem<T>(this, id, this._itemQueries.get(id));
   }
 
   /**
@@ -58,7 +84,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param sender function used to send to query
    */
   queryItem(id: string, sender: AegisQueryItem<T>): AegisItem<T> {
-    if (this._queries.get(id)?.status !== 'pending') {
+    if (this._itemQueries.get(id)?.status !== 'pending') {
       this._registerItemQuery(id, sender(id));
     }
 

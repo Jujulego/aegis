@@ -7,17 +7,23 @@ import {
   StoreUpdateEvent
 } from '../../src';
 
+// Types
+interface TestEntity {
+  id: string;
+  value: number;
+}
+
 // Setup
 let store: AegisMemoryStore;
-let entity: AegisEntity<number>;
-let query: AegisQuery<number>;
-let item: AegisItem<number>;
+let entity: AegisEntity<TestEntity>;
+let query: AegisQuery<TestEntity>;
+let item: AegisItem<TestEntity>;
 
-const updateEventSpy = jest.fn<void, [ItemUpdateEvent<number>]>();
+const updateEventSpy = jest.fn<void, [ItemUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
-  entity = new AegisEntity('test', store);
+  entity = new AegisEntity('test', store, ({ id }) => id);
   query = new AegisQuery();
   item = new AegisItem(entity, 'item', query);
 
@@ -29,7 +35,7 @@ beforeEach(() => {
 // Tests
 describe('new AegisItem', () => {
   it('should transmit store update event', () => {
-    store.dispatchEvent(new StoreUpdateEvent(entity.name, item.id, 1));
+    store.dispatchEvent(new StoreUpdateEvent(entity.name, item.id, { id: item.id, value: 1 }));
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
@@ -45,7 +51,7 @@ describe('new AegisItem', () => {
   });
 
   it('should transmit entity query event', () => {
-    const query2 = new AegisQuery<number>();
+    const query2 = new AegisQuery<TestEntity>();
     entity.dispatchEvent(new EntityQueryEvent(entity, 'item', query2));
 
     expect(item.lastQuery).toBe(query2);
@@ -58,7 +64,7 @@ describe('new AegisItem', () => {
   });
 
   it('should ignore query event for other item', () => {
-    const query2 = new AegisQuery<number>();
+    const query2 = new AegisQuery<TestEntity>();
     entity.dispatchEvent(new EntityQueryEvent(entity, 'toto', query2));
 
     expect(item.lastQuery).toBe(query);
@@ -77,7 +83,7 @@ describe('new AegisItem', () => {
   });
 
   it('should transmit query update event (from updated query)', () => {
-    const query2 = new AegisQuery<number>();
+    const query2 = new AegisQuery<TestEntity>();
 
     entity.dispatchEvent(new EntityQueryEvent(entity, 'item', query2));
     query2.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));

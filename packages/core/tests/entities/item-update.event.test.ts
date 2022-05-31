@@ -1,13 +1,20 @@
 import { AegisEntity, AegisItem, AegisMemoryStore, AegisQuery, ItemUpdateEvent } from '../../src';
 
+// Types
+interface TestEntity {
+  id: string;
+  value: number;
+}
+
 // Setup
-let item: AegisItem<number>;
+let item: AegisItem<TestEntity>;
 let event: ItemUpdateEvent;
 
 beforeEach(() => {
   const store = new AegisMemoryStore();
-  const entity = new AegisEntity<number>('test', store);
-  const query = new AegisQuery<number>();
+  const entity = new AegisEntity<TestEntity>('test', store, ({ id }) => id);
+  const query = new AegisQuery<TestEntity>();
+
   item = new AegisItem(entity, 'event', query);
   event = new ItemUpdateEvent(item);
 });
@@ -23,9 +30,9 @@ test('ItemUpdateEvent.id', () => {
 
 test('ItemUpdateEvent.data', () => {
   jest.spyOn(item, 'data', 'get')
-    .mockReturnValue(1);
+    .mockReturnValue({ id: item.id, value: 1 });
 
-  expect(event.data).toBe(1);
+  expect(event.data).toEqual({ id: item.id, value: 1 });
 });
 
 test('ItemUpdateEvent.isPending', () => {
