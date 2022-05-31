@@ -40,7 +40,7 @@
     "@swc/core": "1.2.196",
     "@types/gulp": "4.0.9",
     "@types/jest": "27.5.1",
-    "@types/node": "16.11.36",
+    "@types/node": "16.11.38",
     "@typescript-eslint/eslint-plugin": "5.27.0",
     "@typescript-eslint/parser": "5.27.0",
     "aegis-tools": "1.0.0",
