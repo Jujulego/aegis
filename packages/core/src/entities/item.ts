@@ -1,7 +1,7 @@
+import { TypedEventTarget } from '../event-target';
 import { AegisQuery } from '../protocols';
 
 import { AegisEntity } from './entity';
-import { TypedEventTarget } from '../event-target';
 import { ItemUpdateEvent } from './item-update.event';
 
 // Item

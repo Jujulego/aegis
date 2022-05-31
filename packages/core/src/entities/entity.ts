@@ -1,11 +1,12 @@
 import { TypedEventTarget } from '../event-target';
-import { AegisQuery, AegisQueryItem } from '../protocols';
+import { AegisQuery, AegisQueryItem, AegisQueryList } from '../protocols';
 import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
 import { EntityUpdateEvent } from './entity-update.event';
 import { EntityItemQueryEvent} from './entity-item-query.event';
 import { EntityListQueryEvent } from './entity-list-query.event';
+import { AegisList } from './list';
 
 // Types
 export type EntityIdExtractor<T> = (entity: T) => string;
@@ -36,8 +37,8 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
   }
 
   // Methods
-  private _registerListQuery(id: string, query: AegisQuery<T[]>): void {
-    this._listQueries.set(id, query);
+  private _registerListQuery(key: string, query: AegisQuery<T[]>): void {
+    this._listQueries.set(key, query);
 
     // Store query result
     query.addEventListener('update', (event) => {
@@ -46,12 +47,12 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
           this.store.set(this.name, this._extractor(ent), ent);
         }
 
-        this._listQueries.delete(id);
+        this._listQueries.delete(key);
       }
     });
 
     // Dispatch query event
-    this.dispatchEvent(new EntityListQueryEvent(this, id, query));
+    this.dispatchEvent(new EntityListQueryEvent(this, key, query));
   }
 
   private _registerItemQuery(id: string, query: AegisQuery<T>): void {
@@ -70,11 +71,21 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
   }
 
   /**
-   * Return an AegisItem object for the entity's item with the given id
+   * Return an AegisItem object for the entity's item with the given id.
+   *
    * @param id
    */
   getItem(id: string): AegisItem<T> {
     return new AegisItem<T>(this, id, this._itemQueries.get(id));
+  }
+
+  /**
+   * Return an AegisList object for an entity list, identified by key.
+   *
+   * @param key
+   */
+  getList(key: string): AegisList<T> {
+    return new AegisList<T>(this, key, this._extractor, this._listQueries.get(key));
   }
 
   /**
@@ -90,5 +101,25 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     }
 
     return this.getItem(id);
+  }
+
+  /**
+   * Return an AegisList object for an entity list, identified by key
+   * If a query is running for the asked list, cancels it
+   * before using sender to initiate a new query.
+   *
+   * @param key
+   * @param sender function used to send to query
+   */
+  queryList(key: string, sender: AegisQueryList<T>): AegisList<T> {
+    const query = this._listQueries.get(key);
+
+    if (query?.status === 'pending') {
+      query.cancel();
+    }
+
+    this._registerListQuery(key, sender());
+
+    return this.getList(key);
   }
 }

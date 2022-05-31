@@ -7,7 +7,7 @@ export class EntityListQueryEvent<T = unknown> extends TypedEvent<'list-query'> 
   // Constructor
   constructor(
     readonly entity: AegisEntity<T>,
-    readonly id: string,
+    readonly key: string,
     readonly query: AegisQuery<T[]>,
   ) {
     super('list-query');
