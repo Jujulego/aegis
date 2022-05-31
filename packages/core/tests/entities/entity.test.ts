@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisItem,
   AegisMemoryStore,
-  AegisQuery, EntityQueryEvent,
+  AegisQuery, EntityItemQueryEvent,
   EntityUpdateEvent,
   QueryUpdateEvent,
   StoreUpdateEvent
@@ -19,17 +19,17 @@ let entity: AegisEntity<TestEntity>;
 let store: AegisMemoryStore;
 
 const updateEventSpy = jest.fn<void, [EntityUpdateEvent<TestEntity>]>();
-const queryEventSpy = jest.fn<void, [EntityQueryEvent]>();
+const itemQueryEventSpy = jest.fn<void, [EntityItemQueryEvent<TestEntity>]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
   entity = new AegisEntity<TestEntity>('test', store, ({ id }) => id);
 
   updateEventSpy.mockReset();
-  queryEventSpy.mockReset();
+  itemQueryEventSpy.mockReset();
 
   entity.addEventListener('update', updateEventSpy);
-  entity.addEventListener('query', queryEventSpy);
+  entity.addEventListener('item-query', itemQueryEventSpy);
 });
 
 // Tests
@@ -89,9 +89,9 @@ describe('AegisEntity.queryItem', () => {
   it('should emit query event with new query', () => {
     entity.queryItem('query', () => query);
 
-    expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith(expect.any(EntityQueryEvent));
-    expect(queryEventSpy).toHaveBeenCalledWith(expect.objectContaining({
+    expect(itemQueryEventSpy).toHaveBeenCalledTimes(1);
+    expect(itemQueryEventSpy).toHaveBeenCalledWith(expect.any(EntityItemQueryEvent));
+    expect(itemQueryEventSpy).toHaveBeenCalledWith(expect.objectContaining({
       entity,
       id: 'query',
       query,

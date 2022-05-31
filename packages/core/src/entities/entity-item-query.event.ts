@@ -2,15 +2,16 @@ import { TypedEvent, TypedEventListener } from '../event-target';
 import { AegisQuery } from '../protocols';
 import { AegisEntity } from './entity';
 
-export class EntityQueryEvent<T = unknown> extends TypedEvent<'query'> {
+// Events
+export class EntityItemQueryEvent<T = unknown> extends TypedEvent<'item-query'> {
   // Constructor
   constructor(
     readonly entity: AegisEntity<T>,
     readonly id: string,
     readonly query: AegisQuery<T>,
   ) {
-    super('query');
+    super('item-query');
   }
 }
 
-export type EntityQueryEventListener<T = unknown> = TypedEventListener<EntityQueryEvent<T>>;
+export type EntityItemQueryEventListener<T = unknown> = TypedEventListener<EntityItemQueryEvent<T>>;

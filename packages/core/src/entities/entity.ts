@@ -4,7 +4,8 @@ import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
 import { EntityUpdateEvent } from './entity-update.event';
-import { EntityQueryEvent } from './entity-query.event';
+import { EntityItemQueryEvent} from './entity-item-query.event';
+import { EntityListQueryEvent } from './entity-list-query.event';
 
 // Types
 export type EntityIdExtractor<T> = (entity: T) => string;
@@ -13,7 +14,7 @@ export type EntityIdExtractor<T> = (entity: T) => string;
 /**
  * Manages queries and data of a single entity
  */
-export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | EntityQueryEvent<T>> {
+export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | EntityItemQueryEvent<T> | EntityListQueryEvent<T>> {
   // Attributes
   private readonly _extractor: EntityIdExtractor<T>;
   private readonly _itemQueries = new Map<string, AegisQuery<T>>();
@@ -50,7 +51,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     });
 
     // Dispatch query event
-    // this.dispatchEvent(new EntityQueryEvent(this, id, query));
+    this.dispatchEvent(new EntityListQueryEvent(this, id, query));
   }
 
   private _registerItemQuery(id: string, query: AegisQuery<T>): void {
@@ -65,7 +66,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     });
 
     // Dispatch query event
-    this.dispatchEvent(new EntityQueryEvent(this, id, query));
+    this.dispatchEvent(new EntityItemQueryEvent(this, id, query));
   }
 
   /**

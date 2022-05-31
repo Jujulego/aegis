@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisItem,
   AegisMemoryStore,
-  AegisQuery, EntityQueryEvent,
+  AegisQuery, EntityItemQueryEvent,
   ItemUpdateEvent, QueryUpdateEvent,
   StoreUpdateEvent
 } from '../../src';
@@ -52,7 +52,7 @@ describe('new AegisItem', () => {
 
   it('should transmit entity query event', () => {
     const query2 = new AegisQuery<TestEntity>();
-    entity.dispatchEvent(new EntityQueryEvent(entity, 'item', query2));
+    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'item', query2));
 
     expect(item.lastQuery).toBe(query2);
 
@@ -65,7 +65,7 @@ describe('new AegisItem', () => {
 
   it('should ignore query event for other item', () => {
     const query2 = new AegisQuery<TestEntity>();
-    entity.dispatchEvent(new EntityQueryEvent(entity, 'toto', query2));
+    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'toto', query2));
 
     expect(item.lastQuery).toBe(query);
 
@@ -85,7 +85,7 @@ describe('new AegisItem', () => {
   it('should transmit query update event (from updated query)', () => {
     const query2 = new AegisQuery<TestEntity>();
 
-    entity.dispatchEvent(new EntityQueryEvent(entity, 'item', query2));
+    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'item', query2));
     query2.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
