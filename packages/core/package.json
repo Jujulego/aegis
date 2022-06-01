@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis-core",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -44,6 +44,7 @@
     "@typescript-eslint/eslint-plugin": "5.27.0",
     "@typescript-eslint/parser": "5.27.0",
     "aegis-tools": "1.0.0",
+    "browserslist": "4.20.3",
     "del": "6.1.1",
     "eslint": "8.16.0",
     "eslint-plugin-jest": "26.4.5",
