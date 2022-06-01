@@ -5,3 +5,4 @@ export * from './entity-list-query.event';
 export * from './item';
 export * from './item-update.event';
 export * from './list';
+export * from './list-update.event';

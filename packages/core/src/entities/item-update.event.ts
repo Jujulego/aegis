@@ -1,8 +1,8 @@
 import { TypedEvent, TypedEventListener } from '../event-target';
+import { AegisQuery } from '../protocols';
 
 import { AegisEntity } from './entity';
 import { AegisItem } from './item';
-import { AegisQuery } from '../protocols';
 
 export class ItemUpdateEvent<T = unknown> extends TypedEvent<'update'> {
   // Constructor

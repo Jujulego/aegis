@@ -1,9 +1,11 @@
+import { TypedEventTarget } from '../event-target';
 import { AegisQuery } from '../protocols';
 
 import { AegisEntity, EntityIdExtractor } from './entity';
+import { ListUpdateEvent } from './list-update.event';
 
 // List
-export class AegisList<T> {
+export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
   // Attributes
   private _ids: string[] = [];
   private _query?: WeakRef<AegisQuery<T[]>>;
@@ -16,6 +18,8 @@ export class AegisList<T> {
     extractor: EntityIdExtractor<T>,
     query?: AegisQuery<T[]>,
   ) {
+    super();
+
     // Init
     this._extractor = extractor;
 
@@ -32,7 +36,7 @@ export class AegisList<T> {
 
     this.entity.addEventListener('update', (event) => {
       if (this._ids.includes(event.id)) {
-        // this.dispatchEvent(new ListUpdateEvent<T>(this));
+        this.dispatchEvent(new ListUpdateEvent<T>(this));
       }
     });
   }
@@ -46,10 +50,10 @@ export class AegisList<T> {
         this._ids = event.state.data.map((ent) => this._extractor(ent));
       }
 
-      // this.dispatchEvent(new ListUpdateEvent<T>(this));
+      this.dispatchEvent(new ListUpdateEvent<T>(this));
     });
 
-    // this.dispatchEvent(new ListUpdateEvent<T>(this));
+    this.dispatchEvent(new ListUpdateEvent<T>(this));
   }
 
   // Properties
