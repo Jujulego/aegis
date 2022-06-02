@@ -2,15 +2,12 @@
 export type TypedEventListener<E extends Event> = (event: E) => void;
 
 // Typed Event
-export class TypedEvent<T extends string = string> extends Event {
+export interface TypedEvent<T extends string = string> extends Event {
   // Attributes
   type: T;
-
-  // Constructor
-  constructor(type: T) {
-    super(type);
-  }
 }
+
+export const TypedEvent = Event as new <T extends string = string>(type: T) => TypedEvent<T>;
 
 // Typed EventTarget
 export interface TypedEventTarget<E extends TypedEvent> extends EventTarget {
@@ -24,5 +21,4 @@ export interface TypedEventTarget<E extends TypedEvent> extends EventTarget {
   removeEventListener(type: E['type'], callback: TypedEventListener<E>, options?: EventListenerOptions | boolean): void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class TypedEventTarget<E extends TypedEvent> extends EventTarget {}
+export const TypedEventTarget: new <E extends TypedEvent>() => TypedEventTarget<E> = EventTarget;
