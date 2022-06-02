@@ -1,13 +1,4 @@
-import {
-  $entity,
-  $store,
-  AegisEntity,
-  AegisItem,
-  AegisList,
-  AegisMemoryStore,
-  AegisQuery,
-  AegisStorageStore
-} from '../src';
+import { $entity, $store, AegisEntity, AegisItem, AegisList, AegisQuery } from '../../src';
 
 // Types
 interface TestEntity {
@@ -16,47 +7,14 @@ interface TestEntity {
 }
 
 // Tests
-describe('$store', () => {
-  describe('$store.memory', () => {
-    it('should return a AegisMemoryStore', () => {
-      expect($store.memory).toBeInstanceOf(AegisMemoryStore);
-    });
-
-    it('should always return the same instance', () => {
-      expect($store.memory).toBe($store.memory);
-    });
-  });
-
-  describe('$store.localStorage', () => {
-    it('should return a AegisStorageStore using localStorage', () => {
-      expect($store.localStorage).toBeInstanceOf(AegisStorageStore);
-      expect($store.localStorage.storage).toBe(localStorage);
-    });
-
-    it('should always return the same instance', () => {
-      expect($store.localStorage).toBe($store.localStorage);
-    });
-  });
-
-  describe('$store.sessionStorage', () => {
-    it('should return a AegisStorageStore using sessionStorage', () => {
-      expect($store.sessionStorage).toBeInstanceOf(AegisStorageStore);
-      expect($store.sessionStorage.storage).toBe(sessionStorage);
-    });
-
-    it('should always return the same instance', () => {
-      expect($store.sessionStorage).toBe($store.sessionStorage);
-    });
-  });
-});
-
 describe( '$entity', () => {
   it('should create an entity aegis object', () => {
-    const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id);
+    const store = $store.memory();
+    const ent = $entity<TestEntity>('test', store, ({ id }) => id);
 
     expect(ent.$entity).toBeInstanceOf(AegisEntity);
     expect(ent.$entity.name).toBe('test');
-    expect(ent.$entity.store).toBe($store.memory);
+    expect(ent.$entity.store).toBe(store);
   });
 
   describe('$entity.$get', () => {
@@ -65,7 +23,7 @@ describe( '$entity', () => {
       const sender = jest.fn(() => query);
 
       // Call builder
-      const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id)
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
         .$get('getItem', sender);
 
       expect(ent).toHaveProperty('getItem', expect.any(Function));
@@ -92,7 +50,7 @@ describe( '$entity', () => {
       const sender = jest.fn((_: number) => query);
 
       // Call builder
-      const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id)
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
         .$list('getList', sender);
 
       expect(ent).toHaveProperty('getList', expect.any(Function));
