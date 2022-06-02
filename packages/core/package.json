@@ -1,6 +1,7 @@
 {
   "name": "@jujulego/aegis-core",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
+  "stableVersion": "1.0.0-alpha.7",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -56,6 +57,5 @@
     "ts-jest": "28.0.3",
     "ts-node": "10.8.0",
     "typescript": "4.7.2"
-  },
-  "stableVersion": "1.0.0-alpha.6"
+  }
 }
