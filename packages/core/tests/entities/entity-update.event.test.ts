@@ -1,14 +1,24 @@
 import { AegisEntity, AegisMemoryStore, EntityUpdateEvent, StoreUpdateEvent } from '../../src';
 
+// Types
+interface TestEntity {
+  id: string;
+  value: number;
+}
+
 // Setup
 let event: EntityUpdateEvent;
 
 beforeEach(() => {
   const store = new AegisMemoryStore();
-  const entity = new AegisEntity('test', store);
+  const entity = new AegisEntity<TestEntity>('test', store, ({ id }) => id);
+
   event = new EntityUpdateEvent(
     entity,
-    new StoreUpdateEvent<number>(entity.name, 'event', 1, 2),
+    new StoreUpdateEvent(
+      entity.name, 'event',
+      { id: 'event', value: 1 },
+      { id: 'event', value: 2 }),
   );
 });
 
@@ -18,9 +28,9 @@ test('EntityUpdateEvent.id', () => {
 });
 
 test('EntityUpdateEvent.newValue', () => {
-  expect(event.newValue).toBe(1);
+  expect(event.newValue).toEqual({ id: 'event', value: 1 });
 });
 
 test('EntityUpdateEvent.oldValue', () => {
-  expect(event.oldValue).toBe(2);
+  expect(event.oldValue).toEqual({ id: 'event', value: 2 });
 });

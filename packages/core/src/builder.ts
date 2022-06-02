@@ -1,4 +1,4 @@
-import { AegisEntity, AegisItem } from './entities';
+import { AegisEntity, AegisItem, AegisList, EntityIdExtractor } from './entities';
 import { AegisMemoryStore, AegisStorageStore, AegisStore } from './stores';
 import { AegisQuery } from './protocols';
 
@@ -8,7 +8,8 @@ const AEGIS_STORES_KEY = Symbol('jujulego:aegis-core:stores');
 // Type
 export type Aegis<T, M> = M & {
   $entity: AegisEntity<T>;
-  $get<N extends string>(name: N, sender: (id: string) => AegisQuery<T>): Aegis<T, M & Record<N, (id: string) => AegisItem<T>>>;
+  $get<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<T>): Aegis<T, M & Record<N, (id: I) => AegisItem<T>>>;
+  $list<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T[]>): Aegis<T, M & Record<N, (key: string, ...args: A) => AegisList<T>>>;
 }
 
 declare global {
@@ -50,13 +51,20 @@ export const $store = {
 };
 
 // Entity builder
-export function $entity<T>(name: string, store: AegisStore): Aegis<T, unknown> {
+export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdExtractor<T>): Aegis<T, unknown> {
   return {
-    $entity: new AegisEntity<T>(name, store),
-    $get<N extends string>(name: N, sender: (id: string) => AegisQuery<T>): Aegis<T, Record<N, (id: string) => AegisItem<T>>> {
+    $entity: new AegisEntity<T>(name, store, extractor),
+
+    $get<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<T>): Aegis<T, Record<N, (id: I) => AegisItem<T>>> {
       return Object.assign(this, {
-        [name]: (id: string) => this.$entity.queryItem(id, sender),
+        [name]: (id: I) => this.$entity.queryItem(id, sender),
       });
-    }
+    },
+
+    $list<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T[]>): Aegis<T, Record<N, (key: string, ...args: A) => AegisList<T>>> {
+      return Object.assign(this, {
+        [name]: (key: string, ...args: A) => this.$entity.queryList(key, () => sender(...args)),
+      });
+    },
   };
 }

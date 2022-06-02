@@ -1,7 +1,7 @@
+import { TypedEventTarget } from '../event-target';
 import { AegisQuery } from '../protocols';
 
 import { AegisEntity } from './entity';
-import { TypedEventTarget } from '../event-target';
 import { ItemUpdateEvent } from './item-update.event';
 
 // Item
@@ -23,7 +23,7 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T>> {
     }
 
     // Listen for query update
-    this.entity.addEventListener('query', (event) => {
+    this.entity.addEventListener('item-query', (event) => {
       if (event.id === this.id) {
         this._storeQuery(event.query);
       }
