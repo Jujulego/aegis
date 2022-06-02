@@ -1,4 +1,13 @@
-import { $entity, $store, AegisEntity, AegisItem, AegisMemoryStore, AegisQuery, AegisStorageStore } from '../src';
+import {
+  $entity,
+  $store,
+  AegisEntity,
+  AegisItem,
+  AegisList,
+  AegisMemoryStore,
+  AegisQuery,
+  AegisStorageStore
+} from '../src';
 
 // Types
 interface TestEntity {
@@ -74,6 +83,33 @@ describe( '$entity', () => {
       expect(ent.$entity.queryItem).toHaveBeenCalledWith('item', sender);
 
       expect(sender).toHaveBeenCalledWith('item');
+    });
+  });
+
+  describe('$entity.$list', () => {
+    it('should register an item query at given name', () => {
+      const query = new AegisQuery<TestEntity[]>();
+      const sender = jest.fn((_: number) => query);
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory, ({ id }) => id)
+        .$list('getList', sender);
+
+      expect(ent).toHaveProperty('getList', expect.any(Function));
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'queryList');
+
+      const lst = ent.getList('test', 5);
+
+      expect(lst).toBeInstanceOf(AegisList);
+      expect(lst.key).toBe('test');
+      expect(lst.entity).toBe(ent.$entity);
+      expect(lst.lastQuery).toBe(query);
+
+      expect(ent.$entity.queryList).toHaveBeenCalledWith('test', expect.any(Function));
+
+      expect(sender).toHaveBeenCalledWith(5);
     });
   });
 });
