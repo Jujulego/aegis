@@ -96,11 +96,27 @@ describe('new AegisItem', () => {
   });
 });
 
-test('AegisItem.data', () => {
-  jest.spyOn(store, 'get').mockReturnValue(1);
+describe('AegisItem.data', () => {
+  it('should read data from store', () => {
+    jest.spyOn(store, 'get').mockReturnValue(1);
 
-  expect(item.data).toBe(1);
-  expect(store.get).toHaveBeenCalledWith('test', 'item');
+    expect(item.data).toBe(1);
+    expect(store.get).toHaveBeenCalledWith('test', 'item');
+  });
+
+  it('should write data in store and emit update event', () => {
+    jest.spyOn(store, 'set');
+
+    item.data = { id: 'item', value: 2 };
+
+    expect(store.set).toHaveBeenCalledWith('test', 'item', { id: 'item', value: 2 });
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
+    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
+      item,
+    }));
+  });
 });
 
 describe('AegisItem.isPending', () => {

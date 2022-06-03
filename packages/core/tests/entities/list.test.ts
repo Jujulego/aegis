@@ -116,6 +116,24 @@ describe('AegisList.data', () => {
     ]);
     expect(store.get).toHaveBeenCalledWith(entity.name, 'item-1');
   });
+
+  it('should insert array items in store', () => {
+    jest.spyOn(store, 'set');
+
+    list.data = [
+      { id: 'item-1', value: 1 },
+      { id: 'item-3', value: 3 },
+    ];
+
+    expect(store.set).toHaveBeenCalledWith(entity.name, 'item-1', { id: 'item-1', value: 1 });
+    expect(store.set).toHaveBeenCalledWith(entity.name, 'item-3', { id: 'item-3', value: 3 });
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
+    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
+      list,
+    }));
+  });
 });
 
 describe('AegisList.isPending', () => {

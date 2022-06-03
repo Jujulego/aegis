@@ -52,6 +52,12 @@ export class AegisItem<T> extends TypedEventTarget<ItemUpdateEvent<T>> {
     return this.entity.store.get<T>(this.entity.name, this.id);
   }
 
+  set data(item: T | undefined) {
+    if (item) {
+      this.entity.store.set(this.entity.name, this.id, item);
+    }
+  }
+
   get isPending(): boolean {
     return this.lastQuery?.status === 'pending';
   }
