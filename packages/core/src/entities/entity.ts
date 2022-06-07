@@ -1,5 +1,5 @@
 import { TypedEventTarget } from '../event-target';
-import { AegisQuery, AegisQueryItem, AegisQueryList } from '../protocols';
+import { AegisQuery } from '../protocols';
 import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
@@ -95,7 +95,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param id
    * @param sender function used to send to query
    */
-  queryItem(id: string, sender: AegisQueryItem<T>): AegisItem<T> {
+  queryItem(id: string, sender: (id: string) => AegisQuery<T>): AegisItem<T> {
     if (this._itemQueries.get(id)?.status !== 'pending') {
       this._registerItemQuery(id, sender(id));
     }
@@ -111,7 +111,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param key
    * @param sender function used to send to query
    */
-  queryList(key: string, sender: AegisQueryList<T>): AegisList<T> {
+  queryList(key: string, sender: () => AegisQuery<T[]>): AegisList<T> {
     const query = this._listQueries.get(key);
 
     if (query?.status === 'pending') {
@@ -121,5 +121,17 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     this._registerListQuery(key, sender());
 
     return this.getList(key);
+  }
+
+  updateItem<R>(id: string, mutation: AegisQuery<R>, merge: (stored: T, result: R) => T): void {
+    mutation.addEventListener('update', ({ state }) => {
+      if (state.status === 'completed') {
+        const item = this.store.get<T>(this.name, id);
+
+        if (item) {
+          this.store.set(this.name, id, merge(item, state.data));
+        }
+      }
+    });
   }
 }
