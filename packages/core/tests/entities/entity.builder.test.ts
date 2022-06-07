@@ -70,4 +70,68 @@ describe( '$entity', () => {
       expect(sender).toHaveBeenCalledWith(5);
     });
   });
+
+  describe('$entity.$update', () => {
+    it('should send mutation request and update cached item with result', () => {
+      const query = new AegisQuery<TestEntity>();
+      const sender = jest.fn((id: string, _: number) => query);
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
+        .$update('updateItem', sender);
+
+      expect(ent).toHaveProperty('updateItem', expect.any(Function));
+
+      // Set item in store
+      const itm = ent.$entity.getItem('item');
+      itm.data = { id: 'item', data: false };
+
+      expect(itm.data).toEqual({ id: 'item', data: false });
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'updateItem');
+
+      ent.updateItem('item', 1);
+
+      expect(sender).toHaveBeenCalledWith('item', 1);
+      expect(ent.$entity.updateItem).toHaveBeenCalledWith('item', query, expect.any(Function));
+
+      // Emit result
+      query.store({ id: 'item', data: true });
+
+      expect(itm.data).toEqual({ id: 'item', data: true });
+    });
+
+    it('should send mutation request and update cached item by merging it with result', () => {
+      const query = new AegisQuery<boolean>();
+      const sender = jest.fn((id: string, _: number) => query);
+      const merge = jest.fn((old: TestEntity, data: boolean) => ({ ...old, data }));
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
+        .$update('updateItem', sender, merge);
+
+      expect(ent).toHaveProperty('updateItem', expect.any(Function));
+
+      // Set item in store
+      const itm = ent.$entity.getItem('item');
+      itm.data = { id: 'item', data: false };
+
+      expect(itm.data).toEqual({ id: 'item', data: false });
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'updateItem');
+
+      ent.updateItem('item', 1);
+
+      expect(sender).toHaveBeenCalledWith('item', 1);
+      expect(ent.$entity.updateItem).toHaveBeenCalledWith('item', query, expect.any(Function));
+
+      // Emit result
+      query.store(true);
+
+      expect(itm.data).toEqual({ id: 'item', data: true });
+      expect(merge).toHaveBeenCalledWith({ id: 'item', data: false }, true);
+    });
+  });
 });

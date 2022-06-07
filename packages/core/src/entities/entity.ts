@@ -10,6 +10,7 @@ import { AegisList } from './list';
 
 // Types
 export type EntityIdExtractor<T> = (entity: T) => string;
+export type EntityMerge<T, R> = (stored: T, result: R) => T;
 
 // Entity
 /**
@@ -123,7 +124,15 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     return this.getList(key);
   }
 
-  updateItem<R>(id: string, mutation: AegisQuery<R>, merge: (stored: T, result: R) => T): void {
+  /**
+   * Register mutation query. Allow to update cached item by merging it
+   * with request result
+   *
+   * @param id updated item's id
+   * @param mutation query mutating the item
+   * @param merge
+   */
+  updateItem<R>(id: string, mutation: AegisQuery<R>, merge: EntityMerge<T, R>): void {
     mutation.addEventListener('update', ({ state }) => {
       if (state.status === 'completed') {
         const item = this.store.get<T>(this.name, id);
