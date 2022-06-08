@@ -157,4 +157,18 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
       }
     });
   }
+
+  /**
+   * Register deletion query. Will remove item from cache when query completed
+   *
+   * @param id deleted item's id
+   * @param mutation query deleting the item
+   */
+  deleteItem(id: string, mutation: AegisQuery<unknown>): void {
+    mutation.addEventListener('update', ({ state }) => {
+      if (state.status === 'completed') {
+        this.store.delete<T>(this.name, id);
+      }
+    });
+  }
 }

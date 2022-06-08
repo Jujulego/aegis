@@ -299,3 +299,21 @@ describe('AegisEntity.updateItem', () => {
     expect(store.set).not.toHaveBeenCalled();
   });
 });
+
+describe('AegisEntity.deleteItem', () => {
+  let mutation: AegisQuery<void>;
+
+  beforeEach(() => {
+    mutation = new AegisQuery();
+
+    jest.spyOn(store, 'delete');
+  });
+
+  it('should remove cached item', () => {
+    entity.deleteItem('delete', mutation);
+    mutation.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: undefined }));
+
+    // Check store update
+    expect(store.delete).toHaveBeenCalledWith('test', 'delete');
+  });
+});

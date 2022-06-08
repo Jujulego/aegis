@@ -54,6 +54,15 @@ export type Aegis<T, M> = M & {
    * @param merge used to merge result with cached data if any
    */
   $update<N extends string, R, I extends string = string, A extends unknown[] = []>(name: N, sender: (id: I, ...args: A) => AegisQuery<R>, merge: EntityMerge<T, R>): Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<R>>>;
+
+  /**
+   * Add a delete query to the entity.
+   * This query should delete the item by id, result is ignored.
+   *
+   * @param name
+   * @param sender
+   */
+  $delete<N extends string, R, I extends string = string>(name: N, sender: (id: I) => AegisQuery<R>): Aegis<T, Record<N, (id: I) => AegisQuery<R>>>;
 }
 
 // Entity builder
@@ -84,6 +93,17 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
         [name]: (id: I, ...args: A) => {
           const query = sender(id, ...args);
           this.$entity.updateItem(id, query, merge ?? ((_: T, result: T) => result));
+
+          return query;
+        },
+      });
+    },
+
+    $delete<N extends string, R = T, I extends string = string>(name: N, sender: (id: I) => AegisQuery<R>): Aegis<T, Record<N, (id: I) => AegisQuery<R>>> {
+      return Object.assign(this, {
+        [name]: (id: I) => {
+          const query = sender(id);
+          this.$entity.deleteItem(id, query);
 
           return query;
         },

@@ -165,4 +165,25 @@ describe( '$entity', () => {
       expect(merge).toHaveBeenCalledWith({ id: 'item', data: false }, true);
     });
   });
+
+  describe('$entity.$delete', () => {
+    it('should register a delete query at given name', async () => {
+      const query = new AegisQuery<void>();
+      const sender = jest.fn(() => query);
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
+        .$delete('deleteItem', sender);
+
+      expect(ent).toHaveProperty('deleteItem', expect.any(Function));
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'deleteItem');
+
+      expect(ent.deleteItem('delete')).toBe(query);
+
+      expect(sender).toHaveBeenCalledWith('delete');
+      expect(ent.$entity.deleteItem).toHaveBeenCalledWith('delete', query);
+    });
+  });
 });
