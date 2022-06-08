@@ -56,6 +56,60 @@ describe('AegisQuery.addEventListener', () => {
   });
 });
 
+describe('AegisQuery.then', () => {
+  it('should resolve as a promise (await)', async () => {
+    query.store('result');
+
+    await expect(query).resolves.toBe('result');
+  });
+
+  it('should resolve as a promise (then fulfill)', async () => {
+    const fulfill = jest.fn((txt: string) => txt.length);
+    const prm = query.then(fulfill);
+
+    query.store('result');
+
+    await expect(prm).resolves.toBe(6);
+    expect(fulfill).toHaveBeenCalledWith('result');
+  });
+
+  it('should reject as a promise (await)', async () => {
+    query.error(new Error('fail'));
+
+    await expect(query).rejects.toEqual(new Error('fail'));
+  });
+
+  it('should resolve as a promise (then reject)', async () => {
+    const reject = jest.fn((err: Error) => err.message);
+    const prm = query.then(null, reject);
+
+    query.error(new Error('failed'));
+
+    await expect(prm).resolves.toBe('failed');
+    expect(reject).toHaveBeenCalledWith(new Error('failed'));
+  });
+
+  it('should reject if fulfill callback fails', async () => {
+    const prm = query.then(() => {
+      throw new Error('Fulfill failed');
+    });
+
+    query.store('result');
+
+    await expect(prm).rejects.toEqual(new Error('Fulfill failed'));
+  });
+
+  it('should reject if reject callback fails', async () => {
+    const prm = query.then(null, () => {
+      throw new Error('Reject failed');
+    });
+
+    query.error(new Error('failed'));
+
+    await expect(prm).rejects.toEqual(new Error('Reject failed'));
+  });
+});
+
 describe('AegisQuery.store', () => {
   it('should update internal state', () => {
     // Change query to "success" state

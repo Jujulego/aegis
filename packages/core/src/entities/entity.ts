@@ -129,18 +129,12 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    *
    * @param mutation query adding the item
    */
-  createItem(mutation: AegisQuery<T>): Promise<AegisItem<T>> {
-    return new Promise((resolve, reject) => {
-      mutation.addEventListener('update', ({ state }) => {
-        if (state.status === 'completed') {
-          const id = this._extractor(state.data);
+  createItem(mutation: AegisQuery<T>): AegisQuery<AegisItem<T>> {
+    return mutation.then((data) => {
+      const id = this._extractor(data);
 
-          this.store.set(this.name, id, state.data);
-          resolve(this.getItem(id));
-        } else if (state.status === 'error') {
-          reject(state.data);
-        }
-      });
+      this.store.set(this.name, id, data);
+      return this.getItem(id);
     });
   }
 

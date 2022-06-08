@@ -34,7 +34,7 @@ export type Aegis<T, M> = M & {
    * @param name
    * @param sender
    */
-  $create<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => Promise<AegisItem<T>>>>;
+  $create<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>>;
 
   /**
    * Add an update query to the entity.
@@ -73,7 +73,7 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
       });
     },
 
-    $create<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => Promise<AegisItem<T>>>> {
+    $create<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>> {
       return Object.assign(this, {
         [name]: (...args: A) => this.$entity.createItem(sender(...args)),
       });
