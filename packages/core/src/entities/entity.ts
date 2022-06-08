@@ -125,6 +125,26 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
   }
 
   /**
+   * Register creation query. Resolves as the new item, or rejects if the query failed
+   *
+   * @param mutation query adding the item
+   */
+  createItem(mutation: AegisQuery<T>): Promise<AegisItem<T>> {
+    return new Promise((resolve, reject) => {
+      mutation.addEventListener('update', ({ state }) => {
+        if (state.status === 'completed') {
+          const id = this._extractor(state.data);
+
+          this.store.set(this.name, id, state.data);
+          resolve(this.getItem(id));
+        } else if (state.status === 'error') {
+          reject(state.data);
+        }
+      });
+    });
+  }
+
+  /**
    * Register mutation query. Allow to update cached item by merging it
    * with request result
    *

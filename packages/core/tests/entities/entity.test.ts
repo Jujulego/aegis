@@ -217,7 +217,54 @@ describe('AegisEntity.queryList', () => {
   });
 });
 
-describe('Aegisentity.updateItem', () => {
+describe('AegisEntity.createItem', () => {
+  let mutation: AegisQuery<TestEntity>;
+
+  beforeEach(() => {
+    mutation = new AegisQuery();
+
+    jest.spyOn(store, 'set');
+  });
+
+  it('should add query result to the store and then resolve to a new item', async () => {
+    const prom = entity.createItem(mutation);
+
+    // Complete query
+    mutation.dispatchEvent(new QueryUpdateEvent({
+      status: 'completed',
+      data: { id: 'create', value: 1 }
+    }));
+
+    // Check promised item
+    await expect(prom).resolves.toBeInstanceOf(AegisItem);
+
+    const itm = await prom;
+    expect(itm.id).toBe('create');
+    expect(itm.data).toEqual({ id: 'create', value: 1 });
+
+    // Check store update
+    expect(store.set).toHaveBeenCalledWith('test', 'create', { id: 'create', value: 1 });
+  });
+
+  it('should reject if query failed', async () => {
+    const err = new Error('failed');
+    const prom = entity.createItem(mutation);
+
+    // Complete query
+    mutation.dispatchEvent(new QueryUpdateEvent<TestEntity>({
+      status: 'error',
+      data: err
+    }));
+
+    // Check promise
+    await expect(prom).rejects.toBe(err);
+
+    // Check store
+    expect(store.set).not.toHaveBeenCalled();
+  });
+});
+
+describe('AegisEntity.updateItem', () => {
   let mutation: AegisQuery<number>;
 
   beforeEach(() => {
