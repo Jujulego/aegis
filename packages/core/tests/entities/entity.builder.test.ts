@@ -45,7 +45,7 @@ describe( '$entity', () => {
   });
 
   describe('$entity.$list', () => {
-    it('should register an item query at given name', () => {
+    it('should register a list query at given name', () => {
       const query = new AegisQuery<TestEntity[]>();
       const sender = jest.fn((_: number) => query);
 
@@ -68,6 +68,37 @@ describe( '$entity', () => {
       expect(ent.$entity.queryList).toHaveBeenCalledWith('test', expect.any(Function));
 
       expect(sender).toHaveBeenCalledWith(5);
+    });
+  });
+
+  describe('$entity.$create', () => {
+    it('should register a create query at given name', async () => {
+      const query = new AegisQuery<TestEntity>();
+      const sender = jest.fn((_: number) => query);
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
+        .$create('createItem', sender);
+
+      expect(ent).toHaveProperty('createItem', expect.any(Function));
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'createItem');
+
+      const prm = ent.createItem(3);
+
+      expect(sender).toHaveBeenCalledWith(3);
+      expect(ent.$entity.createItem).toHaveBeenCalledWith(query);
+
+      // Item
+      query.store({ id: 'create', data: true });
+
+      await expect(prm).resolves.toBeInstanceOf(AegisItem);
+
+      const itm = await prm;
+      expect(itm.id).toBe('create');
+      expect(itm.entity).toBe(ent.$entity);
+      expect(itm.lastQuery).toBeUndefined();
     });
   });
 
