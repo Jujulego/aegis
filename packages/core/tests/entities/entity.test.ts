@@ -216,3 +216,104 @@ describe('AegisEntity.queryList', () => {
     expect(item.lastQuery).toBeUndefined();
   });
 });
+
+describe('AegisEntity.createItem', () => {
+  let mutation: AegisQuery<TestEntity>;
+
+  beforeEach(() => {
+    mutation = new AegisQuery();
+
+    jest.spyOn(store, 'set');
+  });
+
+  it('should add query result to the store and then resolve to a new item', async () => {
+    const prom = entity.createItem(mutation);
+
+    // Complete query
+    mutation.dispatchEvent(new QueryUpdateEvent({
+      status: 'completed',
+      data: { id: 'create', value: 1 }
+    }));
+
+    // Check promised item
+    await expect(prom).resolves.toBeInstanceOf(AegisItem);
+
+    const itm = await prom;
+    expect(itm.id).toBe('create');
+    expect(itm.data).toEqual({ id: 'create', value: 1 });
+
+    // Check store update
+    expect(store.set).toHaveBeenCalledWith('test', 'create', { id: 'create', value: 1 });
+  });
+
+  it('should reject if query failed', async () => {
+    const err = new Error('failed');
+    const prom = entity.createItem(mutation);
+
+    // Complete query
+    mutation.dispatchEvent(new QueryUpdateEvent<TestEntity>({
+      status: 'error',
+      data: err
+    }));
+
+    // Check promise
+    await expect(prom).rejects.toBe(err);
+
+    // Check store
+    expect(store.set).not.toHaveBeenCalled();
+  });
+});
+
+describe('AegisEntity.updateItem', () => {
+  let mutation: AegisQuery<number>;
+
+  beforeEach(() => {
+    mutation = new AegisQuery();
+
+    jest.spyOn(store, 'set');
+  });
+
+  it('should update cached item by merging it with query result', () => {
+    jest.spyOn(store, 'get').mockReturnValue({ id: 'update', value: 0 });
+    const merge = jest.fn((old: TestEntity, value: number) => ({ ...old, value }));
+
+    entity.updateItem('update', mutation, merge);
+    mutation.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: 1 }));
+
+    // Check store update
+    expect(store.get).toHaveBeenCalledWith('test', 'update');
+    expect(merge).toHaveBeenCalledWith({ id: 'update', value: 0 }, 1);
+    expect(store.set).toHaveBeenCalledWith('test', 'update', { id: 'update', value: 1 });
+  });
+
+  it('should ignore unknown item', () => {
+    jest.spyOn(store, 'get').mockReturnValue(undefined);
+    const merge = jest.fn((old: TestEntity, value: number) => ({ ...old, value }));
+
+    entity.updateItem('update', mutation, merge);
+    mutation.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: 1 }));
+
+    // Check store update
+    expect(store.get).toHaveBeenCalledWith('test', 'update');
+    expect(merge).not.toHaveBeenCalled();
+    expect(store.set).not.toHaveBeenCalled();
+  });
+});
+
+describe('AegisEntity.deleteItem', () => {
+  let mutation: AegisQuery<void>;
+
+  beforeEach(() => {
+    mutation = new AegisQuery();
+
+    jest.spyOn(store, 'delete');
+  });
+
+  it('should remove cached item', () => {
+    entity.deleteItem('delete', mutation);
+    mutation.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: undefined }));
+
+    // Check store update
+    expect(store.delete).toHaveBeenCalledWith('test', 'delete');
+  });
+});

@@ -71,6 +71,20 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
     return data;
   }
 
+  set data(list: Iterable<T>) {
+    const ids: string[] = [];
+
+    for (const itm of list) {
+      const id = this._extractor(itm);
+
+      ids.push(id);
+      this.entity.store.set(this.entity.name, id, itm);
+    }
+
+    this._ids = ids;
+    this.dispatchEvent(new ListUpdateEvent<T>(this));
+  }
+
   get isPending(): boolean {
     return this.lastQuery?.status === 'pending';
   }

@@ -1,5 +1,5 @@
 import { TypedEventTarget } from '../event-target';
-import { AegisQuery, AegisQueryItem, AegisQueryList } from '../protocols';
+import { AegisQuery } from '../protocols';
 import { AegisStore, StoreUpdateEvent } from '../stores';
 
 import { AegisItem } from './item';
@@ -10,6 +10,7 @@ import { AegisList } from './list';
 
 // Types
 export type EntityIdExtractor<T> = (entity: T) => string;
+export type EntityMerge<T, R> = (stored: T, result: R) => T;
 
 // Entity
 /**
@@ -95,7 +96,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param id
    * @param sender function used to send to query
    */
-  queryItem(id: string, sender: AegisQueryItem<T>): AegisItem<T> {
+  queryItem(id: string, sender: (id: string) => AegisQuery<T>): AegisItem<T> {
     if (this._itemQueries.get(id)?.status !== 'pending') {
       this._registerItemQuery(id, sender(id));
     }
@@ -111,7 +112,7 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
    * @param key
    * @param sender function used to send to query
    */
-  queryList(key: string, sender: AegisQueryList<T>): AegisList<T> {
+  queryList(key: string, sender: () => AegisQuery<T[]>): AegisList<T> {
     const query = this._listQueries.get(key);
 
     if (query?.status === 'pending') {
@@ -121,5 +122,53 @@ export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | Enti
     this._registerListQuery(key, sender());
 
     return this.getList(key);
+  }
+
+  /**
+   * Register creation query. Resolves as the new item, or rejects if the query failed
+   *
+   * @param mutation query adding the item
+   */
+  createItem(mutation: AegisQuery<T>): AegisQuery<AegisItem<T>> {
+    return mutation.then((data) => {
+      const id = this._extractor(data);
+
+      this.store.set(this.name, id, data);
+      return this.getItem(id);
+    });
+  }
+
+  /**
+   * Register mutation query. Allow to update cached item by merging it
+   * with request result
+   *
+   * @param id updated item's id
+   * @param mutation query mutating the item
+   * @param merge
+   */
+  updateItem<R>(id: string, mutation: AegisQuery<R>, merge: EntityMerge<T, R>): void {
+    mutation.addEventListener('update', ({ state }) => {
+      if (state.status === 'completed') {
+        const item = this.store.get<T>(this.name, id);
+
+        if (item) {
+          this.store.set(this.name, id, merge(item, state.data));
+        }
+      }
+    });
+  }
+
+  /**
+   * Register deletion query. Will remove item from cache when query completed
+   *
+   * @param id deleted item's id
+   * @param mutation query deleting the item
+   */
+  deleteItem(id: string, mutation: AegisQuery<unknown>): void {
+    mutation.addEventListener('update', ({ state }) => {
+      if (state.status === 'completed') {
+        this.store.delete<T>(this.name, id);
+      }
+    });
   }
 }
