@@ -568,6 +568,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jest/create-cache-key-function@npm:^27.4.2":
+  version: 27.5.1
+  resolution: "@jest/create-cache-key-function@npm:27.5.1"
+  dependencies:
+    "@jest/types": ^27.5.1
+  checksum: a6c3a8c769aca6f66f5dc80f1c77e66980b4f213a6b2a15a92ba3595f032848a1261c06c9c798dcf2b672b1ffbefad5085af89d130548741c85ddbe0cf4284e7
+  languageName: node
+  linkType: hard
+
 "@jest/environment@npm:^28.1.1":
   version: 28.1.1
   resolution: "@jest/environment@npm:28.1.1"
@@ -729,6 +738,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jest/types@npm:^27.5.1":
+  version: 27.5.1
+  resolution: "@jest/types@npm:27.5.1"
+  dependencies:
+    "@types/istanbul-lib-coverage": ^2.0.0
+    "@types/istanbul-reports": ^3.0.0
+    "@types/node": "*"
+    "@types/yargs": ^16.0.0
+    chalk: ^4.0.0
+  checksum: d1f43cc946d87543ddd79d49547aab2399481d34025d5c5f2025d3d99c573e1d9832fa83cef25e9d9b07a8583500229d15bbb07b8e233d127d911d133e2f14b1
+  languageName: node
+  linkType: hard
+
 "@jest/types@npm:^28.1.0":
   version: 28.1.0
   resolution: "@jest/types@npm:28.1.0"
@@ -825,6 +847,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.198
+    "@swc/jest": 0.2.21
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.1
     "@types/node": 16.11.39
@@ -840,6 +863,7 @@ __metadata:
     gulp-cli: 2.3.0
     jest: 28.1.1
     jest-environment-jsdom: 28.1.1
+    regenerator-runtime: 0.13.9
     ts-jest: 28.0.4
     ts-node: 10.8.1
     typescript: 4.7.3
@@ -856,6 +880,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.197
+    "@swc/jest": 0.2.21
     "@testing-library/react": 13.3.0
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.1
@@ -876,6 +901,7 @@ __metadata:
     jest-environment-jsdom: 28.1.1
     react: ^18.1.0
     react-dom: ^18.1.0
+    regenerator-runtime: 0.13.9
     ts-jest: 28.0.4
     ts-node: 10.8.1
     typescript: 4.7.3
@@ -1336,6 +1362,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@swc/jest@npm:0.2.21":
+  version: 0.2.21
+  resolution: "@swc/jest@npm:0.2.21"
+  dependencies:
+    "@jest/create-cache-key-function": ^27.4.2
+  peerDependencies:
+    "@swc/core": "*"
+  checksum: 8208032fc7ccc26a9bcae744b7b7dc2d3ea313af1ea049e95dfe3c8b6abd708c6f8fd0a2cce45315e7e5627044f6c3e08363b89eb958df7d8a8693a2e45edecb
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.5.0":
   version: 8.13.0
   resolution: "@testing-library/dom@npm:8.13.0"
@@ -1694,6 +1731,15 @@ __metadata:
   version: 21.0.0
   resolution: "@types/yargs-parser@npm:21.0.0"
   checksum: b2f4c8d12ac18a567440379909127cf2cec393daffb73f246d0a25df36ea983b93b7e9e824251f959e9f928cbc7c1aab6728d0a0ff15d6145f66cec2be67d9a2
+  languageName: node
+  linkType: hard
+
+"@types/yargs@npm:^16.0.0":
+  version: 16.0.4
+  resolution: "@types/yargs@npm:16.0.4"
+  dependencies:
+    "@types/yargs-parser": "*"
+  checksum: caa21d2c957592fe2184a8368c8cbe5a82a6c2e2f2893722e489f842dc5963293d2f3120bc06fe3933d60a3a0d1e2eb269649fd6b1947fe1820f8841ba611dd9
   languageName: node
   linkType: hard
 
@@ -7413,7 +7459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.4":
+"regenerator-runtime@npm:0.13.9, regenerator-runtime@npm:^0.13.4":
   version: 0.13.9
   resolution: "regenerator-runtime@npm:0.13.9"
   checksum: 65ed455fe5afd799e2897baf691ca21c2772e1a969d19bb0c4695757c2d96249eb74ee3553ea34a91062b2a676beedf630b4c1551cc6299afb937be1426ec55e

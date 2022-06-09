@@ -19,13 +19,9 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
-    "node": {
-      "module": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
-    },
     "types": "./dist/types/index.d.ts",
     "module": "./dist/esm/index.js",
-    "default": "./dist/esm/index.js"
+    "require": "./dist/cjs/index.js"
   },
   "scripts": {
     "lint": "eslint {src,tests}/**/*.*",
@@ -41,6 +37,7 @@
     "@jujulego/flow": "1.1.0",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.198",
+    "@swc/jest": "0.2.21",
     "@types/gulp": "4.0.9",
     "@types/jest": "28.1.1",
     "@types/node": "16.11.39",
@@ -56,6 +53,7 @@
     "gulp-cli": "2.3.0",
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
+    "regenerator-runtime": "0.13.9",
     "ts-jest": "28.0.4",
     "ts-node": "10.8.1",
     "typescript": "4.7.3"
