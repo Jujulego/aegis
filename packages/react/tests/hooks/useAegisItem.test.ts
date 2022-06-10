@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import { $entity, $store, useAegisItem } from '../../src';
 
@@ -15,5 +15,12 @@ describe('useAegisItem', () => {
     const { result } = renderHook(() => useAegisItem(itm));
 
     expect(result.current).toBe('test-1');
+
+    // Update
+    act(() => {
+      itm.data = 'test-2';
+    });
+
+    expect(result.current).toBe('test-2');
   });
 });

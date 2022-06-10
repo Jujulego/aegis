@@ -1,5 +1,5 @@
 import { AegisItem } from '@jujulego/aegis-core';
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
 // Hooks
 export function useAegisItem<T>(item: AegisItem<T>) {
