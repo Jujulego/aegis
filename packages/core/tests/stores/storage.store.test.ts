@@ -65,6 +65,13 @@ describe('AegisStorageStore.get', () => {
   it('should return undefined for unknown entities', () => {
     expect(store.get('unknown', 'unknown')).toBeUndefined();
   });
+
+  it('should return the same instance', () => {
+    store.set('test', 'get', { test: 1, success: true });
+
+    expect(store.get('test', 'get')).toEqual({ test: 1, success: true });
+    expect(store.get('test', 'get')).toBe(store.get('test', 'get'));
+  });
 });
 
 describe('AegisStorageStore.set', () => {
