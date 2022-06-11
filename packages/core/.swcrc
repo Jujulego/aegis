@@ -4,7 +4,31 @@
       "syntax": "typescript"
     },
     "target": "es2022",
-    "loose": true
+    "assumptions": {
+      "arrayLikeIsIterable": true,
+      "constantReexports": true,
+      "constantSuper": true,
+      "enumerableModuleMeta": true,
+      "ignoreFunctionLength": true,
+      "ignoreFunctionName": true,
+      "ignoreToPrimitiveHint": true,
+      "iterableIsArray": true,
+      "mutableTemplateObject": true,
+      "noClassCalls": true,
+      "noDocumentAll": true,
+      "noIncompleteNsImportDetection": true,
+      "noNewArrows": true,
+      "objectRestNoSymbols": true,
+      "privateFieldsAsProperties": true,
+      "pureGetters": true,
+      "setClassMethods": true,
+      "setComputedProperties": true,
+      "setPublicClassFields": true,
+      "setSpreadProperties": true,
+      "skipForOfIteratorClosing": true,
+      "superIsCallableConstructor": false,
+      "tsEnumIsReadonly": true
+    }
   },
   "module": {
     "type": "es6"
