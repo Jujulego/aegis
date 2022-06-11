@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis-react",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -21,7 +21,8 @@
   "exports": {
     "types": "./dist/types/index.d.ts",
     "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js"
+    "require": "./dist/cjs/index.js",
+    "default": "./dist/esm/index.js"
   },
   "scripts": {
     "lint": "eslint {src,tests}/**/*.*",
@@ -35,7 +36,7 @@
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {
-    "@jujulego/aegis-core": "^1.0.0-alpha.14",
+    "@jujulego/aegis-core": "^1.0.0-alpha.15",
     "use-sync-external-store": "^1.1.0"
   },
   "devDependencies": {

@@ -840,7 +840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/aegis-core@^1.0.0-alpha.14, @jujulego/aegis-core@workspace:packages/core":
+"@jujulego/aegis-core@^1.0.0-alpha.15, @jujulego/aegis-core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-core@workspace:packages/core"
   dependencies:
@@ -876,7 +876,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-react@workspace:packages/react"
   dependencies:
-    "@jujulego/aegis-core": ^1.0.0-alpha.14
+    "@jujulego/aegis-core": ^1.0.0-alpha.15
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.198
