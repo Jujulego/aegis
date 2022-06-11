@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis-core",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -20,9 +20,8 @@
   "types": "./dist/types/index.d.ts",
   "exports": {
     "types": "./dist/types/index.d.ts",
-    "require": "./dist/cjs/index.js",
-    "module": "./dist/esm/index.js",
-    "default": "./dist/esm/index.js"
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
   },
   "scripts": {
     "lint": "eslint {src,tests}/**/*.*",
