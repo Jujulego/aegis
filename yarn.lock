@@ -900,8 +900,8 @@ __metadata:
     gulp-cli: 2.3.0
     jest: 28.1.1
     jest-environment-jsdom: 28.1.1
-    react: ^18.1.0
-    react-dom: ^18.1.0
+    react: 18.1.0
+    react-dom: 18.1.0
     regenerator-runtime: 0.13.9
     ts-jest: 28.0.4
     ts-node: 10.8.1
@@ -7216,7 +7216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.1.0":
+"react-dom@npm:18.1.0":
   version: 18.1.0
   resolution: "react-dom@npm:18.1.0"
   dependencies:
@@ -7242,7 +7242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.1.0":
+"react@npm:18.1.0":
   version: 18.1.0
   resolution: "react@npm:18.1.0"
   dependencies:
