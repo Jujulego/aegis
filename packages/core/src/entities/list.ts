@@ -9,6 +9,7 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
   // Attributes
   private _ids: string[] = [];
   private _query?: WeakRef<AegisQuery<T[]>>;
+  private _cache?: WeakRef<T[]>;
   private readonly _extractor: EntityIdExtractor<T>;
 
   // Constructor
@@ -48,6 +49,7 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
     query.addEventListener('update', (event) => {
       if (event.state.status === 'completed') {
         this._ids = event.state.data.map((ent) => this._extractor(ent));
+        this._cache = undefined;
       }
 
       this.dispatchEvent(new ListUpdateEvent<T>(this));
@@ -58,6 +60,14 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
 
   // Properties
   get data(): T[] {
+    // Use cache first
+    const cached = this._cache?.deref();
+
+    if (cached) {
+      return cached;
+    }
+
+    // Read from store
     const data: T[] = [];
 
     for (const id of this._ids) {
@@ -67,6 +77,8 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
         data.push(ent);
       }
     }
+
+    this._cache = new WeakRef(data);
 
     return data;
   }
@@ -82,6 +94,7 @@ export class AegisList<T> extends TypedEventTarget<ListUpdateEvent<T>> {
     }
 
     this._ids = ids;
+    this._cache = undefined;
     this.dispatchEvent(new ListUpdateEvent<T>(this));
   }
 

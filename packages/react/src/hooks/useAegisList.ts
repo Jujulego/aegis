@@ -8,6 +8,6 @@ export function useAegisList<T>(list: AegisList<T>) {
       list.addEventListener('update', cb);
       return () => list.removeEventListener('update', cb);
     },
-    () => list
+    () => list.data
   );
 }
