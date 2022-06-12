@@ -18,6 +18,15 @@ export class AegisQuery<T> extends TypedEventTarget<QueryUpdateEvent<T>> impleme
     super();
   }
 
+  // Statics
+  static fromPromise<T>(prom: PromiseLike<T>, controller?: AbortController): AegisQuery<T> {
+    const query = new AegisQuery<T>(controller);
+
+    prom.then((result) => query.store(result), (error) => query.error(error));
+
+    return query;
+  }
+
   // Methods
   addEventListener(type: 'update', callback: QueryUpdateEventListener<T>, options?: AddEventListenerOptions | boolean): void {
     // Set query's abort controller as default signal

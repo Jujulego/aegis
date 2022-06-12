@@ -22,6 +22,48 @@ describe('new AegisQuery', () => {
   });
 });
 
+describe('AegisQuery.fromPromise', () => {
+  let query: AegisQuery<string>;
+  let controller: AbortController;
+  let resolve: (result: string) => void;
+  let reject: (error: Error) => void;
+
+  beforeEach(() => {
+    const prom = new Promise<string>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+
+    controller = new AbortController();
+    query = AegisQuery.fromPromise(prom, controller);
+  });
+
+  it('should return a pending query', () => {
+    expect(query.status).toBe('pending');
+    expect(query.controller).toBe(controller);
+  });
+
+  it('should return query that completes when promise resolves', async () => {
+    resolve('success');
+    await new Promise((res) => setTimeout(res, 0));
+
+    expect(query.state).toEqual({
+      status: 'completed',
+      data: 'success',
+    });
+  });
+
+  it('should return query that fails when promise reject', async () => {
+    reject(new Error('failed'));
+    await new Promise((res) => setTimeout(res, 0));
+
+    expect(query.state).toEqual({
+      status: 'error',
+      data: new Error('failed'),
+    });
+  });
+});
+
 describe('AegisQuery.addEventListener', () => {
   const cb = jest.fn();
 

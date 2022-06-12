@@ -36,7 +36,7 @@
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {
-    "@jujulego/aegis-core": "^1.0.0-alpha.15",
+    "@jujulego/aegis-core": "^1.0.0-alpha.16",
     "use-sync-external-store": "^1.1.0"
   },
   "devDependencies": {
