@@ -24,8 +24,11 @@ describe('useAegisItem', () => {
     const { result } = renderHook(() => useAegisItem(itm));
 
     expect(result.current).toEqual({
-      id: 'test-1',
-      success: true
+      isPending: false,
+      data: {
+        id: 'test-1',
+        success: true
+      }
     });
 
     // Update
@@ -37,8 +40,11 @@ describe('useAegisItem', () => {
     });
 
     expect(result.current).toEqual({
-      id: 'test-1',
-      success: false
+      isPending: false,
+      data: {
+        id: 'test-1',
+        success: false
+      }
     });
   });
 });
