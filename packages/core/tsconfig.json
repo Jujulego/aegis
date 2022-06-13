@@ -3,6 +3,9 @@
   "compilerOptions": {
     "incremental": true,
     "rootDir": ".",
-    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+  },
+  "ts-node": {
+    "swc": true
   }
 }
