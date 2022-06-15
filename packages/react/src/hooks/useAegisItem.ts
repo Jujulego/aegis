@@ -1,7 +1,8 @@
 import { AegisItem } from '@jujulego/aegis-core';
-import { useSyncExternalStore } from 'use-sync-external-store/shim';
-import { eventSubscriber } from '../utils';
 import { useDebugValue } from 'react';
+import { useSyncExternalStore } from 'use-sync-external-store/shim';
+
+import { eventSubscriber } from '../utils';
 
 // Types
 export interface AegisItemState<T> {
