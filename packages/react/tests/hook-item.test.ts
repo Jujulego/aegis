@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { $entity, $store, $itemHook, AegisQuery, AegisItem } from '../src';
+import { $entity, $store, $hookItem, AegisQuery, AegisItem } from '../src';
 
 // Types
 interface TestEntity {
@@ -18,7 +18,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $itemHook(ent, 'getById');
+    const useTestEntity = $hookItem(ent, 'getById');
 
     // Render
     const { result } = renderHook(() => useTestEntity('test'));
@@ -51,7 +51,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $itemHook(ent, 'getById');
+    const useTestEntity = $hookItem(ent, 'getById');
 
     // Render
     const { result } = renderHook(() => useTestEntity('test'));
@@ -81,7 +81,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $itemHook(ent, 'getById');
+    const useTestEntity = $hookItem(ent, 'getById');
 
     // Render
     const { result, rerender } = renderHook(({ id }) => useTestEntity(id), {
