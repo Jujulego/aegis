@@ -117,3 +117,7 @@ jobs:
   complete:
     runs-on: ubuntu-latest
     needs: [lint, test]
+    
+    steps:
+      - name: Success
+        run: echo 'You are soooo curious ;)'
