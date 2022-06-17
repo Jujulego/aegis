@@ -48,7 +48,7 @@
     "@types/gulp": "4.0.9",
     "@types/jest": "28.1.1",
     "@types/node": "16.11.41",
-    "@types/react": "18.0.12",
+    "@types/react": "18.0.14",
     "@types/testing-library__react": "10.2.0",
     "@types/use-sync-external-store": "0.0.3",
     "@typescript-eslint/eslint-plugin": "5.28.0",
