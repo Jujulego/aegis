@@ -1,5 +1,5 @@
 export * from '@jujulego/aegis-core';
 
 export * from './hooks';
-export * from './hook-item';
+export * from './hook.builder';
 export * from './utils';

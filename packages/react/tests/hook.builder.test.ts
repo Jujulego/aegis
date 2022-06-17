@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { $entity, $store, $hookItem, AegisQuery, AegisItem } from '../src';
+import { $entity, $hook, $store, AegisQuery, AegisItem } from '../src';
 
 // Types
 interface TestEntity {
@@ -9,7 +9,7 @@ interface TestEntity {
 }
 
 // Tests
-describe('$itemHook', () => {
+describe('$hook().item', () => {
   it('should fetch item', () => {
     const query = new AegisQuery<TestEntity>();
     const fetch = jest.fn((id: string) => query);
@@ -18,7 +18,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $hookItem(ent, 'getById');
+    const useTestEntity = $hook(ent).item('getById');
 
     // Render
     const { result } = renderHook(() => useTestEntity('test'));
@@ -51,7 +51,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $hookItem(ent, 'getById');
+    const useTestEntity = $hook(ent).item('getById');
 
     // Render
     const { result } = renderHook(() => useTestEntity('test'));
@@ -81,7 +81,7 @@ describe('$itemHook', () => {
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
       .$get('getById', fetch);
 
-    const useTestEntity = $hookItem(ent, 'getById');
+    const useTestEntity = $hook(ent).item('getById');
 
     // Render
     const { result, rerender } = renderHook(({ id }) => useTestEntity(id), {
@@ -104,5 +104,20 @@ describe('$itemHook', () => {
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
     });
+  });
+});
+
+describe('$hook().list', () => {
+  it('should fetch item', () => {
+    const query = new AegisQuery<any>();
+    const fetch = jest.fn((id: string) => query);
+
+    // Build entity
+    const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
+      .$get('getById', (id: 'toto') => new AegisQuery<any>())
+      .$list('listAll', (id: 'toto', cnt: number) => new AegisQuery<any>());
+
+    $hook(ent).item('getById')('toto');
+    $hook(ent).list('listAll', 'all')('toto', true);
   });
 });
