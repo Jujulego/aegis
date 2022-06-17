@@ -4,21 +4,27 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useAegisItem, useAegisList } from './hooks';
 
 // Types
-export type AegisItemQueries<T, E extends Aegis<T, unknown>> = {
-  [K in keyof E]: E[K] extends (id: infer I extends string) => AegisItem<T> ? (id: I) => AegisItem<T> : never;
-};
+export type AegisItemKeys<E extends Aegis<unknown, unknown>> = {
+  [K in keyof E]: E[K] extends (id: string) => AegisItem<unknown> ? K : never;
+}[keyof E];
 
-export type AegisListQueries<T, E extends Aegis<T, unknown>> = {
-  [K in keyof E]: E[K] extends (key: string, ...args: infer A) => AegisList<T> ? (...args: A) => AegisList<T> : never;
-};
+export type AegisItemId<E extends Aegis<unknown, unknown>, N extends keyof E> =
+  E[N] extends (id: infer I extends string) => AegisItem<unknown> ? I : never
+
+export type AegisListKeys<E extends Aegis<unknown, unknown>> = {
+  [K in keyof E]: E[K] extends (key: string, ...args: unknown[]) => AegisList<unknown> ? K : never;
+}[keyof E];
+
+export type AegisListParam<E extends Aegis<unknown, unknown>, N extends keyof E> =
+  E[N] extends (key: string, ...args: infer A) => unknown ? A : never
 
 // Builder
 export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
   return {
-    item<N extends keyof AegisItemQueries<T, E>>(name: N) {
-      const query = (entity as unknown as AegisItemQueries<T, E>)[name];
+    item<N extends AegisItemKeys<E>>(name: N) {
+      const query = entity[name] as unknown as (id: string) => AegisItem<T>;
 
-      return function useItem(id: Parameters<AegisItemQueries<T, E>[N]>[0]) {
+      return function useItem(id: AegisItemId<E, N>) {
         const item = useMemo(() => entity.$entity.getItem(id), [id]);
 
         const { isPending, data } = useAegisItem(item);
@@ -34,22 +40,22 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
         };
       };
     },
-    list<N extends keyof AegisListQueries<T, E>>(name: N, key: string) {
-      const query = (entity as unknown as AegisListQueries<T, E>)[name];
+    list<N extends AegisListKeys<E>>(name: N, key: string) {
+      const query = entity[name] as unknown as (...args: unknown[]) => AegisList<T>;
 
-      return function useList(...args: Parameters<AegisListQueries<T, E>[N]>) {
+      return function useList(...args: AegisListParam<E, N>) {
         const list = useMemo(() => entity.$entity.getList(key), []);
 
         const { isPending, data } = useAegisList(list);
 
         useEffect(() => {
-          query(...args);
-        }, args);
+          query(key, ...args);
+        }, [key, ...args]);
 
         return {
           list,
           isPending, data,
-          refresh: useCallback(() => query(...args), args),
+          refresh: useCallback(() => query(key, ...args), [key, ...args]),
         };
       };
     }

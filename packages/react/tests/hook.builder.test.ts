@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { $entity, $hook, $store, AegisQuery, AegisItem } from '../src';
+import { $entity, $hook, $store, AegisQuery, AegisItem, AegisList } from '../src';
 
 // Types
 interface TestEntity {
@@ -108,16 +108,43 @@ describe('$hook().item', () => {
 });
 
 describe('$hook().list', () => {
-  it('should fetch item', () => {
-    const query = new AegisQuery<any>();
-    const fetch = jest.fn((id: string) => query);
+  it('should fetch list', () => {
+    const query = new AegisQuery<TestEntity[]>();
+    const fetch = jest.fn((..._: [number, boolean]) => query);
 
     // Build entity
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
-      .$get('getById', (id: 'toto') => new AegisQuery<any>())
-      .$list('listAll', (id: 'toto', cnt: number) => new AegisQuery<any>());
+      .$list('listAll', fetch);
 
-    $hook(ent).item('getById')('toto');
-    $hook(ent).list('listAll', 'all')('toto', true);
+    const useTestEntity = $hook(ent).list('listAll', 'all');
+
+    // Render
+    const { result } = renderHook(() => useTestEntity(6, false));
+
+    expect(fetch).toHaveBeenCalledWith(6, false);
+    expect(result.current).toEqual({
+      isPending: true,
+      data: [],
+      list: expect.any(AegisList),
+      refresh: expect.any(Function),
+    });
+
+    // Query completed
+    act(() => {
+      query.store([
+        { id: 'test-1', success: true },
+        { id: 'test-2', success: true },
+      ]);
+    });
+
+    expect(result.current).toEqual({
+      isPending: false,
+      data: [
+        { id: 'test-1', success: true },
+        { id: 'test-2', success: true },
+      ],
+      list: expect.any(AegisList),
+      refresh: expect.any(Function),
+    });
   });
 });
