@@ -12,7 +12,7 @@
       "ignoreFunctionLength": true,
       "ignoreFunctionName": true,
       "ignoreToPrimitiveHint": true,
-      "iterableIsArray": true,
+      "iterableIsArray": false,
       "mutableTemplateObject": true,
       "noClassCalls": true,
       "noDocumentAll": true,
