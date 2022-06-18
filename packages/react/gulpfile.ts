@@ -11,20 +11,20 @@ const options = {
   deps: [
     '../../.pnp.*'
   ]
-}
+};
 
 // Tasks
 gulp.task('clean', () => del(options.output));
 
 gulp.task('build:esm', () => flow(
   src(options.src, { since: gulp.lastRun('build:esm') }),
-  swc({ module: { type: "es6" } }),
+  swc({ module: { type: 'es6' } }),
   dest(path.join(options.output, 'esm'))
 ));
 
 gulp.task('build:cjs', () => flow(
   src(options.src, { since: gulp.lastRun('build:cjs') }),
-  swc({ module: { type: "commonjs" } }),
+  swc({ module: { type: 'commonjs' } }),
   dest(path.join(options.output, 'cjs'))
 ));
 

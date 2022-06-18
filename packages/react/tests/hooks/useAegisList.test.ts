@@ -2,25 +2,49 @@ import { act, renderHook } from '@testing-library/react';
 
 import { $entity, $store, useAegisList } from '../../src';
 
+// Types
+interface TestEntity {
+  id: string;
+  success: boolean;
+}
+
 // Setup
-const ent = $entity<string>('test', $store.memory(), (itm) => itm);
+const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id);
 
 // Tests
 describe('useAegisList', () => {
-  it('should return item data', () => {
+  it('should return list data', () => {
     const lst = ent.$entity.getList('all');
-    lst.data = ['test-1', 'test-2'];
+    lst.data = [
+      { id: 'test-1', success: true },
+      { id: 'test-2', success: true }
+    ];
 
     // Render
     const { result } = renderHook(() => useAegisList(lst));
 
-    expect(result.current).toEqual(['test-1', 'test-2']);
+    expect(result.current).toEqual({
+      isPending: false,
+      data: [
+        { id: 'test-1', success: true },
+        { id: 'test-2', success: true }
+      ],
+    });
 
     // Update
     act(() => {
-      lst.data = ['test-3'];
+      lst.data = [
+        { id: 'test-1', success: false },
+        { id: 'test-3', success: true }
+      ];
     });
 
-    expect(result.current).toEqual(['test-3']);
+    expect(result.current).toEqual({
+      isPending: false,
+      data: [
+        { id: 'test-1', success: false },
+        { id: 'test-3', success: true }
+      ],
+    });
   });
 });
