@@ -1,39 +1,41 @@
 import { Event, EventListener, ExtractEvent } from './event';
+import { ComposedKeyTree } from '../utils';
 
 // Types
 export type EventUnsubscribe = () => void;
 
+export interface EventOptions {
+  target?: string;
+}
+
+export interface EventListenerOptions {
+  target?: string;
+}
+
 // Class
 export class EventSource<E extends Event> {
   // Attributes
-  private readonly _listeners = new Map<E['type'], Set<EventListener>>();
+  private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], string]>();
 
   // Emit
-  private _getListenersFor(type: E['type']): Set<EventListener> {
-    let listeners = this._listeners.get(type);
-
-    if (!listeners) {
-      listeners = new Set();
-      this._listeners.set(type, listeners);
-    }
-
-    return listeners;
-  }
-
-  emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data']): void {
-    for (const listener of this._getListenersFor(type)) {
+  emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions = {}): void {
+    for (const listener of this._listeners.searchWithParent(opts.target ? [type, opts.target] : [type])) {
       listener({
         type,
         data,
+        target: opts.target,
         source: this,
       });
     }
   }
 
-  subscribe<T extends E['type']>(type: T, listener: EventListener<ExtractEvent<E, T>>): EventUnsubscribe {
-    const listeners = this._getListenersFor(type);
-    listeners.add(listener);
+  subscribe<T extends E['type']>(type: T, listener: EventListener<ExtractEvent<E, T>>, opts: EventListenerOptions = {}): EventUnsubscribe {
+    if (opts.target) {
+      this._listeners.insert([type, opts.target], listener);
+    } else {
+      this._listeners.insert([type], listener);
+    }
 
-    return () => listeners.delete(listener);
+    return () => this._listeners.remove(listener);
   }
 }

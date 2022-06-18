@@ -5,7 +5,7 @@ export interface Event<T extends string = string, D = unknown> {
   // Attributes
   type: T;
   target?: string;
-  source: EventSource<Event>
+  source: EventSource<Event>;
 
   data: D;
 }

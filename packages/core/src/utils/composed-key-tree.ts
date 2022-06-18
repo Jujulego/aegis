@@ -14,19 +14,37 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
   private _array: [PartialKey<K>, T][] = [];
 
   // Statics
-  static includes(a: string[], b: string[]): boolean {
-    if (a.length > b.length) {
-      return false;
+  static isEqual(a: string[], b: string[]): boolean {
+    if (a.length !== b.length) return false;
+
+    for (let i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
     }
 
-    for (let i = 0; i < b.length; ++i) {
-      if (i === a.length) {
-        return true;
-      }
+    return true;
+  }
 
-      if (a[i] !== b[i]) {
-        return false;
-      }
+  static *parentKeys<K extends string[]>(key: PartialKey<K>): Generator<PartialKey<K>> {
+    const k: string[] = [];
+
+    for (const p of key) {
+      k.push(p);
+
+      yield k as PartialKey<K>;
+    }
+  }
+
+  /**
+   * Return true if b is a's child
+   * @param a
+   * @param b
+   */
+  static isChild(a: string[], b: string[]): boolean {
+    if (a.length > b.length) return false;
+
+    for (let i = 0; i < b.length; ++i) {
+      if (i === a.length) return true;
+      if (a[i] !== b[i]) return false;
     }
 
     return true;
@@ -52,20 +70,16 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
   }
 
   // Methods
-  private _searchOne(key: PartialKey<K>): [number, T | null] {
+  private _searchOne(key: PartialKey<K>): number {
     let si = 0;
     let ei = this._array.length;
 
     while (si !== ei) {
       const mi = Math.floor((ei + si) / 2);
 
-      if (ComposedKeyTree.includes(key, this.key(mi))) {
-        return [mi, this.item(mi)];
-      }
-
       const cmp = ComposedKeyTree.compare(this.key(mi), key);
       if (cmp === 0) {
-        return [mi, this.item(mi)];
+        return mi;
       }
 
       if (cmp < 0) {
@@ -75,26 +89,20 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
       }
 
       if (si === ei) {
-        return [mi, null];
+        return mi;
       }
     }
 
-    return [0, null];
+    return 0;
   }
 
-  private* _searchAll(key: PartialKey<K>): Generator<[number, T]> {
-    const [idx, obj] = this._searchOne(key);
-
-    // obj null means not found
-    if (obj === null) return;
-
-    // Yields all objects where comparator return 0
-    yield [idx, obj];
+  private* _searchAll(key: PartialKey<K>, predicate: (a: PartialKey<K>, b: PartialKey<K>) => boolean): Generator<T> {
+    const idx = this._searchOne(key);
 
     // - before
-    for (let i = idx - 1; i >= 0; --i) {
-      if (ComposedKeyTree.includes(key, this.key(i))) {
-        yield [i, this.item(i)];
+    for (let i = idx; i >= 0; --i) {
+      if (predicate(key, this.key(i))) {
+        yield this.item(i);
       } else {
         break;
       }
@@ -102,8 +110,8 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
 
     // - after
     for (let i = idx + 1; i < this._array.length; ++i) {
-      if (ComposedKeyTree.includes(key, this.key(i))) {
-        yield [i, this.item(i)];
+      if (predicate(key, this.key(i))) {
+        yield this.item(i);
       } else {
         break;
       }
@@ -131,7 +139,7 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
     if (this._array.length === 0) return 0;
 
     // Search ordered index
-    const [idx,] = this._searchOne(key);
+    const idx = this._searchOne(key);
     if (ComposedKeyTree.compare(this.key(idx), key) <= 0) {
       return idx + 1;
     }
@@ -147,7 +155,39 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
     // Gather all results
     const res: T[] = [];
 
-    for (const [,obj] of this._searchAll(key)) {
+    for (const obj of this._searchAll(key, ComposedKeyTree.isEqual)) {
+      res.push(obj);
+    }
+
+    return res;
+  }
+
+  /**
+   * Return all objects matching the given key and parent keys
+   * @param key
+   */
+  searchWithParent(key: PartialKey<K>): T[] {
+    // Gather all results
+    const res: T[] = [];
+
+    for (const pk of ComposedKeyTree.parentKeys(key)) {
+      for (const obj of this._searchAll(pk, ComposedKeyTree.isEqual)) {
+        res.push(obj);
+      }
+    }
+
+    return res;
+  }
+
+  /**
+   * Return all objects matching the given key and child keys
+   * @param key
+   */
+  searchWithChildren(key: PartialKey<K>): T[] {
+    // Gather all results
+    const res: T[] = [];
+
+    for (const obj of this._searchAll(key, ComposedKeyTree.isChild)) {
       res.push(obj);
     }
 
@@ -170,6 +210,10 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
     }
 
     return elem;
+  }
+
+  remove(elem: T) {
+    this._array = this._array.filter(([, obj]) => obj === elem);
   }
 
   /**
