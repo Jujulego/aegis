@@ -5,21 +5,21 @@ import { ComposedKeyTree } from '../utils';
 export type EventUnsubscribe = () => void;
 
 export interface EventOptions {
-  target?: string;
+  target?: string[];
 }
 
 export interface EventListenerOptions {
-  target?: string;
+  target?: string[];
 }
 
 // Class
 export class EventSource<E extends Event> {
   // Attributes
-  private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], string]>();
+  private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], ...string[]]>();
 
   // Emit
   emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions = {}): void {
-    for (const listener of this._listeners.searchWithParent(opts.target ? [type, opts.target] : [type])) {
+    for (const listener of this._listeners.searchWithParent(opts.target ? [type, ...opts.target] : [type])) {
       listener({
         type,
         data,
@@ -31,7 +31,7 @@ export class EventSource<E extends Event> {
 
   subscribe<T extends E['type']>(type: T, listener: EventListener<ExtractEvent<E, T>>, opts: EventListenerOptions = {}): EventUnsubscribe {
     if (opts.target) {
-      this._listeners.insert([type, opts.target], listener);
+      this._listeners.insert([type, ...opts.target], listener);
     } else {
       this._listeners.insert([type], listener);
     }

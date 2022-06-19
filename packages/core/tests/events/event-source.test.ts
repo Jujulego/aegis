@@ -12,7 +12,7 @@ describe('EventSource.emit', () => {
     src.subscribe('test', typeListener);
 
     const targetListener = jest.fn();
-    src.subscribe('test', targetListener, { target: '1' });
+    src.subscribe('test', targetListener, { target: ['1'] });
 
     src.emit('test', null);
 
@@ -27,11 +27,11 @@ describe('EventSource.emit', () => {
     src.subscribe('test', typeListener);
 
     const targetListener = jest.fn();
-    src.subscribe('test', targetListener, { target: '1' });
+    src.subscribe('test', targetListener, { target: ['1'] });
 
-    src.emit('test', null, { target: '1' });
+    src.emit('test', null, { target: ['1'] });
 
-    expect(typeListener).toHaveBeenCalledWith({ type: 'test', target: '1', data: null, source: src });
-    expect(targetListener).toHaveBeenCalledWith({ type: 'test', target: '1', data: null, source: src });
+    expect(typeListener).toHaveBeenCalledWith({ type: 'test', target: ['1'], data: null, source: src });
+    expect(targetListener).toHaveBeenCalledWith({ type: 'test', target: ['1'], data: null, source: src });
   });
 });

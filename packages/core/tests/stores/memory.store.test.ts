@@ -1,14 +1,14 @@
-import { AegisMemoryStore, StoreUpdateEvent } from '../../src';
+import { AegisMemoryStore, UpdateEvent } from '../../src';
 
 // Setup
 let store: AegisMemoryStore;
-const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
+const updateEventSpy = jest.fn<void, [UpdateEvent]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
 
   updateEventSpy.mockReset();
-  store.addEventListener('update', updateEventSpy);
+  store.subscribe('update', updateEventSpy);
 });
 
 // Tests
@@ -28,12 +28,14 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      target: ['test', 'set'],
+      source: store,
+      data: {
+        data: 1,
+      },
+    });
   });
 
   it('should update given entities', () => {
@@ -47,13 +49,15 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 2,
-      oldValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenLastCalledWith({
+      type: 'update',
+      target: ['test', 'set'],
+      source: store,
+      data: {
+        old: 1,
+        data: 2,
+      },
+    });
   });
 });
 

@@ -4,7 +4,7 @@ import { EventSource } from './event-source';
 export interface Event<T extends string = string, D = unknown> {
   // Attributes
   type: T;
-  target?: string;
+  target?: string[];
   source: EventSource<Event>;
 
   data: D;
