@@ -1,7 +1,7 @@
-import { EventEmitter, EventListener, EventSource, EventUnsubscribe } from '../events';
+import { EventEmitter, EventSource, EventUnsubscribe } from '../events';
 import { $AegisEntity } from '../entities';
 import { AegisQuery, QueryStatus } from '../protocols';
-import { StoreUpdateEvent, StoreUpdateListener, StoreUpdateListenerOptions } from '../stores';
+import { StoreUpdateListener, StoreUpdateListenerOptions } from '../stores';
 
 import { ItemQueryEvent, ItemQueryListener, ItemQueryListenerOptions } from './item-query.event';
 
@@ -29,13 +29,13 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
     if (type === 'update') {
       return this.entity.subscribe(
         'update',
-        listener as EventListener<StoreUpdateEvent<T>>,
+        listener as StoreUpdateListener<T>,
         { ...opts, key: [this.id] }
       );
     } else {
       return super.subscribe(
         type,
-        listener as EventListener<ItemQueryEvent<T>>,
+        listener as ItemQueryListener<T>,
         opts
       );
     }
@@ -52,7 +52,7 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
         this.emit('query', event.data, { source: event.source });
 
         if (event.data.data.status === 'completed') {
-          this.entity.store.set(this.entity.name, this.id, event.data.data.data);
+          this.entity.setItem(this.id, event.data.data.data);
         }
       });
 
@@ -68,6 +68,6 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
   }
 
   get data(): T | undefined {
-    return this.entity.store.get(this.entity.name, this.id);
+    return this.entity.getItem(this.id);
   }
 }

@@ -27,7 +27,7 @@ export class AegisStorageStore extends AegisStore {
 
         this.emit('update', {
           old: event.oldValue ? JSON.parse(event.oldValue) : undefined,
-          data: JSON.parse(event.newValue)
+          new: JSON.parse(event.newValue)
         }, { key: [entity, id] });
       }
     });
@@ -59,7 +59,7 @@ export class AegisStorageStore extends AegisStore {
 
     this.storage.setItem(this._key(entity, id), JSON.stringify(data));
     this._cache.delete(this._key(entity, id));
-    this.emit('update', { old, data }, { key: [entity, id] });
+    this.emit('update', { old, new: data }, { key: [entity, id] });
 
     return old;
   }
