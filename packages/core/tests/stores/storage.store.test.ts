@@ -26,7 +26,7 @@ describe('new AegisStorageStore', () => {
 
     expect(updateEventSpy).toHaveBeenLastCalledWith({
       type: 'update',
-      target: ['test', 'event'],
+      key: ['test', 'event'],
       source: store,
       data: {
         old: 1,
@@ -46,7 +46,7 @@ describe('new AegisStorageStore', () => {
 
     expect(updateEventSpy).toHaveBeenLastCalledWith({
       type: 'update',
-      target: ['test', 'event'],
+      key: ['test', 'event'],
       source: store,
       data: {
         data: 3,
@@ -91,7 +91,7 @@ describe('AegisStorageStore.set', () => {
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith({
       type: 'update',
-      target: ['test', 'set'],
+      key: ['test', 'set'],
       source: store,
       data: {
         data: 1,
@@ -112,7 +112,7 @@ describe('AegisStorageStore.set', () => {
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
     expect(updateEventSpy).toHaveBeenLastCalledWith({
       type: 'update',
-      target: ['test', 'set'],
+      key: ['test', 'set'],
       source: store,
       data: {
         old: 1,

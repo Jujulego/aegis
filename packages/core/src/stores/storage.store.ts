@@ -1,4 +1,4 @@
-import { AegisStore} from './store';
+import { AegisStore } from './store';
 
 // Class
 export class AegisStorageStore extends AegisStore {
@@ -28,7 +28,7 @@ export class AegisStorageStore extends AegisStore {
         this.emit('update', {
           old: event.oldValue ? JSON.parse(event.oldValue) : undefined,
           data: JSON.parse(event.newValue)
-        }, { target: [entity, id] });
+        }, { key: [entity, id] });
       }
     });
   }
@@ -59,7 +59,7 @@ export class AegisStorageStore extends AegisStore {
 
     this.storage.setItem(this._key(entity, id), JSON.stringify(data));
     this._cache.delete(this._key(entity, id));
-    this.emit('update', { old, data }, { target: [entity, id] });
+    this.emit('update', { old, data }, { key: [entity, id] });
 
     return old;
   }

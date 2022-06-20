@@ -30,7 +30,7 @@ describe('AegisMemoryStore.set', () => {
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith({
       type: 'update',
-      target: ['test', 'set'],
+      key: ['test', 'set'],
       source: store,
       data: {
         data: 1,
@@ -51,7 +51,7 @@ describe('AegisMemoryStore.set', () => {
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
     expect(updateEventSpy).toHaveBeenLastCalledWith({
       type: 'update',
-      target: ['test', 'set'],
+      key: ['test', 'set'],
       source: store,
       data: {
         old: 1,

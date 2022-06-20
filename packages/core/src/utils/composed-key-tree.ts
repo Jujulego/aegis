@@ -97,6 +97,9 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
   }
 
   private* _searchAll(key: PartialKey<K>, predicate: (a: PartialKey<K>, b: PartialKey<K>) => boolean): Generator<T> {
+    if (this.length === 0) return;
+
+    // Search one item
     const idx = this._searchOne(key);
 
     // - before
