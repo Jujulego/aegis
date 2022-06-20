@@ -1,15 +1,15 @@
-import { Event, EventListener, ExtractEvent } from './event';
-import { ComposedKeyTree } from '../utils';
+import { Event, EventKey, EventListener, ExtractEvent } from './event';
+import { ComposedKeyTree, PartialKey } from '../utils';
 
 // Types
 export type EventUnsubscribe = () => void;
 
-export interface EventOptions {
-  key?: string[];
+export interface EventOptions<E extends Event> {
+  key?: PartialKey<EventKey<E>>;
 }
 
-export interface EventListenerOptions {
-  key?: string[];
+export interface EventListenerOptions<E extends Event> {
+  key?: PartialKey<EventKey<E>>;
   signal?: AbortSignal;
 }
 
@@ -20,7 +20,7 @@ export class EventSource<E extends Event> {
   private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], ...string[]]>();
 
   // Emit
-  emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions = {}): void {
+  emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions<ExtractEvent<E, T>> = {}): void {
     for (const listener of this._listeners.searchWithParent(opts.key ? [type, ...opts.key] : [type])) {
       listener({
         type,
@@ -31,7 +31,11 @@ export class EventSource<E extends Event> {
     }
   }
 
-  subscribe<T extends E['type']>(type: T, listener: EventListener<ExtractEvent<E, T>>, opts: EventListenerOptions = { signal: this.controller?.signal }): EventUnsubscribe {
+  subscribe<T extends E['type']>(
+    type: T,
+    listener: EventListener<ExtractEvent<E, T>>,
+    opts: EventListenerOptions<ExtractEvent<E, T>> = { signal: this.controller?.signal }
+  ): EventUnsubscribe {
     if (opts.key) {
       this._listeners.insert([type, ...opts.key], listener);
     } else {

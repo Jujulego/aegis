@@ -1,8 +1,8 @@
-import { AegisStorageStore, UpdateEvent } from '../../src';
+import { AegisStorageStore, StoreUpdateEvent } from '../../src';
 
 // Setup
 let store: AegisStorageStore;
-const updateEventSpy = jest.fn<void, [UpdateEvent]>();
+const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
 
 beforeEach(() => {
   localStorage.clear();

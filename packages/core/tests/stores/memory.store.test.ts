@@ -1,8 +1,8 @@
-import { AegisMemoryStore, UpdateEvent } from '../../src';
+import { AegisMemoryStore, StoreUpdateEvent } from '../../src';
 
 // Setup
 let store: AegisMemoryStore;
-const updateEventSpy = jest.fn<void, [UpdateEvent]>();
+const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();

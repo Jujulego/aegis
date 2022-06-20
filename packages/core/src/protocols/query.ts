@@ -1,12 +1,13 @@
-import { EventSource, UpdateEvent } from '../events';
+import { EventSource } from '../events';
 
-import { QueryState, QueryStatus } from './state';
+import { QueryState, QueryStatus } from './query-state';
+import { QueryUpdateEvent } from './query-update.event';
 
 // Query
 /**
  * Contains query data and status.
  */
-export class AegisQuery<T> extends EventSource<UpdateEvent<QueryState<T>>> implements PromiseLike<T> {
+export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements PromiseLike<T> {
   // Attributes
   private _state: QueryState<T> = { status: 'pending' };
 

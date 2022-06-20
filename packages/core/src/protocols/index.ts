@@ -1,2 +1,3 @@
 export * from './query';
-export * from './state';
+export * from './query-update.event';
+export * from './query-state';
