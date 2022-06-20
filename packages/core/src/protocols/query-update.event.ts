@@ -1,5 +1,6 @@
-import { QueryState } from './query-state';
 import { Event } from '../events';
+
+import { QueryState } from './query-state';
 
 // Type
 export interface QueryUpdateEventData<out T> {
