@@ -52,7 +52,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     };
 
     if (this.status === 'pending') {
-      this.subscribe('update', ({ data }) => listener(data.data));
+      this.subscribe('update', ({ data }) => listener(data.new));
     } else {
       listener(this.state);
     }
@@ -68,7 +68,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     const old = this._state;
     this._state = { status: 'completed', data };
 
-    this.emit('update', { old, data: this._state }, { key: ['completed'] });
+    this.emit('update', { old, new: this._state }, { key: ['completed'] });
   }
 
   /**
@@ -79,7 +79,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     const old = this._state;
     this._state = { status: 'error', data };
 
-    this.emit('update', { old, data: this._state }, { key: ['error'] });
+    this.emit('update', { old, new: this._state }, { key: ['error'] });
   }
 
   cancel(): void {

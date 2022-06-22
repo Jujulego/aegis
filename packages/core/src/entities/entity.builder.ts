@@ -83,7 +83,7 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
       return Object.assign(this, {
         [name]: (id: I) => {
           const item = this.$entity.item(id);
-          item.query(() => sender(id));
+          item.refresh(() => sender(id));
 
           return item;
         },

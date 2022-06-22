@@ -41,7 +41,7 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
     }
   }
 
-  query(fetcher: () => AegisQuery<T>): AegisQuery<T> {
+  refresh(fetcher: () => AegisQuery<T>): AegisQuery<T> {
     if (this._query?.status !== 'pending') {
       // Register query
       this._query = fetcher();
@@ -49,14 +49,14 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
       this._query.subscribe('update', (event) => {
         if (this._query !== event.source) return;
 
-        this.emit('query', event.data, { source: event.source });
+        this.emit('query', event.data, { key: event.key, source: event.source });
 
-        if (event.data.data.status === 'completed') {
-          this.entity.setItem(this.id, event.data.data.data);
+        if (event.data.new.status === 'completed') {
+          this.entity.setItem(this.id, event.data.new.data);
         }
       });
 
-      this.emit('query', { data: this._query.state }, { key: ['pending'], source: this._query });
+      this.emit('query', { new: this._query.state }, { key: ['pending'], source: this._query });
     }
 
     return this._query;
@@ -67,7 +67,19 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
     return this._query?.status ?? 'pending';
   }
 
+  get query(): AegisQuery<T> | undefined {
+    return this._query;
+  }
+
   get data(): T | undefined {
     return this.entity.getItem(this.id);
+  }
+
+  set data(value: T | undefined) {
+    if (value === undefined) {
+      this.entity.deleteItem(this.id);
+    } else {
+      this.entity.setItem(this.id, value);
+    }
   }
 }

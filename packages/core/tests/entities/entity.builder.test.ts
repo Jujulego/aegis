@@ -29,7 +29,7 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('getItem', expect.any(Function));
 
       // Call sender
-      jest.spyOn(ent.$entity, 'queryItem');
+      jest.spyOn(ent.$entity, 'item');
 
       const itm = ent.getItem('item');
 

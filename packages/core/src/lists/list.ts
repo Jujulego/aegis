@@ -34,8 +34,8 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
 
       this.emit('query', event.data, { source: event.source });
 
-      if (event.data.data.status === 'completed') {
-        this._ids = event.data.data.data.map(item => this.entity.storeItem(item));
+      if (event.data.new.status === 'completed') {
+        this._ids = event.data.new.data.map(item => this.entity.storeItem(item));
         this.emit('update', {
           old: this._cache?.deref(),
           new: this.data
@@ -43,7 +43,7 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
       }
     });
 
-    this.emit('query', { data: this._query.state }, { key: ['pending'], source: this._query });
+    this.emit('query', { new: this._query.state }, { key: ['pending'], source: this._query });
 
     return this._query;
   }
