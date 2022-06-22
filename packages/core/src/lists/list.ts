@@ -1,5 +1,5 @@
 import { EventSource } from '../events';
-import { $AegisEntity } from '../entities';
+import { AegisEntity } from '../entities';
 import { AegisQuery, QueryStatus } from '../protocols';
 
 import { ListQueryEvent } from './list-query.event';
@@ -14,7 +14,7 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
 
   // Constructor
   constructor(
-    readonly entity: $AegisEntity<T>,
+    readonly entity: AegisEntity<T>,
     readonly id: string,
   ) {
     super();

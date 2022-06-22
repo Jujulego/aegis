@@ -1,5 +1,5 @@
 import { EventEmitter, EventSource, EventUnsubscribe } from '../events';
-import { $AegisEntity } from '../entities';
+import { AegisEntity } from '../entities';
 import { AegisQuery, QueryStatus } from '../protocols';
 import { StoreUpdateListener, StoreUpdateListenerOptions } from '../stores';
 
@@ -12,7 +12,7 @@ export class AegisItem<T> extends EventSource<ItemQueryEvent<T>> implements Even
 
   // Constructor
   constructor(
-    readonly entity: $AegisEntity<T>,
+    readonly entity: AegisEntity<T>,
     readonly id: string,
   ) {
     super();
