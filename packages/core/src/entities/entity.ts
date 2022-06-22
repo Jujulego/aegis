@@ -116,7 +116,7 @@ export class AegisEntity<T> implements EventEmitter {
    * @param query
    */
   deletion(id: string, query: AegisQuery<unknown>): AegisQuery<T | undefined> {
-    return query.then(() => this.store.delete(this.name, id));
+    return query.then(() => this.deleteItem(id));
   }
 
   // - store access
@@ -129,12 +129,20 @@ export class AegisEntity<T> implements EventEmitter {
   }
 
   /**
-   * Local item update, by id.
+   * Update local item, by id.
    * @param id
    * @param value
    */
   setItem(id: string, value: T): void {
     this.store.set(this.name, id, value);
+  }
+
+  /**
+   * Delete local item, by id.
+   * @param id
+   */
+  deleteItem(id: string): T | undefined {
+    return this.store.delete(this.name, id);
   }
 
   /**
