@@ -216,7 +216,7 @@ export class ComposedKeyTree<T, K extends string[] = string[]> implements Iterab
   }
 
   remove(elem: T) {
-    this._array = this._array.filter(([, obj]) => obj === elem);
+    this._array = this._array.filter(([, obj]) => obj !== elem);
   }
 
   /**

@@ -1,9 +1,9 @@
-import { AegisQuery, QueryState, StoreUpdateEvent } from '../../src';
+import { AegisQuery, QueryUpdateEvent } from '../../src';
 
 // Setup
 let controller: AbortController;
 let query: AegisQuery<string>;
-const updateEventSpy = jest.fn<void, [StoreUpdateEvent<QueryState<string>>]>();
+const updateEventSpy = jest.fn<void, [QueryUpdateEvent<string>]>();
 
 beforeEach(() => {
   controller = new AbortController();

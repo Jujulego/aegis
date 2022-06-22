@@ -4,7 +4,7 @@ import { Event, EventSource } from '../../src';
 type TestEvent = Event<'test'>;
 
 // Tests
-describe('EventSource.emit', () => {
+describe('EventSource', () => {
   it('should call registered listeners on emit without target', () => {
     const src = new EventSource<TestEvent>();
 
@@ -33,5 +33,45 @@ describe('EventSource.emit', () => {
 
     expect(typeListener).toHaveBeenCalledWith({ type: 'test', key: ['1'], data: null, source: src });
     expect(targetListener).toHaveBeenCalledWith({ type: 'test', key: ['1'], data: null, source: src });
+  });
+
+  it('should not call unsubscribed listeners', () => {
+    const src = new EventSource<TestEvent>();
+
+    const listener = jest.fn();
+    const unsub = src.subscribe('test', listener);
+
+    unsub();
+    src.emit('test', null, { key: ['1'] });
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('should not call registered listeners if controller aborted', () => {
+    const ctrl = new AbortController();
+    const src = new EventSource<TestEvent>();
+
+    const listener = jest.fn();
+    src.subscribe('test', listener, { signal: ctrl.signal });
+
+    ctrl.abort();
+    src.emit('test', null, { key: ['1'] });
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('should not call registered listeners if inner controller aborted', () => {
+    class AbortableSource extends EventSource<TestEvent> {
+      controller = new AbortController();
+    }
+    const src = new AbortableSource();
+
+    const listener = jest.fn();
+    src.subscribe('test', listener);
+
+    src.controller.abort();
+    src.emit('test', null, { key: ['1'] });
+
+    expect(listener).not.toHaveBeenCalled();
   });
 });
