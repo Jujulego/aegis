@@ -33,7 +33,8 @@ describe('AegisMemoryStore.set', () => {
       key: ['test', 'set'],
       source: store,
       data: {
-        data: 1,
+        id: 'set',
+        new: 1,
       },
     });
   });
@@ -54,8 +55,9 @@ describe('AegisMemoryStore.set', () => {
       key: ['test', 'set'],
       source: store,
       data: {
+        id: 'set',
         old: 1,
-        data: 2,
+        new: 2,
       },
     });
   });

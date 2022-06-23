@@ -2,6 +2,7 @@ import { Event, EventListener, EventListenerOptions } from '../events';
 
 // Type
 export interface StoreUpdateEventData<out T> {
+  id: string;
   old?: Readonly<T>;
   new: Readonly<T>;
 }

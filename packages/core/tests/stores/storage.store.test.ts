@@ -29,8 +29,9 @@ describe('new AegisStorageStore', () => {
       key: ['test', 'event'],
       source: store,
       data: {
+        id: 'event',
         old: 1,
-        data: 2,
+        new: 2,
       },
     });
   });
@@ -49,7 +50,8 @@ describe('new AegisStorageStore', () => {
       key: ['test', 'event'],
       source: store,
       data: {
-        data: 3,
+        id: 'event',
+        new: 3,
       },
     });
   });
@@ -94,7 +96,8 @@ describe('AegisStorageStore.set', () => {
       key: ['test', 'set'],
       source: store,
       data: {
-        data: 1,
+        id: 'set',
+        new: 1,
       },
     });
   });
@@ -115,8 +118,9 @@ describe('AegisStorageStore.set', () => {
       key: ['test', 'set'],
       source: store,
       data: {
+        id: 'set',
         old: 1,
-        data: 2,
+        new: 2,
       },
     });
   });

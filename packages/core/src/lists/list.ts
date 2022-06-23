@@ -12,16 +12,40 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
   private _cache?: WeakRef<T[]>;
   private _query?: AegisQuery<T[]>;
 
+  private _pristine = true;
+
   // Constructor
   constructor(
     readonly entity: AegisEntity<T>,
-    readonly id: string,
+    readonly key: string,
   ) {
     super();
+
+    // Subscribe to entity update events
+    this.entity.subscribe('update', (event) => {
+      if (this._ids.includes(event.data.id)) {
+        this._cache = undefined;
+        this._markDirty();
+      }
+    });
   }
 
   // Methods
-  query(query: AegisQuery<T[]>): AegisQuery<T[]> {
+  private _markDirty(): void {
+    if (this._pristine) {
+      this._pristine = false;
+      queueMicrotask(() => this._markPristine());
+    }
+  }
+
+  private _markPristine(): void {
+    if (!this._pristine) {
+      this.emit('update', this.data);
+      this._pristine = true;
+    }
+  }
+
+  refresh(query: AegisQuery<T[]>): AegisQuery<T[]> {
     if (this._query?.status === 'pending') {
       this._query.cancel();
     }
@@ -36,10 +60,8 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
 
       if (event.data.new.status === 'completed') {
         this._ids = event.data.new.data.map(item => this.entity.storeItem(item));
-        this.emit('update', {
-          old: this._cache?.deref(),
-          new: this.data
-        });
+        this._cache = undefined;
+        this._markDirty();
       }
     });
 
@@ -51,6 +73,10 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
   // Properties
   get status(): QueryStatus {
     return this._query?.status ?? 'pending';
+  }
+
+  get query(): AegisQuery<T[]> | undefined {
+    return this._query;
   }
 
   get data(): T[] {
@@ -75,5 +101,11 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     this._cache = new WeakRef(data);
 
     return data;
+  }
+
+  set data(data: T[]) {
+    this._ids = data.map(item => this.entity.storeItem(item));
+    this._cache = new WeakRef(data);
+    this._markDirty();
   }
 }

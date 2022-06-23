@@ -100,7 +100,7 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
       return Object.assign(this, {
         [name]: (key: string, ...args: A) => {
           const list = this.$entity.list(key);
-          list.query(sender(...args));
+          list.refresh(sender(...args));
 
           return list;
         },

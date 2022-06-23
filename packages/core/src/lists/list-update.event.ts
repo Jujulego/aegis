@@ -1,8 +1,7 @@
 import { Event, EventListener, EventListenerOptions } from '../events';
-import { StoreUpdateEventData } from '../stores';
 
 // Type
-export interface ListUpdateEvent<T = unknown> extends Event<'update', StoreUpdateEventData<T[]>> {
+export interface ListUpdateEvent<T = unknown> extends Event<'update', T[]> {
   // Attributes
   key?: [];
 }

@@ -106,6 +106,7 @@ describe('AegisItem.refresh', () => {
       key: ['test', 'item'],
       source: store,
       data: {
+        id: 'item',
         new: { id: 'item', value: 1 },
       },
     });
@@ -166,6 +167,7 @@ describe('AegisItem.data', () => {
       key: ['test', 'item'],
       source: store,
       data: {
+        id: 'item',
         new: { id: 'item', value: 2 },
       },
     });
