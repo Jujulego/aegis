@@ -88,13 +88,11 @@ export class AegisEntity<T> implements EventEmitter {
    */
   mutation<R>(id: string, query: AegisQuery<R>, merge: EntityMerge<T, R>): AegisQuery<T>;
 
-  mutation(id: string, query: AegisQuery<unknown>, merge?: EntityMerge<T, unknown>): AegisQuery<T>;
-
   mutation(id: string, query: AegisQuery<unknown>, merge?: EntityMerge<T, unknown>): AegisQuery<T> {
     return query.then((result) => {
-      const item = this.getItem(id);
-
       if (merge) {
+        const item = this.getItem(id);
+
         if (!item) {
           throw new Error(`Unknown mutated item ${this.name}.${id}`);
         }

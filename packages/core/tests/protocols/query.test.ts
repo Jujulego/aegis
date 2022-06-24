@@ -141,7 +141,7 @@ describe('AegisQuery.store', () => {
         old: {
           status: 'pending'
         },
-        data: {
+        new: {
           status: 'completed',
           data: 'result'
         }
@@ -173,7 +173,7 @@ describe('AegisQuery.error', () => {
         old: {
           status: 'pending'
         },
-        data: {
+        new: {
           status: 'error',
           data: new Error('fail')
         }
