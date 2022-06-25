@@ -10,7 +10,7 @@ export interface EventOptions<E extends Event> {
 }
 
 // Class
-export class EventSource<E extends Event> implements EventEmitter {
+export class EventSource<E extends Event> implements EventEmitter<E> {
   // Attributes
   readonly controller?: AbortController;
   private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], ...string[]]>();

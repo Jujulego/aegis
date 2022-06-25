@@ -106,6 +106,7 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
   set data(data: T[]) {
     this._ids = data.map(item => this.entity.storeItem(item));
     this._cache = new WeakRef(data);
-    this._markDirty();
+
+    this.emit('update', this.data);
   }
 }

@@ -11,7 +11,11 @@ export interface EventListenerOptions<E extends Event = Event> {
 }
 
 // Class
-export interface EventEmitter {
+export interface EventEmitter<E extends Event = Event> {
   // Emit
-  subscribe(type: string, listener: EventListener, opts?: EventListenerOptions): EventUnsubscribe;
+  subscribe(
+    type: E['type'],
+    listener: EventListener<E>,
+    opts?: EventListenerOptions<E>
+  ): EventUnsubscribe;
 }

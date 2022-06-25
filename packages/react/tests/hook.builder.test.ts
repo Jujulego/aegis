@@ -25,7 +25,7 @@ describe('$hook().item', () => {
 
     expect(fetch).toHaveBeenCalledWith('test');
     expect(result.current).toEqual({
-      isPending: true,
+      status: 'pending',
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
     });
@@ -36,7 +36,7 @@ describe('$hook().item', () => {
     });
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'completed',
       data: { id: 'test', success: true },
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
@@ -66,7 +66,7 @@ describe('$hook().item', () => {
 
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(result.current).toEqual({
-      isPending: true,
+      status: 'pending',
       data: { id: 'test', success: true },
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
@@ -90,7 +90,7 @@ describe('$hook().item', () => {
 
     expect(fetch).toHaveBeenCalledWith('test-1');
     expect(result.current).toEqual({
-      isPending: true,
+      status: 'pending',
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
     });
@@ -100,7 +100,7 @@ describe('$hook().item', () => {
 
     expect(fetch).toHaveBeenCalledWith('test-2');
     expect(result.current).toEqual({
-      isPending: true,
+      status: 'pending',
       item: expect.any(AegisItem),
       refresh: expect.any(Function),
     });
@@ -123,7 +123,7 @@ describe('$hook().list', () => {
 
     expect(fetch).toHaveBeenCalledWith(6, false);
     expect(result.current).toEqual({
-      isPending: true,
+      status: 'pending',
       data: [],
       list: expect.any(AegisList),
       refresh: expect.any(Function),
@@ -138,7 +138,7 @@ describe('$hook().list', () => {
     });
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'completed',
       data: [
         { id: 'test-1', success: true },
         { id: 'test-2', success: true },

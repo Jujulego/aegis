@@ -25,9 +25,9 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
       const query = entity[name] as unknown as (id: string) => AegisItem<T>;
 
       return function useItem(id: AegisItemId<E, N>) {
-        const item = useMemo(() => entity.$entity.getItem(id), [id]);
+        const item = useMemo(() => entity.$entity.item(id), [id]);
 
-        const { isPending, data } = useAegisItem(item);
+        const { status, data } = useAegisItem(item);
 
         useEffect(() => {
           query(id);
@@ -35,7 +35,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
 
         return {
           item,
-          isPending, data,
+          status, data,
           refresh: useCallback(() => query(id), [id]),
         };
       };
@@ -44,9 +44,9 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
       const query = entity[name] as unknown as (...args: unknown[]) => AegisList<T>;
 
       return function useList(...args: AegisListParam<E, N>) {
-        const list = useMemo(() => entity.$entity.getList(key), []);
+        const list = useMemo(() => entity.$entity.list(key), []);
 
-        const { isPending, data } = useAegisList(list);
+        const { status, data } = useAegisList(list);
 
         useEffect(() => {
           query(key, ...args);
@@ -54,7 +54,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
 
         return {
           list,
-          isPending, data,
+          status, data,
           refresh: useCallback(() => query(key, ...args), [key, ...args]),
         };
       };
