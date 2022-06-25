@@ -115,7 +115,13 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
 
     $update<N extends string, I extends string = string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (id: I, ...args: A) => AegisQuery<unknown>, merge?: EntityMerge<T, unknown>) {
       return Object.assign(this, {
-        [name]: (id: I, ...args: A) => this.$entity.mutation(id, sender(id, ...args), merge),
+        [name]: (id: I, ...args: A) => {
+          if (merge) {
+            return this.$entity.mutation(id, sender(id, ...args), merge);
+          } else {
+            return this.$entity.mutation(id, sender(id, ...args) as AegisQuery<T>);
+          }
+        },
       }) as Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<T>>>;
     },
 
