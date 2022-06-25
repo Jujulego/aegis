@@ -2,9 +2,8 @@ import {
   AegisEntity,
   AegisItem,
   AegisMemoryStore,
-  AegisQuery, EntityItemQueryEvent,
-  ItemUpdateEvent, QueryUpdateEvent,
-  StoreUpdateEvent
+  AegisQuery, ItemQueryEvent,
+  StoreUpdateEvent, StoreUpdateListener
 } from '../../src';
 
 // Types
@@ -16,141 +15,197 @@ interface TestEntity {
 // Setup
 let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
-let query: AegisQuery<TestEntity>;
 let item: AegisItem<TestEntity>;
 
-const updateEventSpy = jest.fn<void, [ItemUpdateEvent<TestEntity>]>();
+const queryEventSpy = jest.fn<void, [ItemQueryEvent<TestEntity>]>();
+const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
   entity = new AegisEntity('test', store, ({ id }) => id);
-  query = new AegisQuery();
-  item = new AegisItem(entity, 'item', query);
+  item = new AegisItem(entity, 'item');
 
+  queryEventSpy.mockReset();
   updateEventSpy.mockReset();
 
-  item.addEventListener('update', updateEventSpy);
+  item.subscribe('query', queryEventSpy);
+  item.subscribe('update', updateEventSpy);
 });
 
 // Tests
-describe('new AegisItem', () => {
-  it('should transmit store update event', () => {
-    store.dispatchEvent(new StoreUpdateEvent(entity.name, item.id, { id: item.id, value: 1 }));
+describe('AegisItem.subscribe', () => {
+  it('should subscribe to entity with key set if type is \'updated\'', () => {
+    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const unsub = () => undefined;
 
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      item,
-    }));
+    jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);
+
+    expect(item.subscribe('update', listener)).toBe(unsub);
+
+    expect(entity.subscribe).toHaveBeenCalledWith('update', listener, { key: [item.id] });
+  });
+});
+
+describe('AegisItem.refresh', () => {
+  it('should call fetcher and emit query pending event', () => {
+    const query = new AegisQuery<TestEntity>();
+    const fetcher = jest.fn().mockReturnValue(query);
+
+    item.refresh(fetcher);
+
+    expect(fetcher).toHaveBeenCalled();
+
+    expect(item.query).toBe(query);
+
+    expect(queryEventSpy).toHaveBeenCalledTimes(1);
+    expect(queryEventSpy).toHaveBeenCalledWith({
+      type: 'query',
+      key: ['pending'],
+      source: query,
+      data: {
+        new: {
+          status: 'pending'
+        }
+      }
+    });
   });
 
-  it('should ignore store update event for other item', () => {
-    store.dispatchEvent(new StoreUpdateEvent(entity.name, 'toto', 1));
+  it('should transmit query update completed event, store result and emit update event', () => {
+    const query = new AegisQuery<TestEntity>();
+    const fetcher = jest.fn().mockReturnValue(query);
+
+    item.refresh(fetcher);
+    queryEventSpy.mockReset();
+
+    query.store({ id: item.id, value: 1 });
+
+    expect(item.status).toBe('completed');
+
+    expect(queryEventSpy).toHaveBeenCalledTimes(1);
+    expect(queryEventSpy).toHaveBeenCalledWith({
+      type: 'query',
+      key: ['completed'],
+      source: query,
+      data: {
+        old: {
+          status: 'pending'
+        },
+        new: {
+          status: 'completed',
+          data: {
+            id: item.id,
+            value: 1
+          }
+        }
+      }
+    });
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['test', 'item'],
+      source: store,
+      data: {
+        id: 'item',
+        new: { id: 'item', value: 1 },
+      },
+    });
+  });
+
+  it('should transmit query update error event', () => {
+    const query = new AegisQuery<TestEntity>();
+    const fetcher = jest.fn().mockReturnValue(query);
+
+    item.refresh(fetcher);
+    queryEventSpy.mockReset();
+
+    query.error(new Error('failed !'));
+
+    expect(item.status).toBe('error');
+
+    expect(queryEventSpy).toHaveBeenCalledTimes(1);
+    expect(queryEventSpy).toHaveBeenCalledWith({
+      type: 'query',
+      key: ['error'],
+      source: query,
+      data: {
+        old: {
+          status: 'pending'
+        },
+        new: {
+          status: 'error',
+          data: new Error('failed !')
+        }
+      }
+    });
 
     expect(updateEventSpy).not.toHaveBeenCalled();
-  });
-
-  it('should transmit entity query event', () => {
-    const query2 = new AegisQuery<TestEntity>();
-    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'item', query2));
-
-    expect(item.lastQuery).toBe(query2);
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      item,
-    }));
-  });
-
-  it('should ignore query event for other item', () => {
-    const query2 = new AegisQuery<TestEntity>();
-    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'toto', query2));
-
-    expect(item.lastQuery).toBe(query);
-
-    expect(updateEventSpy).not.toHaveBeenCalled();
-  });
-
-  it('should transmit query update event', () => {
-    query.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      item,
-    }));
-  });
-
-  it('should transmit query update event (from updated query)', () => {
-    const query2 = new AegisQuery<TestEntity>();
-
-    entity.dispatchEvent(new EntityItemQueryEvent(entity, 'item', query2));
-    query2.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      item,
-    }));
   });
 });
 
 describe('AegisItem.data', () => {
-  it('should read data from store', () => {
-    jest.spyOn(store, 'get').mockReturnValue(1);
+  it('should read data from entity', () => {
+    jest.spyOn(entity, 'getItem').mockReturnValue({
+      id: item.id,
+      value: 1
+    });
 
-    expect(item.data).toBe(1);
-    expect(store.get).toHaveBeenCalledWith('test', 'item');
+    expect(item.data).toEqual({ id: 'item', value: 1 });
+    expect(entity.getItem).toHaveBeenCalledWith('item');
   });
 
-  it('should write data in store and emit update event', () => {
-    jest.spyOn(store, 'set');
+  it('should write data in entity and emit update event', () => {
+    jest.spyOn(entity, 'setItem');
 
     item.data = { id: 'item', value: 2 };
 
-    expect(store.set).toHaveBeenCalledWith('test', 'item', { id: 'item', value: 2 });
+    expect(entity.setItem).toHaveBeenCalledWith('item', { id: 'item', value: 2 });
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ItemUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      item,
-    }));
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['test', 'item'],
+      source: store,
+      data: {
+        id: 'item',
+        new: { id: 'item', value: 2 },
+      },
+    });
+  });
+
+  it('should delete data in entity', () => {
+    jest.spyOn(entity, 'deleteItem');
+
+    item.data = undefined;
+
+    expect(entity.deleteItem).toHaveBeenCalledWith('item');
   });
 });
 
-describe('AegisItem.isPending', () => {
-  it('should return true if query is pending', () => {
-    expect(item.isPending).toBe(true);
+describe('AegisItem.status', () => {
+  it('should return pending if no query is running', () => {
+    expect(item.status).toBe('pending');
   });
 
-  it('should return true if query is completed', () => {
+  it('should return query status', () => {
+    const query = item.refresh(() => new AegisQuery());
+
+    // - pending
+    jest.spyOn(query, 'status', 'get')
+      .mockReturnValue('pending');
+
+    expect(item.status).toBe('pending');
+
+    // - completed
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('completed');
 
-    expect(item.isPending).toBe(false);
-  });
+    expect(item.status).toBe('completed');
 
-  it('should return true if query is error', () => {
+    // - error
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('error');
 
-    expect(item.isPending).toBe(false);
+    expect(item.status).toBe('error');
   });
-});
-
-test('AegisItem.lastQuery', () => {
-  expect(item.lastQuery).toBe(query);
-});
-
-test('AegisItem.lastError', () => {
-  const error = new Error();
-
-  jest.spyOn(query, 'state', 'get')
-    .mockReturnValue({
-      status: 'error',
-      data: error,
-    });
-
-  expect(item.lastError).toBe(error);
 });

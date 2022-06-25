@@ -1,15 +1,14 @@
-import { TypedEvent, TypedEventListener } from '../event-target';
+import { Event } from '../events';
 
-import { QueryState } from './state';
+import { QueryState } from './query-state';
 
-/**
- * Emitted when a query is updated
- */
-export class QueryUpdateEvent<T> extends TypedEvent<'update'> {
-  // Constructor
-  constructor(readonly state: Readonly<QueryState<T>>) {
-    super('update');
-  }
+// Type
+export interface QueryUpdateEventData<out T> {
+  old?: Readonly<QueryState<T>>;
+  new: Readonly<QueryState<T>>;
 }
 
-export type QueryUpdateEventListener<T> = TypedEventListener<QueryUpdateEvent<T>>
+export interface QueryUpdateEvent<out T = unknown> extends Event<'update', QueryUpdateEventData<T>> {
+  // Attributes
+  key?: ['completed' | 'error'];
+}

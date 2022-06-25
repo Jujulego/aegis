@@ -1,24 +1,22 @@
-import { AegisList } from '@jujulego/aegis-core';
+import { AegisList, QueryStatus } from '@jujulego/aegis-core';
 import { useDebugValue } from 'react';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
-import { eventSubscriber } from '../utils';
-
 // Types
 export interface AegisListState<T> {
-  isPending: boolean;
+  status: QueryStatus;
   data: T[];
 }
 
 // Hooks
 export function useAegisList<T>(list: AegisList<T>): AegisListState<T> {
-  const isPending = useSyncExternalStore(eventSubscriber(list, 'update'), () => list.isPending);
-  const data = useSyncExternalStore(eventSubscriber(list, 'update'), () => list.data);
+  const status = useSyncExternalStore((cb) => list.subscribe('query', cb), () => list.status);
+  const data = useSyncExternalStore((cb) => list.subscribe('update', cb), () => list.data);
 
   useDebugValue(data);
 
   return {
-    isPending,
+    status,
     data
   };
 }

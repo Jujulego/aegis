@@ -14,7 +14,7 @@ const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id);
 // Tests
 describe('useAegisItem', () => {
   it('should return item data', () => {
-    const itm = ent.$entity.getItem('test-1');
+    const itm = ent.$entity.item('test-1');
     itm.data = {
       id: 'test-1',
       success: true
@@ -24,7 +24,7 @@ describe('useAegisItem', () => {
     const { result } = renderHook(() => useAegisItem(itm));
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'pending',
       data: {
         id: 'test-1',
         success: true
@@ -40,7 +40,7 @@ describe('useAegisItem', () => {
     });
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'pending',
       data: {
         id: 'test-1',
         success: false

@@ -2,9 +2,7 @@ import {
   AegisEntity,
   AegisList,
   AegisMemoryStore,
-  AegisQuery, EntityListQueryEvent,
-  ListUpdateEvent, QueryUpdateEvent,
-  StoreUpdateEvent
+  AegisQuery, ListQueryEvent, ListUpdateEvent
 } from '../../src';
 
 // Types
@@ -16,158 +14,95 @@ interface TestEntity {
 // Setup
 let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
-let query: AegisQuery<TestEntity[]>;
 let list: AegisList<TestEntity>;
 
+const queryEventSpy = jest.fn<void, [ListQueryEvent<TestEntity>]>();
 const updateEventSpy = jest.fn<void, [ListUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
   entity = new AegisEntity('test', store, ({ id }) => id);
-  query = new AegisQuery();
-  list = new AegisList(entity, 'list', ({ id }) => id, query);
+  list = new AegisList(entity, 'list');
 
+  queryEventSpy.mockReset();
   updateEventSpy.mockReset();
 
-  list.addEventListener('update', updateEventSpy);
+  list.subscribe('query', queryEventSpy);
+  list.subscribe('update', updateEventSpy);
 });
 
 // Tests
 describe('new AegisList', () => {
-  it('should transmit store update event for items within result list', () => {
-    query.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: [{ id: 'item-1', value: 0 }] }));
-    store.dispatchEvent(new StoreUpdateEvent(entity.name, 'item-1', { id: 'item-1', value: 1 }));
+  it('should transmit store update event for items within result list', async () => {
+    list.data = [{ id: 'item-1', value: 0 }];
+    updateEventSpy.mockReset();
 
-    expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      list,
-    }));
+    entity.setItem('item-1', { id: 'item-1', value: 1 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      source: list,
+      data: [
+        { id: 'item-1', value: 1 }
+      ]
+    });
   });
 
   it('should ignore store update event for unknown item', () => {
-    store.dispatchEvent(new StoreUpdateEvent(entity.name, 'toto', 1));
+    entity.setItem('unknown', { id: 'unknown', value: 1 });
 
     expect(updateEventSpy).not.toHaveBeenCalled();
   });
+});
 
-  it('should transmit entity query event', () => {
-    const query2 = new AegisQuery<TestEntity[]>();
-    entity.dispatchEvent(new EntityListQueryEvent(entity, list.key, query2));
+describe('AegisList.refresh', () => {
+  it('should store query and emit query pending event', () => {
+    const query = new AegisQuery<TestEntity[]>();
+    list.refresh(query);
 
-    expect(list.lastQuery).toBe(query2);
+    expect(list.query).toBe(query);
 
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      list,
-    }));
-  });
-
-  it('should ignore query event for other item', () => {
-    const query2 = new AegisQuery<TestEntity[]>();
-    entity.dispatchEvent(new EntityListQueryEvent(entity, 'toto', query2));
-
-    expect(list.lastQuery).toBe(query);
-
-    expect(updateEventSpy).not.toHaveBeenCalled();
-  });
-
-  it('should transmit query update event', () => {
-    query.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      list,
-    }));
-  });
-
-  it('should transmit query update event (from updated query)', () => {
-    const query2 = new AegisQuery<TestEntity[]>();
-
-    entity.dispatchEvent(new EntityListQueryEvent(entity, list.key, query2));
-    query2.dispatchEvent(new QueryUpdateEvent({ status: 'pending' }));
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      list,
-    }));
+    expect(queryEventSpy).toHaveBeenCalledTimes(1);
+    expect(queryEventSpy).toHaveBeenCalledWith({
+      type: 'query',
+      key: ['pending'],
+      source: query,
+      data: {
+        new: {
+          status: 'pending'
+        }
+      }
+    });
   });
 });
 
-describe('AegisList.data', () => {
-  beforeEach(() => {
-    jest.spyOn(store, 'get')
-      .mockImplementation((_, id) => ({ id, value: 1 }));
+describe('AegisList.status', () => {
+  it('should return pending if no query is running', () => {
+    expect(list.status).toBe('pending');
   });
 
-  it('should return empty array by default', () => {
-    expect(list.data).toStrictEqual([]);
-    expect(store.get).not.toHaveBeenCalled();
-  });
+  it('should return query status', () => {
+    const query = list.refresh(new AegisQuery());
 
-  it('should return array built from store', () => {
-    query.dispatchEvent(new QueryUpdateEvent({ status: 'completed', data: [{ id: 'item-1', value: 0 }] }));
+    // - pending
+    jest.spyOn(query, 'status', 'get')
+      .mockReturnValue('pending');
 
-    expect(list.data).toStrictEqual([
-      { id: 'item-1', value: 1 },
-    ]);
-    expect(store.get).toHaveBeenCalledWith(entity.name, 'item-1');
-  });
+    expect(list.status).toBe('pending');
 
-  it('should insert array items in store', () => {
-    jest.spyOn(store, 'set');
-
-    list.data = [
-      { id: 'item-1', value: 1 },
-      { id: 'item-3', value: 3 },
-    ];
-
-    expect(store.set).toHaveBeenCalledWith(entity.name, 'item-1', { id: 'item-1', value: 1 });
-    expect(store.set).toHaveBeenCalledWith(entity.name, 'item-3', { id: 'item-3', value: 3 });
-
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(ListUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      list,
-    }));
-  });
-});
-
-describe('AegisList.isPending', () => {
-  it('should return true if query is pending', () => {
-    expect(list.isPending).toBe(true);
-  });
-
-  it('should return true if query is completed', () => {
+    // - completed
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('completed');
 
-    expect(list.isPending).toBe(false);
-  });
+    expect(list.status).toBe('completed');
 
-  it('should return true if query is error', () => {
+    // - error
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('error');
 
-    expect(list.isPending).toBe(false);
+    expect(list.status).toBe('error');
   });
 });
 
-test('AegisList.lastQuery', () => {
-  expect(list.lastQuery).toBe(query);
-});
-
-test('AegisList.lastError', () => {
-  const error = new Error();
-
-  jest.spyOn(query, 'state', 'get')
-    .mockReturnValue({
-      status: 'error',
-      data: error,
-    });
-
-  expect(list.lastError).toBe(error);
-});

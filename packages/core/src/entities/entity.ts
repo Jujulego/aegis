@@ -1,174 +1,160 @@
-import { TypedEventTarget } from '../event-target';
-import { AegisQuery } from '../protocols';
+import { EventEmitter, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
+import { AegisItem } from '../items';
+import { AegisList } from '../lists';
 import { AegisStore, StoreUpdateEvent } from '../stores';
-
-import { AegisItem } from './item';
-import { EntityUpdateEvent } from './entity-update.event';
-import { EntityItemQueryEvent} from './entity-item-query.event';
-import { EntityListQueryEvent } from './entity-list-query.event';
-import { AegisList } from './list';
+import { AegisQuery } from '../protocols';
 
 // Types
 export type EntityIdExtractor<T> = (entity: T) => string;
 export type EntityMerge<T, R> = (stored: T, result: R) => T;
 
-// Entity
-/**
- * Manages queries and data of a single entity
- */
-export class AegisEntity<T> extends TypedEventTarget<EntityUpdateEvent<T> | EntityItemQueryEvent<T> | EntityListQueryEvent<T>> {
+// Class
+export class AegisEntity<T> implements EventEmitter {
   // Attributes
-  private readonly _extractor: EntityIdExtractor<T>;
-  private readonly _itemQueries = new Map<string, AegisQuery<T>>();
-  private readonly _listQueries = new Map<string, AegisQuery<T[]>>();
+  private readonly _items = new Map<string, WeakRef<AegisItem<T>>>();
+  private readonly _lists = new Map<string, WeakRef<AegisList<T>>>();
 
   // Constructor
-  constructor(readonly name: string, readonly store: AegisStore, extractor: EntityIdExtractor<T>) {
-    super();
-
-    // Attributes
-    this._extractor = extractor;
-
-    // Transmit store events
-    this.store.addEventListener('update', (event: StoreUpdateEvent<T>) => {
-      if (event.entity === this.name) {
-        this.dispatchEvent(new EntityUpdateEvent(this, event));
-      }
-    });
-  }
+  constructor(
+    readonly name: string,
+    readonly store: AegisStore,
+    readonly extractor: EntityIdExtractor<T>
+  ) {}
 
   // Methods
-  private _registerListQuery(key: string, query: AegisQuery<T[]>): void {
-    this._listQueries.set(key, query);
-
-    // Store query result
-    query.addEventListener('update', (event) => {
-      if (event.state.status === 'completed') {
-        for (const ent of event.state.data) {
-          this.store.set(this.name, this._extractor(ent), ent);
-        }
-
-        this._listQueries.delete(key);
-      }
-    });
-
-    // Dispatch query event
-    this.dispatchEvent(new EntityListQueryEvent(this, key, query));
+  // - events
+  subscribe(
+    type: 'update',
+    listener: EventListener<StoreUpdateEvent<T>>,
+    opts: Omit<EventListenerOptions<StoreUpdateEvent<T>>, 'key'> & { key?: [string] } = {}
+  ): EventUnsubscribe {
+    const { key = [] } = opts;
+    return this.store.subscribe('update', listener, { ...opts, key: [this.name, ...key] });
   }
 
-  private _registerItemQuery(id: string, query: AegisQuery<T>): void {
-    this._itemQueries.set(id, query);
-
-    // Store query result
-    query.addEventListener('update', (event) => {
-      if (event.state.status === 'completed') {
-        this.store.set(this.name, id, event.state.data);
-        this._itemQueries.delete(id);
-      }
-    });
-
-    // Dispatch query event
-    this.dispatchEvent(new EntityItemQueryEvent(this, id, query));
-  }
-
+  // - query managers
   /**
-   * Return an AegisItem object for the entity's item with the given id.
-   *
+   * Get item manager by id
    * @param id
    */
-  getItem(id: string): AegisItem<T> {
-    return new AegisItem<T>(this, id, this._itemQueries.get(id));
+  item(id: string): AegisItem<T> {
+    let item = this._items.get(id)?.deref();
+
+    if (!item) {
+      item = new AegisItem(this, id);
+      this._items.set(id, new WeakRef(item));
+    }
+
+    return item;
   }
 
   /**
-   * Return an AegisList object for an entity list, identified by key.
-   *
+   * Get list manager by key
    * @param key
    */
-  getList(key: string): AegisList<T> {
-    return new AegisList<T>(this, key, this._extractor, this._listQueries.get(key));
+  list(key: string): AegisList<T> {
+    let list = this._lists.get(key)?.deref();
+
+    if (!list) {
+      list = new AegisList(this, key);
+      this._lists.set(key, new WeakRef(list));
+    }
+
+    return list;
+  }
+
+  // - queries
+  /**
+   * Will resolves to item manager for returned item
+   * @param query
+   */
+  query(query: AegisQuery<T>): AegisQuery<AegisItem<T>> {
+    return query.then((item) => this.item(this.storeItem(item)));
   }
 
   /**
-   * Return an AegisItem object for the entity's item with the given id.
-   * If no query is running for the asked item, it uses sender to refresh it.
-   *
+   * Register a mutation. Query result will replace stored item.
    * @param id
-   * @param sender function used to send to query
+   * @param query
    */
-  queryItem(id: string, sender: (id: string) => AegisQuery<T>): AegisItem<T> {
-    if (this._itemQueries.get(id)?.status !== 'pending') {
-      this._registerItemQuery(id, sender(id));
-    }
-
-    return this.getItem(id);
-  }
+  mutation(id: string, query: AegisQuery<T>): AegisQuery<T>;
 
   /**
-   * Return an AegisList object for an entity list, identified by key
-   * If a query is running for the asked list, cancels it
-   * before using sender to initiate a new query.
-   *
-   * @param key
-   * @param sender function used to send to query
-   */
-  queryList(key: string, sender: () => AegisQuery<T[]>): AegisList<T> {
-    const query = this._listQueries.get(key);
-
-    if (query?.status === 'pending') {
-      query.cancel();
-    }
-
-    this._registerListQuery(key, sender());
-
-    return this.getList(key);
-  }
-
-  /**
-   * Register creation query. Resolves as the new item, or rejects if the query failed
-   *
-   * @param mutation query adding the item
-   */
-  createItem(mutation: AegisQuery<T>): AegisQuery<AegisItem<T>> {
-    return mutation.then((data) => {
-      const id = this._extractor(data);
-
-      this.store.set(this.name, id, data);
-      return this.getItem(id);
-    });
-  }
-
-  /**
-   * Register mutation query. Allow to update cached item by merging it
-   * with request result
-   *
-   * @param id updated item's id
-   * @param mutation query mutating the item
+   * Register a mutation. Query result will be merged with stored item.
+   * Resolved to the result of the merge.
+   * @param id
+   * @param query
    * @param merge
    */
-  updateItem<R>(id: string, mutation: AegisQuery<R>, merge: EntityMerge<T, R>): void {
-    mutation.addEventListener('update', ({ state }) => {
-      if (state.status === 'completed') {
-        const item = this.store.get<T>(this.name, id);
+  mutation<R>(id: string, query: AegisQuery<R>, merge: EntityMerge<T, R>): AegisQuery<T>;
 
-        if (item) {
-          this.store.set(this.name, id, merge(item, state.data));
+  mutation(id: string, query: AegisQuery<unknown>, merge?: EntityMerge<T, unknown>): AegisQuery<T> {
+    return query.then((result) => {
+      if (merge) {
+        const item = this.getItem(id);
+
+        if (!item) {
+          throw new Error(`Unknown mutated item ${this.name}.${id}`);
         }
+
+        const updated = merge(item, result);
+        this.setItem(id, updated);
+
+        return updated;
+      } else {
+        this.setItem(id, result as T);
+
+        return result as T;
       }
     });
   }
 
   /**
-   * Register deletion query. Will remove item from cache when query completed
-   *
-   * @param id deleted item's id
-   * @param mutation query deleting the item
+   * Deletes the item in store as soon as the query completes.
+   * Returns deleted item from store.
+   * @param id
+   * @param query
    */
-  deleteItem(id: string, mutation: AegisQuery<unknown>): void {
-    mutation.addEventListener('update', ({ state }) => {
-      if (state.status === 'completed') {
-        this.store.delete<T>(this.name, id);
-      }
-    });
+  deletion(id: string, query: AegisQuery<unknown>): AegisQuery<T | undefined> {
+    return query.then(() => this.deleteItem(id));
+  }
+
+  // - store access
+  /**
+   * Direct access to stored item, by id.
+   * @param id
+   */
+  getItem(id: string): T | undefined {
+    return this.store.get(this.name, id);
+  }
+
+  /**
+   * Update local item, by id.
+   * @param id
+   * @param value
+   */
+  setItem(id: string, value: T): void {
+    this.store.set(this.name, id, value);
+  }
+
+  /**
+   * Delete local item, by id.
+   * @param id
+   */
+  deleteItem(id: string): T | undefined {
+    return this.store.delete(this.name, id);
+  }
+
+  /**
+   * Stores given item. Uses extractor to get item's id.
+   * Returns item's id.
+   *
+   * @param item
+   */
+  storeItem(item: T): string {
+    const id = this.extractor(item);
+    this.setItem(id, item);
+
+    return id;
   }
 }

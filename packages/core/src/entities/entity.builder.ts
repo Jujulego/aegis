@@ -1,9 +1,9 @@
-import { AegisStore } from '../stores';
+import { AegisItem } from '../items';
+import { AegisList } from '../lists';
 import { AegisQuery } from '../protocols';
+import { AegisStore } from '../stores';
 
 import { AegisEntity, EntityIdExtractor, EntityMerge } from './entity';
-import { AegisItem } from './item';
-import { AegisList } from './list';
 
 // Type
 export type Aegis<T, M> = M & {
@@ -17,6 +17,15 @@ export type Aegis<T, M> = M & {
    * @param sender
    */
   $get<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<T>): Aegis<T, M & Record<N, (id: I) => AegisItem<T>>>;
+
+  /**
+   * Add a query to the entity.
+   * This query should return an item. To use when you don't know the id of the queried item
+   *
+   * @param name
+   * @param sender
+   */
+  $query<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>>;
 
   /**
    * Add a list query to the entity.
@@ -53,7 +62,7 @@ export type Aegis<T, M> = M & {
    * @param sender
    * @param merge used to merge result with cached data if any
    */
-  $update<N extends string, R, I extends string = string, A extends unknown[] = []>(name: N, sender: (id: I, ...args: A) => AegisQuery<R>, merge: EntityMerge<T, R>): Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<R>>>;
+  $update<N extends string, R, I extends string = string, A extends unknown[] = []>(name: N, sender: (id: I, ...args: A) => AegisQuery<R>, merge: EntityMerge<T, R>): Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<T>>>;
 
   /**
    * Add a delete query to the entity.
@@ -62,7 +71,7 @@ export type Aegis<T, M> = M & {
    * @param name
    * @param sender
    */
-  $delete<N extends string, R, I extends string = string>(name: N, sender: (id: I) => AegisQuery<R>): Aegis<T, Record<N, (id: I) => AegisQuery<R>>>;
+  $delete<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<unknown>): Aegis<T, Record<N, (id: I) => AegisQuery<T | undefined>>>;
 }
 
 // Entity builder
@@ -70,44 +79,56 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
   return {
     $entity: new AegisEntity<T>(name, store, extractor),
 
-    $get<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<T>): Aegis<T, Record<N, (id: I) => AegisItem<T>>> {
-      return Object.assign(this, {
-        [name]: (id: I) => this.$entity.queryItem(id, sender),
-      });
-    },
-
-    $list<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T[]>): Aegis<T, Record<N, (key: string, ...args: A) => AegisList<T>>> {
-      return Object.assign(this, {
-        [name]: (key: string, ...args: A) => this.$entity.queryList(key, () => sender(...args)),
-      });
-    },
-
-    $create<N extends string, A extends unknown[] = []>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>> {
-      return Object.assign(this, {
-        [name]: (...args: A) => this.$entity.createItem(sender(...args)),
-      });
-    },
-
-    $update<N extends string, R = T, I extends string = string, A extends unknown[] = []>(name: N, sender: (id: I, ...args: A) => AegisQuery<R>, merge?: EntityMerge<T, R>): Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<R>>> {
-      return Object.assign(this, {
-        [name]: (id: I, ...args: A) => {
-          const query = sender(id, ...args);
-          this.$entity.updateItem(id, query, merge ?? ((_: T, result: T) => result));
-
-          return query;
-        },
-      });
-    },
-
-    $delete<N extends string, R = T, I extends string = string>(name: N, sender: (id: I) => AegisQuery<R>): Aegis<T, Record<N, (id: I) => AegisQuery<R>>> {
+    $get<N extends string, I extends string = string>(this: Aegis<T, unknown>, name: N, sender: (id: I) => AegisQuery<T>) {
       return Object.assign(this, {
         [name]: (id: I) => {
-          const query = sender(id);
-          this.$entity.deleteItem(id, query);
+          const item = this.$entity.item(id);
+          item.refresh(() => sender(id));
 
-          return query;
+          return item;
         },
-      });
+      }) as Aegis<T, Record<N, (id: I) => AegisItem<T>>>;
+    },
+
+    $query<N extends string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (...args: A) => AegisQuery<T>) {
+      return Object.assign(this, {
+        [name]: (...args: A) => this.$entity.query(sender(...args)),
+      }) as Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>>;
+    },
+
+    $list<N extends string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (...args: A) => AegisQuery<T[]>) {
+      return Object.assign(this, {
+        [name]: (key: string, ...args: A) => {
+          const list = this.$entity.list(key);
+          list.refresh(sender(...args));
+
+          return list;
+        },
+      }) as Aegis<T, Record<N, (key: string, ...args: A) => AegisList<T>>>;
+    },
+
+    $create<N extends string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (...args: A) => AegisQuery<T>) {
+      return Object.assign(this, {
+        [name]: (...args: A) => this.$entity.query(sender(...args)),
+      }) as Aegis<T, Record<N, (...args: A) => AegisQuery<AegisItem<T>>>>;
+    },
+
+    $update<N extends string, I extends string = string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (id: I, ...args: A) => AegisQuery<unknown>, merge?: EntityMerge<T, unknown>) {
+      return Object.assign(this, {
+        [name]: (id: I, ...args: A) => {
+          if (merge) {
+            return this.$entity.mutation(id, sender(id, ...args), merge);
+          } else {
+            return this.$entity.mutation(id, sender(id, ...args) as AegisQuery<T>);
+          }
+        },
+      }) as Aegis<T, Record<N, (id: I, ...args: A) => AegisQuery<T>>>;
+    },
+
+    $delete<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<unknown>) {
+      return Object.assign(this, {
+        [name]: (id: I) => this.$entity.deletion(id, sender(id)),
+      }) as Aegis<T, Record<N, (id: I) => AegisQuery<T | undefined>>>;
     },
   };
 }

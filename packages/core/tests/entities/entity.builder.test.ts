@@ -29,18 +29,48 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('getItem', expect.any(Function));
 
       // Call sender
-      jest.spyOn(ent.$entity, 'queryItem');
+      jest.spyOn(ent.$entity, 'item');
 
       const itm = ent.getItem('item');
 
       expect(itm).toBeInstanceOf(AegisItem);
       expect(itm.id).toBe('item');
       expect(itm.entity).toBe(ent.$entity);
-      expect(itm.lastQuery).toBe(query);
+      expect(itm.query).toBe(query);
 
-      expect(ent.$entity.queryItem).toHaveBeenCalledWith('item', sender);
+      expect(ent.$entity.item).toHaveBeenCalledWith('item');
 
       expect(sender).toHaveBeenCalledWith('item');
+    });
+  });
+
+  describe('$entity.$query', () => {
+    it('should register a query at given name', async () => {
+      const query = new AegisQuery<TestEntity>();
+      const sender = jest.fn((_: number) => query);
+
+      // Call builder
+      const ent = $entity<TestEntity>('test', $store.memory(), ({ id }) => id)
+        .$query('createItem', sender);
+
+      expect(ent).toHaveProperty('createItem', expect.any(Function));
+
+      // Call sender
+      jest.spyOn(ent.$entity, 'query');
+
+      const prm = ent.createItem(3);
+
+      expect(sender).toHaveBeenCalledWith(3);
+      expect(ent.$entity.query).toHaveBeenCalledWith(query);
+
+      // Item
+      query.store({ id: 'query', data: true });
+
+      await expect(prm).resolves.toBeInstanceOf(AegisItem);
+
+      const itm = await prm;
+      expect(itm.id).toBe('query');
+      expect(itm.entity).toBe(ent.$entity);
     });
   });
 
@@ -56,16 +86,16 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('getList', expect.any(Function));
 
       // Call sender
-      jest.spyOn(ent.$entity, 'queryList');
+      jest.spyOn(ent.$entity, 'list');
 
       const lst = ent.getList('test', 5);
 
       expect(lst).toBeInstanceOf(AegisList);
       expect(lst.key).toBe('test');
       expect(lst.entity).toBe(ent.$entity);
-      expect(lst.lastQuery).toBe(query);
+      expect(lst.query).toBe(query);
 
-      expect(ent.$entity.queryList).toHaveBeenCalledWith('test', expect.any(Function));
+      expect(ent.$entity.list).toHaveBeenCalledWith('test');
 
       expect(sender).toHaveBeenCalledWith(5);
     });
@@ -83,12 +113,12 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('createItem', expect.any(Function));
 
       // Call sender
-      jest.spyOn(ent.$entity, 'createItem');
+      jest.spyOn(ent.$entity, 'query');
 
       const prm = ent.createItem(3);
 
       expect(sender).toHaveBeenCalledWith(3);
-      expect(ent.$entity.createItem).toHaveBeenCalledWith(query);
+      expect(ent.$entity.query).toHaveBeenCalledWith(query);
 
       // Item
       query.store({ id: 'create', data: true });
@@ -98,7 +128,6 @@ describe( '$entity', () => {
       const itm = await prm;
       expect(itm.id).toBe('create');
       expect(itm.entity).toBe(ent.$entity);
-      expect(itm.lastQuery).toBeUndefined();
     });
   });
 
@@ -114,18 +143,16 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('updateItem', expect.any(Function));
 
       // Set item in store
-      const itm = ent.$entity.getItem('item');
+      const itm = ent.$entity.item('item');
       itm.data = { id: 'item', data: false };
 
-      expect(itm.data).toEqual({ id: 'item', data: false });
-
       // Call sender
-      jest.spyOn(ent.$entity, 'updateItem');
+      jest.spyOn(ent.$entity, 'mutation');
 
       ent.updateItem('item', 1);
 
       expect(sender).toHaveBeenCalledWith('item', 1);
-      expect(ent.$entity.updateItem).toHaveBeenCalledWith('item', query, expect.any(Function));
+      expect(ent.$entity.mutation).toHaveBeenCalledWith('item', query);
 
       // Emit result
       query.store({ id: 'item', data: true });
@@ -145,18 +172,18 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('updateItem', expect.any(Function));
 
       // Set item in store
-      const itm = ent.$entity.getItem('item');
+      const itm = ent.$entity.item('item');
       itm.data = { id: 'item', data: false };
 
       expect(itm.data).toEqual({ id: 'item', data: false });
 
       // Call sender
-      jest.spyOn(ent.$entity, 'updateItem');
+      jest.spyOn(ent.$entity, 'mutation');
 
       ent.updateItem('item', 1);
 
       expect(sender).toHaveBeenCalledWith('item', 1);
-      expect(ent.$entity.updateItem).toHaveBeenCalledWith('item', query, expect.any(Function));
+      expect(ent.$entity.mutation).toHaveBeenCalledWith('item', query, merge);
 
       // Emit result
       query.store(true);
@@ -178,12 +205,12 @@ describe( '$entity', () => {
       expect(ent).toHaveProperty('deleteItem', expect.any(Function));
 
       // Call sender
-      jest.spyOn(ent.$entity, 'deleteItem');
+      jest.spyOn(ent.$entity, 'deletion');
 
-      expect(ent.deleteItem('delete')).toBe(query);
+      expect(ent.deleteItem('delete')).toBeInstanceOf(AegisQuery);
 
       expect(sender).toHaveBeenCalledWith('delete');
-      expect(ent.$entity.deleteItem).toHaveBeenCalledWith('delete', query);
+      expect(ent.$entity.deletion).toHaveBeenCalledWith('delete', query);
     });
   });
 });

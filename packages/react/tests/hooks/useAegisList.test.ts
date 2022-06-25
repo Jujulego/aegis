@@ -14,7 +14,7 @@ const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id);
 // Tests
 describe('useAegisList', () => {
   it('should return list data', () => {
-    const lst = ent.$entity.getList('all');
+    const lst = ent.$entity.list('all');
     lst.data = [
       { id: 'test-1', success: true },
       { id: 'test-2', success: true }
@@ -24,7 +24,7 @@ describe('useAegisList', () => {
     const { result } = renderHook(() => useAegisList(lst));
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'pending',
       data: [
         { id: 'test-1', success: true },
         { id: 'test-2', success: true }
@@ -40,7 +40,7 @@ describe('useAegisList', () => {
     });
 
     expect(result.current).toEqual({
-      isPending: false,
+      status: 'pending',
       data: [
         { id: 'test-1', success: false },
         { id: 'test-3', success: true }

@@ -10,7 +10,7 @@ beforeEach(() => {
   query = new AegisQuery(controller);
 
   updateEventSpy.mockReset();
-  query.addEventListener('update', updateEventSpy);
+  query.subscribe('update', updateEventSpy);
   jest.spyOn(controller, 'abort').mockImplementation();
 });
 
@@ -61,40 +61,6 @@ describe('AegisQuery.fromPromise', () => {
       status: 'error',
       data: new Error('failed'),
     });
-  });
-});
-
-describe('AegisQuery.addEventListener', () => {
-  const cb = jest.fn();
-
-  beforeEach(() => {
-    jest.spyOn(EventTarget.prototype, 'addEventListener');
-  });
-
-  afterEach(() => {
-    jest.mocked(EventTarget.prototype.addEventListener).mockRestore();
-  });
-
-  it('should add controller\'s signal', () => {
-    query.addEventListener('update', cb);
-
-    expect(EventTarget.prototype.addEventListener)
-      .toHaveBeenCalledWith('update', cb, { signal: controller.signal });
-  });
-
-  it('should add controller\'s signal and pass boolean as capture', () => {
-    query.addEventListener('update', cb, true);
-
-    expect(EventTarget.prototype.addEventListener)
-      .toHaveBeenCalledWith('update', cb, { capture: true, signal: controller.signal });
-  });
-
-  it('should not replace given signal', () => {
-    const ctrl = new AbortController();
-    query.addEventListener('update', cb, { signal: ctrl.signal });
-
-    expect(EventTarget.prototype.addEventListener)
-      .toHaveBeenCalledWith('update', cb, { signal: ctrl.signal });
   });
 });
 
@@ -167,13 +133,20 @@ describe('AegisQuery.store', () => {
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(QueryUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      state: {
-        status: 'completed',
-        data: 'result'
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['completed'],
+      source: query,
+      data: {
+        old: {
+          status: 'pending'
+        },
+        new: {
+          status: 'completed',
+          data: 'result'
+        }
       }
-    }));
+    });
   });
 });
 
@@ -192,13 +165,20 @@ describe('AegisQuery.error', () => {
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(QueryUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      state: {
-        status: 'error',
-        data: new Error('fail')
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['error'],
+      source: query,
+      data: {
+        old: {
+          status: 'pending'
+        },
+        new: {
+          status: 'error',
+          data: new Error('fail')
+        }
       }
-    }));
+    });
   });
 });
 

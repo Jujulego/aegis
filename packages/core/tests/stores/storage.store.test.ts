@@ -9,7 +9,7 @@ beforeEach(() => {
   store = new AegisStorageStore(localStorage);
 
   updateEventSpy.mockReset();
-  store.addEventListener('update', updateEventSpy);
+  store.subscribe('update', updateEventSpy);
 });
 
 // Tests
@@ -24,13 +24,16 @@ describe('new AegisStorageStore', () => {
       oldValue: JSON.stringify(1)
     }));
 
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'event',
-      newValue: 2,
-      oldValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenLastCalledWith({
+      type: 'update',
+      key: ['test', 'event'],
+      source: store,
+      data: {
+        id: 'event',
+        old: 1,
+        new: 2,
+      },
+    });
   });
 
   it('should emit update event when StorageEvent is received (no old value)', () => {
@@ -42,12 +45,15 @@ describe('new AegisStorageStore', () => {
       newValue: JSON.stringify(3)
     }));
 
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'event',
-      newValue: 3,
-    }));
+    expect(updateEventSpy).toHaveBeenLastCalledWith({
+      type: 'update',
+      key: ['test', 'event'],
+      source: store,
+      data: {
+        id: 'event',
+        new: 3,
+      },
+    });
   });
 
   it('should ignore StorageEvent it has not an aegis key', () => {
@@ -85,12 +91,15 @@ describe('AegisStorageStore.set', () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['test', 'set'],
+      source: store,
+      data: {
+        id: 'set',
+        new: 1,
+      },
+    });
   });
 
   it('should update given entities', () => {
@@ -104,13 +113,16 @@ describe('AegisStorageStore.set', () => {
     store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 2,
-      oldValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenLastCalledWith({
+      type: 'update',
+      key: ['test', 'set'],
+      source: store,
+      data: {
+        id: 'set',
+        old: 1,
+        new: 2,
+      },
+    });
   });
 });
 

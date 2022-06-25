@@ -8,7 +8,7 @@ beforeEach(() => {
   store = new AegisMemoryStore();
 
   updateEventSpy.mockReset();
-  store.addEventListener('update', updateEventSpy);
+  store.subscribe('update', updateEventSpy);
 });
 
 // Tests
@@ -28,12 +28,15 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenCalledWith({
+      type: 'update',
+      key: ['test', 'set'],
+      source: store,
+      data: {
+        id: 'set',
+        new: 1,
+      },
+    });
   });
 
   it('should update given entities', () => {
@@ -47,13 +50,16 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.any(StoreUpdateEvent));
-    expect(updateEventSpy).toHaveBeenLastCalledWith(expect.objectContaining({
-      entity: 'test',
-      id: 'set',
-      newValue: 2,
-      oldValue: 1,
-    }));
+    expect(updateEventSpy).toHaveBeenLastCalledWith({
+      type: 'update',
+      key: ['test', 'set'],
+      source: store,
+      data: {
+        id: 'set',
+        old: 1,
+        new: 2,
+      },
+    });
   });
 });
 

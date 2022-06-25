@@ -1,5 +1,4 @@
-import { AegisStore} from './store';
-import { StoreUpdateEvent } from './store-update.event';
+import { AegisStore } from './store';
 
 // Class
 export class AegisMemoryStore extends AegisStore {
@@ -19,7 +18,7 @@ export class AegisMemoryStore extends AegisStore {
     const old = this.get<T>(entity, id);
 
     this._map.set(this._key(entity, id), data);
-    this.dispatchEvent(new StoreUpdateEvent(entity, id, data, old));
+    this.emit('update', { id, old, new: data }, { key: [entity, id] });
 
     return old;
   }

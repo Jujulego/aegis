@@ -1,16 +1,16 @@
-import { TypedEvent, TypedEventListener } from '../event-target';
+import { Event, EventListener, EventListenerOptions } from '../events';
 
-// Events
-export class StoreUpdateEvent<T = unknown> extends TypedEvent<'update'> {
-  // Constructor
-  constructor(
-    readonly entity: string,
-    readonly id: string,
-    readonly newValue: Readonly<T>,
-    readonly oldValue?: Readonly<T>,
-  ) {
-    super('update');
-  }
+// Type
+export interface StoreUpdateEventData<out T> {
+  id: string;
+  old?: Readonly<T>;
+  new: Readonly<T>;
 }
 
-export type StoreUpdateEventListener<T = unknown> = TypedEventListener<StoreUpdateEvent<T>>;
+export interface StoreUpdateEvent<out T = unknown> extends Event<'update', StoreUpdateEventData<T>> {
+  // Attributes
+  key?: [string, string];
+}
+
+export type StoreUpdateListener<out T = unknown> = EventListener<StoreUpdateEvent<T>>;
+export type StoreUpdateListenerOptions<T = unknown> = EventListenerOptions<StoreUpdateEvent<T>>;
