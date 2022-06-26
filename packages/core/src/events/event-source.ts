@@ -1,4 +1,4 @@
-import { ComposedKeyTree, PartialKey } from '../utils';
+import { KeyTree, PartialKey } from '../utils';
 
 import { Event, EventKey, EventListener, ExtractEvent } from './event';
 import { EventEmitter, EventListenerOptions, EventUnsubscribe } from './event-emitter';
@@ -13,7 +13,7 @@ export interface EventOptions<E extends Event> {
 export class EventSource<E extends Event> implements EventEmitter<E> {
   // Attributes
   readonly controller?: AbortController;
-  private readonly _listeners = new ComposedKeyTree<EventListener, [E['type'], ...string[]]>();
+  private readonly _listeners = new KeyTree<EventListener, [E['type'], ...string[]]>();
 
   // Emit
   emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions<ExtractEvent<E, T>> = {}): void {
