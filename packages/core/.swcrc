@@ -26,7 +26,7 @@
       "setPublicClassFields": true,
       "setSpreadProperties": true,
       "skipForOfIteratorClosing": true,
-      "superIsCallableConstructor": false,
+      "superIsCallableConstructor": true,
       "tsEnumIsReadonly": true
     }
   },
