@@ -2,8 +2,8 @@ import {
   AegisEntity,
   AegisItem,
   AegisMemoryStore,
-  AegisQuery, ItemQueryEvent,
-  StoreUpdateEvent, StoreUpdateListener
+  AegisQuery, EventListener, QueryUpdateEvent, StoreEventMap,
+  StoreUpdateEvent,
 } from '../../src';
 
 // Types
@@ -17,7 +17,7 @@ let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
 let item: AegisItem<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [ItemQueryEvent<TestEntity>]>();
+const queryEventSpy = jest.fn<void, [QueryUpdateEvent<TestEntity>]>();
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
@@ -35,7 +35,7 @@ beforeEach(() => {
 // Tests
 describe('AegisItem.subscribe', () => {
   it('should subscribe to entity with key set if type is \'updated\'', () => {
-    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);

@@ -1,29 +1,33 @@
 import { EventSource } from '../events';
-import { AegisEntity } from '../entities';
-import { AegisQuery, QueryStatus } from '../protocols';
+import { AegisQuery, QueryStatus, QueryUpdateEvent } from '../protocols';
 
-import { ListQueryEvent } from './list-query.event';
-import { ListUpdateEvent } from './list-update.event';
+import { AegisEntity } from './entity';
+
+// Types
+export type ListEventMap<D> = {
+  query: { data: QueryUpdateEvent<D[]>, filters: ['pending' | 'completed' | 'error'] },
+  update: { data: D[], filters: [] },
+}
 
 // Class
-export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEvent<T>> {
+export class AegisList<D> extends EventSource<ListEventMap<D>> {
   // Attributes
   private _ids: string[] = [];
-  private _cache?: WeakRef<T[]>;
-  private _query?: AegisQuery<T[]>;
+  private _cache?: WeakRef<D[]>;
+  private _query?: AegisQuery<D[]>;
 
   private _pristine = true;
 
   // Constructor
   constructor(
-    readonly entity: AegisEntity<T>,
+    readonly entity: AegisEntity<D>,
     readonly key: string,
   ) {
     super();
 
     // Subscribe to entity update events
-    this.entity.subscribe('update', (event) => {
-      if (this._ids.includes(event.data.id)) {
+    this.entity.subscribe('update', (data) => {
+      if (this._ids.includes(data.id)) {
         this._cache = undefined;
         this._markDirty();
       }
@@ -45,7 +49,7 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     }
   }
 
-  refresh(query: AegisQuery<T[]>): AegisQuery<T[]> {
+  refresh(query: AegisQuery<D[]>): AegisQuery<D[]> {
     if (this._query?.status === 'pending') {
       this._query.cancel();
     }
@@ -53,19 +57,19 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     // Register query
     this._query = query;
 
-    this._query.subscribe('update', (event) => {
+    this._query.subscribe('update', (data, event) => {
       if (this._query !== event.source) return;
 
-      this.emit('query', event.data, { source: event.source });
+      this.emit(`query.${event.filters[0]}`, data, { source: event.source });
 
-      if (event.data.new.status === 'completed') {
-        this._ids = event.data.new.data.map(item => this.entity.storeItem(item));
+      if (data.new.status === 'completed') {
+        this._ids = data.new.data.map(item => this.entity.storeItem(item));
         this._cache = undefined;
         this._markDirty();
       }
     });
 
-    this.emit('query', { new: this._query.state }, { key: ['pending'], source: this._query });
+    this.emit('query.pending', { new: this._query.state }, { source: this._query });
 
     return this._query;
   }
@@ -75,11 +79,11 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     return this._query?.status ?? 'pending';
   }
 
-  get query(): AegisQuery<T[]> | undefined {
+  get query(): AegisQuery<D[]> | undefined {
     return this._query;
   }
 
-  get data(): T[] {
+  get data(): D[] {
     // Use cache first
     const cached = this._cache?.deref();
 
@@ -88,10 +92,10 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     }
 
     // Read from store
-    const data: T[] = [];
+    const data: D[] = [];
 
     for (const id of this._ids) {
-      const ent = this.entity.store.get<T>(this.entity.name, id);
+      const ent = this.entity.store.get<D>(this.entity.name, id);
 
       if (ent) {
         data.push(ent);
@@ -103,7 +107,7 @@ export class AegisList<T> extends EventSource<ListQueryEvent<T> | ListUpdateEven
     return data;
   }
 
-  set data(data: T[]) {
+  set data(data: D[]) {
     this._ids = data.map(item => this.entity.storeItem(item));
     this._cache = new WeakRef(data);
 

@@ -1,15 +1,24 @@
 import { EventSource } from '../events';
 
 import { QueryState, QueryStatus } from './query-state';
-import { QueryUpdateEvent } from './query-update.event';
+
+// Types
+export interface QueryUpdateEvent<D> {
+  old?: Readonly<QueryState<D>>;
+  new: Readonly<QueryState<D>>;
+}
+
+export type QueryEventMap<D> = {
+  update: { data: QueryUpdateEvent<D>, filters: ['completed' | 'error'] },
+}
 
 // Query
 /**
  * Contains query data and status.
  */
-export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements PromiseLike<T> {
+export class AegisQuery<D> extends EventSource<QueryEventMap<D>> implements PromiseLike<D> {
   // Attributes
-  private _state: QueryState<T> = { status: 'pending' };
+  private _state: QueryState<D> = { status: 'pending' };
 
   // Constructor
   constructor(
@@ -19,8 +28,8 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
   }
 
   // Statics
-  static fromPromise<T>(prom: PromiseLike<T>, controller?: AbortController): AegisQuery<T> {
-    const query = new AegisQuery<T>(controller);
+  static fromPromise<D>(prom: PromiseLike<D>, controller?: AbortController): AegisQuery<D> {
+    const query = new AegisQuery<D>(controller);
 
     prom.then((result) => query.store(result), (error) => query.error(error));
 
@@ -28,10 +37,10 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
   }
 
   // Methods
-  then<R1 = T, R2 = never>(onfulfilled?: ((value: T) => PromiseLike<R1> | R1) | null | undefined, onrejected?: ((reason: Error) => PromiseLike<R2> | R2) | null | undefined): AegisQuery<R1 | R2> {
+  then<R1 = D, R2 = never>(onfulfilled?: ((value: D) => PromiseLike<R1> | R1) | null | undefined, onrejected?: ((reason: Error) => PromiseLike<R2> | R2) | null | undefined): AegisQuery<R1 | R2> {
     const result = new AegisQuery<R1 | R2>(this.controller);
 
-    const listener = async (state: QueryState<T>) => {
+    const listener = async (state: QueryState<D>) => {
       try {
         if (state.status === 'completed') {
           if (onfulfilled) {
@@ -52,7 +61,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     };
 
     if (this.status === 'pending') {
-      this.subscribe('update', ({ data }) => listener(data.new));
+      this.subscribe('update', (data) => listener(data.new));
     } else {
       listener(this.state);
     }
@@ -64,11 +73,11 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
    * Store the result and move resource into "completed" status
    * @param data
    */
-  store(data: T): void {
+  store(data: D): void {
     const old = this._state;
     this._state = { status: 'completed', data };
 
-    this.emit('update', { old, new: this._state }, { key: ['completed'] });
+    this.emit('update.completed', { old, new: this._state });
   }
 
   /**
@@ -79,7 +88,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     const old = this._state;
     this._state = { status: 'error', data };
 
-    this.emit('update', { old, new: this._state }, { key: ['error'] });
+    this.emit('update.error', { old, new: this._state });
   }
 
   cancel(): void {
@@ -91,7 +100,7 @@ export class AegisQuery<T> extends EventSource<QueryUpdateEvent<T>> implements P
     return this._state.status;
   }
 
-  get state(): QueryState<T> {
+  get state(): QueryState<D> {
     return this._state;
   }
 }

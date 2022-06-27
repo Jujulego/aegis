@@ -1,44 +1,31 @@
-import { KeyTree, PartialKey } from '../utils';
+import { KeyTree, PartialKey, StringKey } from '../utils';
 
-import { Event, EventKey, EventListener, ExtractEvent } from './event';
-import { EventEmitter, EventListenerOptions, EventUnsubscribe } from './event-emitter';
-
-// Types
-export interface EventOptions<E extends Event> {
-  key?: PartialKey<EventKey<E>>;
-  source?: EventSource<Event>;
-}
+import { EventData, EventEmitter, EventKey, EventListener, EventListenerOptions, EventMap, EventOptions, EventUnsubscribe } from './types';
 
 // Class
-export class EventSource<E extends Event> implements EventEmitter<E> {
+export class EventSource<M extends EventMap> implements EventEmitter<M> {
   // Attributes
   readonly controller?: AbortController;
-  private readonly _listeners = new KeyTree<EventListener, [E['type'], ...string[]]>();
+  private readonly _listeners = new KeyTree();
 
   // Emit
-  emit<T extends E['type']>(type: T, data: ExtractEvent<E, T>['data'], opts: EventOptions<ExtractEvent<E, T>> = {}): void {
-    for (const listener of this._listeners.searchWithParent(opts.key ? [type, ...opts.key] : [type])) {
-      listener({
-        type,
-        data,
-        key: opts.key,
-        source: opts.source ?? this,
-      });
+  emit<T extends keyof M & string>(key: StringKey<EventKey<M, T>>, data: EventData<M, T>, opts?: EventOptions): void {
+    const _key = key.split('.') as EventKey<M, T>;
+    const [type, ...filters] = _key;
+
+    for (const listener of this._listeners.searchWithParent(_key)) {
+      (listener as EventListener<M, T>)(data, { type, filters, source: opts?.source ?? this as EventEmitter });
     }
   }
 
-  subscribe<T extends E['type']>(
-    type: T,
-    listener: EventListener<ExtractEvent<E, T>>,
-    opts: EventListenerOptions<ExtractEvent<E, T>> = {}
+  subscribe<T extends keyof M & string>(
+    key: StringKey<PartialKey<EventKey<M, T>>>,
+    listener: EventListener<M, T>,
+    opts: EventListenerOptions = {},
   ): EventUnsubscribe {
     opts.signal ??= this.controller?.signal;
 
-    if (opts.key) {
-      this._listeners.insert([type, ...opts.key], listener);
-    } else {
-      this._listeners.insert([type], listener);
-    }
+    this._listeners.insert(key.split('.'), listener);
 
     if (opts.signal) {
       opts.signal.addEventListener('abort', () => this._listeners.remove(listener), { once: true });

@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisList,
   AegisMemoryStore,
-  AegisQuery, ListQueryEvent, ListUpdateEvent
+  AegisQuery, QueryUpdateEvent,
 } from '../../src';
 
 // Types
@@ -16,8 +16,8 @@ let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
 let list: AegisList<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [ListQueryEvent<TestEntity>]>();
-const updateEventSpy = jest.fn<void, [ListUpdateEvent<TestEntity>]>();
+const queryEventSpy = jest.fn<void, [QueryUpdateEvent<TestEntity[]>]>();
+const updateEventSpy = jest.fn<void, [TestEntity[]]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();

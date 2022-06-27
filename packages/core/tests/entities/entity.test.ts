@@ -3,7 +3,8 @@ import {
   AegisItem, AegisList,
   AegisMemoryStore,
   AegisQuery,
-  StoreUpdateEvent, StoreUpdateListener
+  EventListener, StoreEventMap,
+  StoreUpdateEvent,
 } from '../../src';
 
 // Types
@@ -30,7 +31,7 @@ beforeEach(() => {
 // Tests
 describe('AegisEntity.subscribe', () => {
   it('should subscribe to store with key set', () => {
-    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
@@ -41,14 +42,14 @@ describe('AegisEntity.subscribe', () => {
   });
 
   it('should subscribe to store with key prepended', () => {
-    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
 
-    expect(entity.subscribe('update', listener, { key: ['item'] })).toBe(unsub);
+    expect(entity.subscribe('update.item', listener)).toBe(unsub);
 
-    expect(store.subscribe).toHaveBeenLastCalledWith('update', listener, { key: [entity.name, 'item'] });
+    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}.item`, listener);
   });
 });
 

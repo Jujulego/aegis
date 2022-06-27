@@ -1,26 +1,4 @@
-// Types
-export type Key = string[];
-
-export type FirstOfKey<K extends Key> =
-  K extends []
-    ? never
-    : K extends [infer P, ...string[]]
-      ? P
-      : string;
-
-export type RestOfKey<K extends Key> =
-  K extends []
-    ? []
-    : K extends [string, ...(infer R extends string[])]
-      ? R
-      : string[];
-
-export type PartialKey<K extends Key> =
-  K extends []
-    ? []
-    : K extends [infer P, ...(infer R extends string[])]
-      ? [] | [P, ...PartialKey<R>]
-      : string[];
+import { FirstOfKey, Key, PartialKey, RestOfKey } from './key';
 
 // Class
 export class KeyTree<T, K extends Key> {

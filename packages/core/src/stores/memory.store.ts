@@ -18,7 +18,7 @@ export class AegisMemoryStore extends AegisStore {
     const old = this.get<T>(entity, id);
 
     this._map.set(this._key(entity, id), data);
-    this.emit('update', { id, old, new: data }, { key: [entity, id] });
+    this.emit(`update.${entity}.${id}`, { id, old, new: data });
 
     return old;
   }
