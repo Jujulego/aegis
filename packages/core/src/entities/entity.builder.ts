@@ -1,7 +1,8 @@
-import { AegisItem } from '../items';
-import { AegisList } from '../lists';
 import { AegisQuery } from '../protocols';
 import { AegisStore } from '../stores';
+
+import { AegisItem } from './item';
+import { AegisList } from './list';
 
 import { AegisEntity, EntityIdExtractor, EntityMerge } from './entity';
 
