@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisList,
   AegisMemoryStore,
-  AegisQuery, ListQueryEvent, ListUpdateEvent
+  AegisQuery, QueryUpdateEvent,
 } from '../../src';
 
 // Types
@@ -16,8 +16,8 @@ let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
 let list: AegisList<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [ListQueryEvent<TestEntity>]>();
-const updateEventSpy = jest.fn<void, [ListUpdateEvent<TestEntity>]>();
+const queryEventSpy = jest.fn<void, [QueryUpdateEvent<TestEntity[]>]>();
+const updateEventSpy = jest.fn<void, [TestEntity[]]>();
 
 beforeEach(() => {
   store = new AegisMemoryStore();
@@ -41,13 +41,16 @@ describe('new AegisList', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      source: list,
-      data: [
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [
         { id: 'item-1', value: 1 }
-      ]
-    });
+      ],
+      {
+        type: 'update',
+        filters: [],
+        source: list,
+      }
+    );
   });
 
   it('should ignore store update event for unknown item', () => {
@@ -65,16 +68,18 @@ describe('AegisList.refresh', () => {
     expect(list.query).toBe(query);
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith({
-      type: 'query',
-      key: ['pending'],
-      source: query,
-      data: {
+    expect(queryEventSpy).toHaveBeenCalledWith(
+      {
         new: {
           status: 'pending'
         }
+      },
+      {
+        type: 'query',
+        filters: ['pending'],
+        source: query,
       }
-    });
+    );
   });
 });
 

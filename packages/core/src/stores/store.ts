@@ -1,9 +1,18 @@
 import { EventSource } from '../events';
 
-import { StoreUpdateEvent } from './store-update.event';
+// Types
+export interface StoreUpdateEvent<D = unknown> {
+  id: string;
+  old?: Readonly<D>;
+  new: Readonly<D>;
+}
+
+export type StoreEventMap<D = unknown> = {
+  update: { data: StoreUpdateEvent<D>, filters: [string, string] }
+}
 
 // Store
-export abstract class AegisStore extends EventSource<StoreUpdateEvent> {
+export abstract class AegisStore extends EventSource<StoreEventMap> {
   // Methods
   abstract get<T>(entity: string, id: string): T | undefined;
   abstract set<T>(entity: string, id: string, data: T): T | undefined;

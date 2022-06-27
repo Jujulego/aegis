@@ -28,15 +28,17 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['test', 'set'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'set',
         new: 1,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'set'],
+        source: store,
+      }
+    );
   });
 
   it('should update given entities', () => {
@@ -50,16 +52,18 @@ describe('AegisMemoryStore.set', () => {
     store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenLastCalledWith({
-      type: 'update',
-      key: ['test', 'set'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenLastCalledWith(
+      {
         id: 'set',
         old: 1,
         new: 2,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'set'],
+        source: store,
+      }
+    );
   });
 });
 

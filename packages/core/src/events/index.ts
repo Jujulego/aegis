@@ -1,3 +1,2 @@
-export * from './event';
-export * from './event-emitter';
+export * from './types';
 export * from './event-source';

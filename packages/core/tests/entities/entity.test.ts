@@ -3,7 +3,8 @@ import {
   AegisItem, AegisList,
   AegisMemoryStore,
   AegisQuery,
-  StoreUpdateEvent, StoreUpdateListener
+  EventListener, StoreEventMap,
+  StoreUpdateEvent,
 } from '../../src';
 
 // Types
@@ -30,25 +31,25 @@ beforeEach(() => {
 // Tests
 describe('AegisEntity.subscribe', () => {
   it('should subscribe to store with key set', () => {
-    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
 
     expect(entity.subscribe('update', listener)).toBe(unsub);
 
-    expect(store.subscribe).toHaveBeenLastCalledWith('update', listener, { key: [entity.name] });
+    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}`, listener, undefined);
   });
 
   it('should subscribe to store with key prepended', () => {
-    const listener: StoreUpdateListener<TestEntity> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
 
-    expect(entity.subscribe('update', listener, { key: ['item'] })).toBe(unsub);
+    expect(entity.subscribe('update.item', listener)).toBe(unsub);
 
-    expect(store.subscribe).toHaveBeenLastCalledWith('update', listener, { key: [entity.name, 'item'] });
+    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}.item`, listener, undefined);
   });
 });
 
@@ -110,15 +111,17 @@ describe('AegisEntity.query', () => {
     expect(store.set).toHaveBeenCalledWith(entity.name, 'item', { id: 'item', value: 1 });
     expect(entity.item).toHaveBeenCalledWith('item');
 
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: [entity.name, 'item'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'item',
         new: { id: 'item', value: 1 }
+      },
+      {
+        type: 'update',
+        filters: [entity.name, 'item'],
+        source: store,
       }
-    });
+    );
   });
 });
 
@@ -141,16 +144,18 @@ describe('AegisEntity.mutation', () => {
 
     expect(store.set).toHaveBeenCalledWith(entity.name, 'update', { id: 'update', value: 2 });
 
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: [entity.name, 'update'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'update',
         old: { id: 'update', value: 1 },
         new: { id: 'update', value: 2 }
+      },
+      {
+        type: 'update',
+        filters: [entity.name, 'update'],
+        source: store
       }
-    });
+    );
   });
 
   it('should update cached item by merging it with query result', async () => {
@@ -173,16 +178,18 @@ describe('AegisEntity.mutation', () => {
     expect(store.get).toHaveBeenCalledWith(entity.name, 'update');
     expect(store.set).toHaveBeenCalledWith(entity.name, 'update', { id: 'update', value: 2 });
 
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: [entity.name, 'update'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'update',
         old: { id: 'update', value: 1 },
         new: { id: 'update', value: 2 }
+      },
+      {
+        type: 'update',
+        filters: [entity.name, 'update'],
+        source: store,
       }
-    });
+    );
   });
 
   it('should ignore unknown item if trying to merge it', async () => {
