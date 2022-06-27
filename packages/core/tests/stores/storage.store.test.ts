@@ -24,16 +24,18 @@ describe('new AegisStorageStore', () => {
       oldValue: JSON.stringify(1)
     }));
 
-    expect(updateEventSpy).toHaveBeenLastCalledWith({
-      type: 'update',
-      key: ['test', 'event'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenLastCalledWith(
+      {
         id: 'event',
         old: 1,
         new: 2,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'event'],
+        source: store,
+      }
+    );
   });
 
   it('should emit update event when StorageEvent is received (no old value)', () => {
@@ -45,15 +47,17 @@ describe('new AegisStorageStore', () => {
       newValue: JSON.stringify(3)
     }));
 
-    expect(updateEventSpy).toHaveBeenLastCalledWith({
-      type: 'update',
-      key: ['test', 'event'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenLastCalledWith(
+      {
         id: 'event',
         new: 3,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'event'],
+        source: store,
+      }
+    );
   });
 
   it('should ignore StorageEvent it has not an aegis key', () => {
@@ -91,15 +95,17 @@ describe('AegisStorageStore.set', () => {
     store.set('test', 'set', 1);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['test', 'set'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'set',
         new: 1,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'set'],
+        source: store,
+      }
+    );
   });
 
   it('should update given entities', () => {
@@ -113,16 +119,18 @@ describe('AegisStorageStore.set', () => {
     store.set('test', 'set', 2);
 
     expect(updateEventSpy).toHaveBeenCalledTimes(2);
-    expect(updateEventSpy).toHaveBeenLastCalledWith({
-      type: 'update',
-      key: ['test', 'set'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenLastCalledWith(
+      {
         id: 'set',
         old: 1,
         new: 2,
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'set'],
+        source: store,
+      }
+    );
   });
 });
 

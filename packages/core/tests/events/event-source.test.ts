@@ -18,8 +18,8 @@ describe('EventSource', () => {
 
     src.emit('test.1', null);
 
-    expect(typeListener).toHaveBeenCalledWith({ type: 'test', key: ['1'], data: null, source: src });
-    expect(targetListener).toHaveBeenCalledWith({ type: 'test', key: ['1'], data: null, source: src });
+    expect(typeListener).toHaveBeenCalledWith(null, { type: 'test', filters: ['1'], source: src });
+    expect(targetListener).toHaveBeenCalledWith(null, { type: 'test', filters: ['1'], source: src });
   });
 
   it('should not call unsubscribed listeners', () => {

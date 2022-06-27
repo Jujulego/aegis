@@ -42,7 +42,7 @@ describe('AegisItem.subscribe', () => {
 
     expect(item.subscribe('update', listener)).toBe(unsub);
 
-    expect(entity.subscribe).toHaveBeenCalledWith('update', listener, { key: [item.id] });
+    expect(entity.subscribe).toHaveBeenCalledWith(`update.${item.id}`, listener, undefined);
   });
 });
 
@@ -58,16 +58,16 @@ describe('AegisItem.refresh', () => {
     expect(item.query).toBe(query);
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith({
-      type: 'query',
-      key: ['pending'],
-      source: query,
-      data: {
-        new: {
-          status: 'pending'
-        }
+    expect(queryEventSpy).toHaveBeenCalledWith(
+      {
+        new: { status: 'pending' }
+      },
+      {
+        type: 'query',
+        filters: ['pending'],
+        source: query,
       }
-    });
+    );
   });
 
   it('should transmit query update completed event, store result and emit update event', () => {
@@ -82,14 +82,9 @@ describe('AegisItem.refresh', () => {
     expect(item.status).toBe('completed');
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith({
-      type: 'query',
-      key: ['completed'],
-      source: query,
-      data: {
-        old: {
-          status: 'pending'
-        },
+    expect(queryEventSpy).toHaveBeenCalledWith(
+      {
+        old: { status: 'pending' },
         new: {
           status: 'completed',
           data: {
@@ -97,19 +92,26 @@ describe('AegisItem.refresh', () => {
             value: 1
           }
         }
+      },
+      {
+        type: 'query',
+        filters: ['completed'],
+        source: query,
       }
-    });
+    );
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['test', 'item'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'item',
         new: { id: 'item', value: 1 },
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'item'],
+        source: store,
+      }
+    );
   });
 
   it('should transmit query update error event', () => {
@@ -124,11 +126,8 @@ describe('AegisItem.refresh', () => {
     expect(item.status).toBe('error');
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith({
-      type: 'query',
-      key: ['error'],
-      source: query,
-      data: {
+    expect(queryEventSpy).toHaveBeenCalledWith(
+      {
         old: {
           status: 'pending'
         },
@@ -136,8 +135,13 @@ describe('AegisItem.refresh', () => {
           status: 'error',
           data: new Error('failed !')
         }
+      },
+      {
+        type: 'query',
+        filters: ['error'],
+        source: query,
       }
-    });
+    );
 
     expect(updateEventSpy).not.toHaveBeenCalled();
   });
@@ -162,15 +166,17 @@ describe('AegisItem.data', () => {
     expect(entity.setItem).toHaveBeenCalledWith('item', { id: 'item', value: 2 });
 
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['test', 'item'],
-      source: store,
-      data: {
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
         id: 'item',
         new: { id: 'item', value: 2 },
       },
-    });
+      {
+        type: 'update',
+        filters: ['test', 'item'],
+        source: store,
+      }
+    );
   });
 
   it('should delete data in entity', () => {

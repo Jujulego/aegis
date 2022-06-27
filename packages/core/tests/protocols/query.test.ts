@@ -133,20 +133,20 @@ describe('AegisQuery.store', () => {
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['completed'],
-      source: query,
-      data: {
-        old: {
-          status: 'pending'
-        },
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
+        old: { status: 'pending' },
         new: {
           status: 'completed',
           data: 'result'
         }
+      },
+      {
+        type: 'update',
+        filters: ['completed'],
+        source: query,
       }
-    });
+    );
   });
 });
 
@@ -165,20 +165,20 @@ describe('AegisQuery.error', () => {
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith({
-      type: 'update',
-      key: ['error'],
-      source: query,
-      data: {
-        old: {
-          status: 'pending'
-        },
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      {
+        old: { status: 'pending' },
         new: {
           status: 'error',
           data: new Error('fail')
         }
+      },
+      {
+        type: 'update',
+        filters: ['error'],
+        source: query,
       }
-    });
+    );
   });
 });
 
