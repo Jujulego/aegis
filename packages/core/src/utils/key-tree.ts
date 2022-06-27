@@ -15,7 +15,7 @@ export type RestOfKey<K extends Key> =
       ? R
       : string[];
 
-type PartialKey<K extends Key> =
+export type PartialKey<K extends Key> =
   K extends []
     ? []
     : K extends [infer P, ...(infer R extends string[])]
