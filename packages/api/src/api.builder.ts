@@ -1,20 +1,20 @@
 import { AegisQuery } from '@jujulego/aegis-core';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { $url, ApiUrlArg } from './url';
 
 // Types
-export type ApiQuery<T, P extends string[]> = (arg: ApiUrlArg<P>) => AegisQuery<T>;
+export type ApiQuery<T, P extends string[]> = (arg: ApiUrlArg<P>, opts: Omit<AxiosRequestConfig, 'signal'>) => AegisQuery<T>;
 
 // Builder
 export const $api = {
   get<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg) => {
+    return (arg, opts) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
-        axios.get<T>(builder(arg), { signal: ctrl.signal })
+        axios.get<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
       );
@@ -23,10 +23,10 @@ export const $api = {
   head<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg) => {
+    return (arg, opts) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
-        axios.head<T>(builder(arg), { signal: ctrl.signal })
+        axios.head<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
       );
@@ -35,10 +35,10 @@ export const $api = {
   options<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg) => {
+    return (arg, opts) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
-        axios.options<T>(builder(arg), { signal: ctrl.signal })
+        axios.options<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
       );
