@@ -1,1 +1,1 @@
-export * from '@jujulego/aegis-core';
+export * from './url';
