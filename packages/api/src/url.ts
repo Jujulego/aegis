@@ -1,28 +1,16 @@
 // Types
-type StringArray<T extends string, R extends string[]> = [T, ...R];
+export type ApiUrlArg<P extends string[]> =
+  P extends []
+    ? void
+    : P extends [infer N extends string]
+      ? { readonly [K in N]: string | number }
+      : P extends [infer N extends string, ...(infer R extends string[])]
+        ? { readonly [K in N]: string | number } & ApiUrlArg<R>
+        : Record<string, string | number>;
 
-export type ApiUrlArg<P extends string[]> = P extends StringArray<infer N, infer R>
-  ? { readonly [K in N]: string | number } & ApiUrlArg<R>
-  : P extends []
-    ? unknown
-    : never;
-
-export type ApiUrl<A> = A extends void ? string : ApiUrlBuilder<A>;
-export type ApiUrlBuilder<A> = (arg: A) => string;
+export type ApiUrlBuilder<P extends string[]> = (arg: ApiUrlArg<P>) => string;
 
 // Template tag
-/**
- * Generates an url builder.
- * This will return the string as it was given.
- *
- * @example
- * url`/example/` === '/example/';
- *
- * @see useApi
- * @see useApiUrl
- */
-export function $url(strings: TemplateStringsArray): string;
-
 /**
  * Generates an url builder. Allow to define an url with parameters.
  * This will return a function accepting an object with the parameters as keys.
@@ -34,12 +22,10 @@ export function $url(strings: TemplateStringsArray): string;
  * @see useApi
  * @see useApiUrl
  */
-export function $url<P extends string[]>(strings: TemplateStringsArray, ...param: P): ApiUrlBuilder<ApiUrlArg<P>>;
-
-export function $url<P extends string[]>(strings: TemplateStringsArray, ...param: P) {
+export function $url<P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiUrlBuilder<P> {
   // No parameters => just a string
   if (param.length === 0) {
-    return strings.join('');
+    return () => strings.join('');
   }
 
   // Create the builder
@@ -47,16 +33,4 @@ export function $url<P extends string[]>(strings: TemplateStringsArray, ...param
     (r, p, i) => r + arg[p as keyof ApiUrlArg<P>] + strings[i+1],
     strings[0]
   );
-}
-
-// Utils
-/**
- * Returns an url builder for every form of ApiUrl (string or 1-arg function)
- *
- * @param url
- *
- * @see useApiUrl
- */
-export function urlBuilder<A = void>(url: ApiUrl<A>): ApiUrlBuilder<A> {
-  return typeof url === 'string' ? () => url : url;
 }
