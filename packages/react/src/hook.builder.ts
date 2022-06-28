@@ -8,8 +8,8 @@ export type AegisItemKeys<E extends Aegis<unknown, unknown>> = {
   [K in keyof E]: E[K] extends (id: string) => AegisItem<unknown> ? K : never;
 }[keyof E];
 
-export type AegisItemId<E extends Aegis<unknown, unknown>, N extends keyof E> =
-  E[N] extends (id: infer I extends string) => AegisItem<unknown> ? I : never
+export type AegisItemParam<E extends Aegis<unknown, unknown>, N extends keyof E> =
+  E[N] extends (...args: infer A extends [{ id: string }, ...unknown[]]) => AegisItem<unknown> ? A : never
 
 export type AegisListKeys<E extends Aegis<unknown, unknown>> = {
   [K in keyof E]: E[K] extends (key: string, ...args: unknown[]) => AegisList<unknown> ? K : never;
@@ -22,16 +22,17 @@ export type AegisListParam<E extends Aegis<unknown, unknown>, N extends keyof E>
 export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
   return {
     item<N extends AegisItemKeys<E>>(name: N) {
-      const query = entity[name] as unknown as (id: string) => AegisItem<T>;
+      const query = entity[name] as unknown as (...args: unknown[]) => AegisItem<T>;
 
-      return function useItem(id: AegisItemId<E, N>) {
+      return function useItem(...args: AegisItemParam<E, N>) {
+        const id = args[0].id;
         const item = useMemo(() => entity.$entity.item(id), [id]);
 
         const { status, data } = useAegisItem(item);
 
         useEffect(() => {
-          query(id);
-        }, [id]);
+          query(...args);
+        }, args);
 
         return {
           item,
