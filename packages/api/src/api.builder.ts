@@ -86,7 +86,7 @@ export const $api = {
   post<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
-    return Object.assign((arg, body, opts = {}) => {
+    return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
         axios.post<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
@@ -104,7 +104,7 @@ export const $api = {
   put<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
-    return Object.assign((arg, body, opts = {}) => {
+    return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
         axios.put<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
@@ -122,7 +122,7 @@ export const $api = {
   patch<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
-    return Object.assign((arg, body, opts = {}) => {
+    return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
       return AegisQuery.fromPromise(
         axios.patch<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
