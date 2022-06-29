@@ -2,6 +2,7 @@
   "extends": [
     "../../.eslintrc.json",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "plugin:testing-library/react"
   ]
 }
