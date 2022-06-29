@@ -17,7 +17,7 @@ export type Aegis<T, M> = M & {
    * @param name
    * @param sender
    */
-  $get<N extends string, I extends string = string>(name: N, sender: (id: I) => AegisQuery<T>): Aegis<T, M & Record<N, (id: I) => AegisItem<T>>>;
+  $get<N extends string, A extends [{ id: string }, ...unknown[]]>(name: N, sender: (...args: A) => AegisQuery<T>): Aegis<T, M & Record<N, (...args: A) => AegisItem<T>>>;
 
   /**
    * Add a query to the entity.
@@ -80,15 +80,15 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
   return {
     $entity: new AegisEntity<T>(name, store, extractor),
 
-    $get<N extends string, I extends string = string>(this: Aegis<T, unknown>, name: N, sender: (id: I) => AegisQuery<T>) {
+    $get<N extends string, A extends [{ id: string }, ...unknown[]]>(this: Aegis<T, unknown>, name: N, sender: (...args: A) => AegisQuery<T>) {
       return Object.assign(this, {
-        [name]: (id: I) => {
-          const item = this.$entity.item(id);
-          item.refresh(() => sender(id));
+        [name]: (...args: A) => {
+          const item = this.$entity.item(args[0].id);
+          item.refresh(() => sender(...args));
 
           return item;
         },
-      }) as Aegis<T, Record<N, (id: I) => AegisItem<T>>>;
+      }) as Aegis<T, Record<N, (...args: A) => AegisItem<T>>>;
     },
 
     $query<N extends string, A extends unknown[] = []>(this: Aegis<T, unknown>, name: N, sender: (...args: A) => AegisQuery<T>) {
