@@ -36,13 +36,13 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
         const { status, data } = useAegisItem(item);
 
         useEffect(() => {
-          query(...args);
+          query(..._args);
         }, [_args]);
 
         return {
           item,
           status, data,
-          refresh: useCallback(() => query(...args), [_args]),
+          refresh: useCallback(() => query(..._args), [_args]),
         };
       };
     },
@@ -56,13 +56,13 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
         const { status, data } = useAegisList(list);
 
         useEffect(() => {
-          query(key, ...args);
-        }, [key, _args]);
+          query(key, ..._args);
+        }, [_args]);
 
         return {
           list,
           status, data,
-          refresh: useCallback(() => query(key, ...args), [key, _args]),
+          refresh: useCallback(() => query(key, ..._args), [_args]),
         };
       };
     }
