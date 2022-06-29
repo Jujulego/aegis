@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@jujulego/aegis-core": "^1.0.0-alpha.21",
+    "dequal": "^2.0.2",
     "use-sync-external-store": "^1.1.0"
   },
   "devDependencies": {

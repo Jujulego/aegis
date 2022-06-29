@@ -12,7 +12,7 @@ interface TestEntity {
 describe('$hook().item', () => {
   it('should fetch item', () => {
     const query = new AegisQuery<TestEntity>();
-    const fetch = jest.fn((id: string) => query);
+    const fetch = jest.fn(() => query);
 
     // Build entity
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
@@ -21,9 +21,9 @@ describe('$hook().item', () => {
     const useTestEntity = $hook(ent).item('getById');
 
     // Render
-    const { result } = renderHook(() => useTestEntity('test'));
+    const { result } = renderHook(() => useTestEntity({ id: 'test' }));
 
-    expect(fetch).toHaveBeenCalledWith('test');
+    expect(fetch).toHaveBeenCalledWith({ id: 'test' });
     expect(result.current).toEqual({
       status: 'pending',
       item: expect.any(AegisItem),
@@ -45,7 +45,7 @@ describe('$hook().item', () => {
 
   it('should refetch when refresh call', () => {
     let query: AegisQuery<TestEntity>;
-    const fetch = jest.fn((id: string) => query = new AegisQuery());
+    const fetch = jest.fn(() => query = new AegisQuery());
 
     // Build entity
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
@@ -54,7 +54,7 @@ describe('$hook().item', () => {
     const useTestEntity = $hook(ent).item('getById');
 
     // Render
-    const { result } = renderHook(() => useTestEntity('test'));
+    const { result } = renderHook(() => useTestEntity({ id: 'test' }));
 
     expect(fetch).toHaveBeenCalledTimes(1);
 
@@ -75,7 +75,7 @@ describe('$hook().item', () => {
 
   it('should refetch when id changes', () => {
     const query = new AegisQuery<TestEntity>();
-    const fetch = jest.fn((id: string) => query);
+    const fetch = jest.fn(() => query);
 
     // Build entity
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
@@ -84,11 +84,11 @@ describe('$hook().item', () => {
     const useTestEntity = $hook(ent).item('getById');
 
     // Render
-    const { result, rerender } = renderHook(({ id }) => useTestEntity(id), {
-      initialProps: { id: 'test-1', },
+    const { result, rerender } = renderHook(({ id }) => useTestEntity({ id }), {
+      initialProps: { id: 'test-1' },
     });
 
-    expect(fetch).toHaveBeenCalledWith('test-1');
+    expect(fetch).toHaveBeenCalledWith({ id: 'test-1' });
     expect(result.current).toEqual({
       status: 'pending',
       item: expect.any(AegisItem),
@@ -98,7 +98,7 @@ describe('$hook().item', () => {
     // Rerender
     rerender({ id: 'test-2' });
 
-    expect(fetch).toHaveBeenCalledWith('test-2');
+    expect(fetch).toHaveBeenCalledWith({ id: 'test-2' });
     expect(result.current).toEqual({
       status: 'pending',
       item: expect.any(AegisItem),

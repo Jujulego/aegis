@@ -31,7 +31,7 @@ describe( '$entity', () => {
       // Call sender
       jest.spyOn(ent.$entity, 'item');
 
-      const itm = ent.getItem('item');
+      const itm = ent.getItem({ id: 'item' });
 
       expect(itm).toBeInstanceOf(AegisItem);
       expect(itm.id).toBe('item');
@@ -40,7 +40,7 @@ describe( '$entity', () => {
 
       expect(ent.$entity.item).toHaveBeenCalledWith('item');
 
-      expect(sender).toHaveBeenCalledWith('item');
+      expect(sender).toHaveBeenCalledWith({ id: 'item' });
     });
   });
 
