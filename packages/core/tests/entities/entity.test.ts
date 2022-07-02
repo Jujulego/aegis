@@ -104,7 +104,7 @@ describe('AegisEntity.query', () => {
     expect(prom).toBeInstanceOf(AegisQuery);
 
     // Query completes
-    query.store({ id: 'item', value: 1 });
+    query.complete({ id: 'item', value: 1 });
 
     await expect(prom).resolves.toBeInstanceOf(AegisItem);
 
@@ -138,7 +138,7 @@ describe('AegisEntity.mutation', () => {
     expect(prom).toBeInstanceOf(AegisQuery);
 
     // Query completes
-    query.store({ id: 'update', value: 2 });
+    query.complete({ id: 'update', value: 2 });
 
     await expect(prom).resolves.toEqual({ id: 'update', value: 2 });
 
@@ -171,7 +171,7 @@ describe('AegisEntity.mutation', () => {
     expect(prom).toBeInstanceOf(AegisQuery);
 
     // Query completes
-    query.store(2);
+    query.complete(2);
 
     await expect(prom).resolves.toEqual({ id: 'update', value: 2 });
 
@@ -204,7 +204,7 @@ describe('AegisEntity.mutation', () => {
     expect(prom).toBeInstanceOf(AegisQuery);
 
     // Query completes
-    query.store(2);
+    query.complete(2);
 
     await expect(prom).rejects.toEqual(new Error(`Unknown mutated item ${entity.name}.update`));
 
@@ -232,7 +232,7 @@ describe('AegisEntity.deletion', () => {
     expect(prom).toBeInstanceOf(AegisQuery);
 
     // Query completes
-    query.store();
+    query.complete();
 
     await expect(prom).resolves.toEqual({ id: 'delete', value: 1 });
 

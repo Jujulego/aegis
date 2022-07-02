@@ -77,7 +77,7 @@ describe('AegisItem.refresh', () => {
     item.refresh(fetcher);
     queryEventSpy.mockReset();
 
-    query.store({ id: item.id, value: 1 });
+    query.complete({ id: item.id, value: 1 });
 
     expect(item.status).toBe('completed');
 
@@ -121,7 +121,7 @@ describe('AegisItem.refresh', () => {
     item.refresh(fetcher);
     queryEventSpy.mockReset();
 
-    query.error(new Error('failed !'));
+    query.fail(new Error('failed !'));
 
     expect(item.status).toBe('error');
 
