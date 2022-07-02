@@ -32,7 +32,7 @@ describe('$hook().item', () => {
 
     // Query completed
     act(() => {
-      query.store({ id: 'test', success: true });
+      query.complete({ id: 'test', success: true });
     });
 
     expect(result.current).toEqual({
@@ -60,7 +60,7 @@ describe('$hook().item', () => {
 
     // Complete & call refresh
     act(() => {
-      query.store({ id: 'test', success: true });
+      query.complete({ id: 'test', success: true });
       result.current.refresh();
     });
 
@@ -131,7 +131,7 @@ describe('$hook().list', () => {
 
     // Query completed
     act(() => {
-      query.store([
+      query.complete([
         { id: 'test-1', success: true },
         { id: 'test-2', success: true },
       ]);
