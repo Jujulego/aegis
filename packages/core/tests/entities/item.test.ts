@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisItem,
   AegisMemoryStore,
-  AegisQuery, EventListener, QueryUpdateEvent, StoreEventMap,
+  AegisQuery, EventListener, QueryState, StoreEventMap,
   StoreUpdateEvent,
 } from '../../src';
 
@@ -17,7 +17,7 @@ let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
 let item: AegisItem<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [QueryUpdateEvent<TestEntity>]>();
+const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity>>]>();
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
@@ -60,7 +60,7 @@ describe('AegisItem.refresh', () => {
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
       {
-        new: { status: 'pending' }
+        status: 'pending',
       },
       {
         type: 'query',
@@ -84,13 +84,10 @@ describe('AegisItem.refresh', () => {
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
       {
-        old: { status: 'pending' },
-        new: {
-          status: 'completed',
-          data: {
-            id: item.id,
-            value: 1
-          }
+        status: 'completed',
+        result: {
+          id: item.id,
+          value: 1
         }
       },
       {
@@ -123,22 +120,17 @@ describe('AegisItem.refresh', () => {
 
     query.fail(new Error('failed !'));
 
-    expect(item.status).toBe('error');
+    expect(item.status).toBe('failed');
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
       {
-        old: {
-          status: 'pending'
-        },
-        new: {
-          status: 'error',
-          data: new Error('failed !')
-        }
+        status: 'failed',
+        error: new Error('failed !')
       },
       {
         type: 'query',
-        filters: ['error'],
+        filters: ['failed'],
         source: query,
       }
     );
@@ -210,8 +202,8 @@ describe('AegisItem.status', () => {
 
     // - error
     jest.spyOn(query, 'status', 'get')
-      .mockReturnValue('error');
+      .mockReturnValue('failed');
 
-    expect(item.status).toBe('error');
+    expect(item.status).toBe('failed');
   });
 });
