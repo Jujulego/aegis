@@ -1,9 +1,9 @@
-import { AegisQuery, QueryUpdateEvent } from '../../src';
+import { AegisQuery, QueryState } from '../../src';
 
 // Setup
 let controller: AbortController;
 let query: AegisQuery<string>;
-const updateEventSpy = jest.fn<void, [QueryUpdateEvent<string>]>();
+const updateEventSpy = jest.fn<void, [Readonly<QueryState<string>>]>();
 
 beforeEach(() => {
   controller = new AbortController();
@@ -49,7 +49,7 @@ describe('AegisQuery.fromPromise', () => {
 
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success',
+      result: 'success',
     });
   });
 
@@ -58,15 +58,15 @@ describe('AegisQuery.fromPromise', () => {
     await new Promise((res) => setTimeout(res, 0));
 
     expect(query.state).toEqual({
-      status: 'error',
-      data: new Error('failed'),
+      status: 'failed',
+      error: new Error('failed'),
     });
   });
 });
 
 describe('AegisQuery.then', () => {
   it('should resolve as a promise (await)', async () => {
-    query.store('result');
+    query.complete('result');
 
     await expect(query).resolves.toBe('result');
   });
@@ -75,14 +75,14 @@ describe('AegisQuery.then', () => {
     const fulfill = jest.fn((txt: string) => txt.length);
     const prm = query.then(fulfill);
 
-    query.store('result');
+    query.complete('result');
 
     await expect(prm).resolves.toBe(6);
     expect(fulfill).toHaveBeenCalledWith('result');
   });
 
   it('should reject as a promise (await)', async () => {
-    query.error(new Error('fail'));
+    query.fail(new Error('fail'));
 
     await expect(query).rejects.toEqual(new Error('fail'));
   });
@@ -91,7 +91,7 @@ describe('AegisQuery.then', () => {
     const reject = jest.fn((err: Error) => err.message);
     const prm = query.then(null, reject);
 
-    query.error(new Error('failed'));
+    query.fail(new Error('failed'));
 
     await expect(prm).resolves.toBe('failed');
     expect(reject).toHaveBeenCalledWith(new Error('failed'));
@@ -102,7 +102,7 @@ describe('AegisQuery.then', () => {
       throw new Error('Fulfill failed');
     });
 
-    query.store('result');
+    query.complete('result');
 
     await expect(prm).rejects.toEqual(new Error('Fulfill failed'));
   });
@@ -112,34 +112,32 @@ describe('AegisQuery.then', () => {
       throw new Error('Reject failed');
     });
 
-    query.error(new Error('failed'));
+    query.fail(new Error('failed'));
 
     await expect(prm).rejects.toEqual(new Error('Reject failed'));
   });
 });
 
-describe('AegisQuery.store', () => {
+describe('AegisQuery.complete', () => {
   it('should update internal state', () => {
     // Change query to "success" state
-    query.store('result');
+    query.complete('result');
 
     expect(query.status).toBe('completed');
-    expect(query.state).toEqual({ status: 'completed', data: 'result' });
+    expect(query.result).toBe('result');
+    expect(query.state).toEqual({ status: 'completed', result: 'result' });
   });
 
   it('should emit the "update" event', () => {
     // Change query to "success" state
-    query.store('result');
+    query.complete('result');
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith(
       {
-        old: { status: 'pending' },
-        new: {
-          status: 'completed',
-          data: 'result'
-        }
+        status: 'completed',
+        result: 'result'
       },
       {
         type: 'update',
@@ -150,32 +148,30 @@ describe('AegisQuery.store', () => {
   });
 });
 
-describe('AegisQuery.error', () => {
+describe('AegisQuery.fail', () => {
   it('should update internal state', () => {
     // Change query to "error" state
-    query.error(new Error('fail'));
+    query.fail(new Error('fail'));
 
-    expect(query.status).toBe('error');
-    expect(query.state).toEqual({ status: 'error', data: new Error('fail') });
+    expect(query.status).toBe('failed');
+    expect(query.error).toEqual(new Error('fail'));
+    expect(query.state).toEqual({ status: 'failed', error: new Error('fail') });
   });
 
   it('should emit the "update" event', () => {
     // Change query to "error" state
-    query.error(new Error('fail'));
+    query.fail(new Error('fail'));
 
     // Check event
     expect(updateEventSpy).toHaveBeenCalledTimes(1);
     expect(updateEventSpy).toHaveBeenCalledWith(
       {
-        old: { status: 'pending' },
-        new: {
-          status: 'error',
-          data: new Error('fail')
-        }
+        status: 'failed',
+        error: new Error('fail')
       },
       {
         type: 'update',
-        filters: ['error'],
+        filters: ['failed'],
         source: query,
       }
     );

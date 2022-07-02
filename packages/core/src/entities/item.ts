@@ -1,5 +1,5 @@
 import { EventKey, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
-import { AegisQuery, QueryStatus, QueryUpdateEvent } from '../protocols';
+import { AegisQuery, QueryState, QueryStatus } from '../protocols';
 import { StoreEventMap } from '../stores';
 import { PartialKey, StringKey } from '../utils';
 
@@ -7,7 +7,7 @@ import { AegisEntity } from './entity';
 
 // Types
 export type ItemEventMap<D> = {
-  query: { data: QueryUpdateEvent<D>, filters: ['pending' | 'completed' | 'error'] },
+  query: { data: Readonly<QueryState<D>>, filters: [QueryStatus] },
 };
 
 // Class
@@ -54,14 +54,14 @@ export class AegisItem<D> extends EventSource<ItemEventMap<D>> {
       this._query.subscribe('update', (data, mtd) => {
         if (this._query !== mtd.source) return;
 
-        this.emit(`query.${mtd.filters[0]}`, data, { source: mtd.source });
+        this.emit(`query.${data.status}`, data, { source: mtd.source });
 
-        if (data.new.status === 'completed') {
-          this.entity.setItem(this.id, data.new.data);
+        if (data.status === 'completed') {
+          this.entity.setItem(this.id, data.result);
         }
       });
 
-      this.emit('query.pending', { new: this._query.state }, { source: this._query });
+      this.emit('query.pending', this._query.state, { source: this._query });
     }
 
     return this._query;

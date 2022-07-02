@@ -21,7 +21,7 @@ describe('$api.get', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -43,7 +43,7 @@ describe('$api.head', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -65,7 +65,7 @@ describe('$api.options', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -87,7 +87,7 @@ describe('$api.delete', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -109,7 +109,7 @@ describe('$api.post', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -131,7 +131,7 @@ describe('$api.put', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });
@@ -153,7 +153,7 @@ describe('$api.patch', () => {
     expect(query).toBeInstanceOf(AegisQuery);
     expect(query.state).toEqual({
       status: 'completed',
-      data: 'success'
+      result: 'success'
     });
   });
 });

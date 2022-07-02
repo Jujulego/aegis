@@ -2,7 +2,7 @@ import {
   AegisEntity,
   AegisList,
   AegisMemoryStore,
-  AegisQuery, QueryUpdateEvent,
+  AegisQuery, QueryState,
 } from '../../src';
 
 // Types
@@ -16,7 +16,7 @@ let store: AegisMemoryStore;
 let entity: AegisEntity<TestEntity>;
 let list: AegisList<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [QueryUpdateEvent<TestEntity[]>]>();
+const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity[]>>]>();
 const updateEventSpy = jest.fn<void, [TestEntity[]]>();
 
 beforeEach(() => {
@@ -70,9 +70,7 @@ describe('AegisList.refresh', () => {
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
       {
-        new: {
-          status: 'pending'
-        }
+        status: 'pending'
       },
       {
         type: 'query',
@@ -105,9 +103,9 @@ describe('AegisList.status', () => {
 
     // - error
     jest.spyOn(query, 'status', 'get')
-      .mockReturnValue('error');
+      .mockReturnValue('failed');
 
-    expect(list.status).toBe('error');
+    expect(list.status).toBe('failed');
   });
 });
 

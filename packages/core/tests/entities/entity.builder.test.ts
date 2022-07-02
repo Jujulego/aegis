@@ -64,7 +64,7 @@ describe( '$entity', () => {
       expect(ent.$entity.query).toHaveBeenCalledWith(query);
 
       // Item
-      query.store({ id: 'query', data: true });
+      query.complete({ id: 'query', data: true });
 
       await expect(prm).resolves.toBeInstanceOf(AegisItem);
 
@@ -121,7 +121,7 @@ describe( '$entity', () => {
       expect(ent.$entity.query).toHaveBeenCalledWith(query);
 
       // Item
-      query.store({ id: 'create', data: true });
+      query.complete({ id: 'create', data: true });
 
       await expect(prm).resolves.toBeInstanceOf(AegisItem);
 
@@ -155,7 +155,7 @@ describe( '$entity', () => {
       expect(ent.$entity.mutation).toHaveBeenCalledWith('item', query);
 
       // Emit result
-      query.store({ id: 'item', data: true });
+      query.complete({ id: 'item', data: true });
 
       expect(itm.data).toEqual({ id: 'item', data: true });
     });
@@ -186,7 +186,7 @@ describe( '$entity', () => {
       expect(ent.$entity.mutation).toHaveBeenCalledWith('item', query, merge);
 
       // Emit result
-      query.store(true);
+      query.complete(true);
 
       expect(itm.data).toEqual({ id: 'item', data: true });
       expect(merge).toHaveBeenCalledWith({ id: 'item', data: false }, true);
