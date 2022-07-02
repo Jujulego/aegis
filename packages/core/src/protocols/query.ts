@@ -19,7 +19,7 @@ export type QueryState<T> = QueryStatePending | QueryStateCompleted<T> | QuerySt
 export type QueryStatus = QueryState<unknown>['status'];
 
 export type QueryEventMap<D> = {
-  update: { data: Readonly<QueryState<D>>, filters: ['completed' | 'failed'] },
+  update: { data: Readonly<QueryState<D>>, filters: [Exclude<QueryStatus, 'pending'>] },
 }
 
 // Query
