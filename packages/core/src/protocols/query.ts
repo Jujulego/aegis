@@ -5,9 +5,9 @@ interface QueryStatePending {
   readonly status: 'pending';
 }
 
-interface QueryStateCompleted<T> {
+interface QueryStateCompleted<D> {
   readonly status: 'completed';
-  readonly result: T;
+  readonly result: D;
 }
 
 interface QueryStateFailed {
@@ -15,7 +15,7 @@ interface QueryStateFailed {
   readonly error: Error;
 }
 
-export type QueryState<T> = QueryStatePending | QueryStateCompleted<T> | QueryStateFailed;
+export type QueryState<D> = QueryStatePending | QueryStateCompleted<D> | QueryStateFailed;
 export type QueryStatus = QueryState<unknown>['status'];
 
 export type QueryEventMap<D> = {
