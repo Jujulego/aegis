@@ -63,7 +63,7 @@ describe('new AegisList', () => {
 describe('AegisList.refresh', () => {
   it('should store query and emit query pending event', () => {
     const query = new AegisQuery<TestEntity[]>();
-    list.refresh(query);
+    list.refresh(() => query, 'replace');
 
     expect(list.query).toBe(query);
 
@@ -75,7 +75,7 @@ describe('AegisList.refresh', () => {
       {
         type: 'query',
         filters: ['pending'],
-        source: query,
+        source: list.manager,
       }
     );
   });
@@ -87,7 +87,7 @@ describe('AegisList.status', () => {
   });
 
   it('should return query status', () => {
-    const query = list.refresh(new AegisQuery());
+    const query = list.refresh(() => new AegisQuery(), 'replace');
 
     // - pending
     jest.spyOn(query, 'status', 'get')

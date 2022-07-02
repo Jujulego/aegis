@@ -15,6 +15,7 @@ export class AegisItem<D> {
     readonly entity: AegisEntity<D>,
     readonly id: string,
   ) {
+    // Subscribe to manager events
     this._manager.subscribe('query.completed', (data) => {
       if (data.status === 'completed') {
         this.entity.setItem(this.id, data.result);
