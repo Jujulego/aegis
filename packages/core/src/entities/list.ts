@@ -1,5 +1,5 @@
 import { EventKey, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
-import { AegisQuery, QueryManager, QueryManagerEventMap, QueryStatus, RefreshStrategy } from '../protocols';
+import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { PartialKey, StringKey } from '../utils';
 
 import { AegisEntity } from './entity';
@@ -94,8 +94,8 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
     return this._manager.query;
   }
 
-  get status(): QueryStatus {
-    return this.query?.status ?? 'pending';
+  get isLoading(): boolean {
+    return this.query?.status === 'pending';
   }
 
   get data(): D[] {
