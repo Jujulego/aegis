@@ -84,7 +84,7 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
       return Object.assign(this, {
         [name]: (...args: A) => {
           const item = this.$entity.item(args[0].id);
-          item.refresh(() => sender(...args));
+          item.refresh(() => sender(...args), 'keep');
 
           return item;
         },
@@ -101,7 +101,7 @@ export function $entity<T>(name: string, store: AegisStore, extractor: EntityIdE
       return Object.assign(this, {
         [name]: (key: string, ...args: A) => {
           const list = this.$entity.list(key);
-          list.refresh(sender(...args));
+          list.refresh(() => sender(...args), 'replace');
 
           return list;
         },
