@@ -24,7 +24,7 @@ describe('useAegisItem', () => {
     const { result } = renderHook(() => useAegisItem(itm));
 
     expect(result.current).toEqual({
-      status: 'pending',
+      isLoading: false,
       data: {
         id: 'test-1',
         success: true
@@ -40,7 +40,7 @@ describe('useAegisItem', () => {
     });
 
     expect(result.current).toEqual({
-      status: 'pending',
+      isLoading: false,
       data: {
         id: 'test-1',
         success: false

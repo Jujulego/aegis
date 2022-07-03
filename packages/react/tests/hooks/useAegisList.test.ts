@@ -24,7 +24,7 @@ describe('useAegisList', () => {
     const { result } = renderHook(() => useAegisList(lst));
 
     expect(result.current).toEqual({
-      status: 'pending',
+      isLoading: false,
       data: [
         { id: 'test-1', success: true },
         { id: 'test-2', success: true }
@@ -40,7 +40,7 @@ describe('useAegisList', () => {
     });
 
     expect(result.current).toEqual({
-      status: 'pending',
+      isLoading: false,
       data: [
         { id: 'test-1', success: false },
         { id: 'test-3', success: true }

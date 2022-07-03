@@ -33,7 +33,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
         const id = args[0].id;
         const item = useMemo(() => entity.$entity.item(id), [id]);
 
-        const { status, data } = useAegisItem(item);
+        const { isLoading, data } = useAegisItem(item);
 
         useEffect(() => {
           query(..._args);
@@ -41,7 +41,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
 
         return {
           item,
-          status, data,
+          isLoading, data,
           refresh: useCallback(() => query(..._args), [_args]),
         };
       };
@@ -53,7 +53,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
         const _args = useDeepMemo(args);
         const list = useMemo(() => entity.$entity.list(key), []);
 
-        const { status, data } = useAegisList(list);
+        const { isLoading, data } = useAegisList(list);
 
         useEffect(() => {
           query(key, ..._args);
@@ -61,7 +61,7 @@ export function $hook<T, E extends Aegis<T, unknown>>(entity: E) {
 
         return {
           list,
-          status, data,
+          isLoading, data,
           refresh: useCallback(() => query(key, ..._args), [_args]),
         };
       };

@@ -81,9 +81,9 @@ describe('AegisList.refresh', () => {
   });
 });
 
-describe('AegisList.status', () => {
+describe('AegisList.isLoading', () => {
   it('should return pending if no query is running', () => {
-    expect(list.status).toBe('pending');
+    expect(list.isLoading).toBe(false);
   });
 
   it('should return query status', () => {
@@ -93,19 +93,19 @@ describe('AegisList.status', () => {
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('pending');
 
-    expect(list.status).toBe('pending');
+    expect(list.isLoading).toBe(true);
 
     // - completed
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('completed');
 
-    expect(list.status).toBe('completed');
+    expect(list.isLoading).toBe(false);
 
     // - error
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('failed');
 
-    expect(list.status).toBe('failed');
+    expect(list.isLoading).toBe(false);
   });
 });
 
