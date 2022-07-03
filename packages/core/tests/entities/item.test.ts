@@ -51,7 +51,7 @@ describe('AegisItem.refresh', () => {
     const query = new AegisQuery<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
-    item.refresh(fetcher);
+    item.refresh(fetcher, 'keep');
 
     expect(fetcher).toHaveBeenCalled();
 
@@ -65,7 +65,7 @@ describe('AegisItem.refresh', () => {
       {
         type: 'query',
         filters: ['pending'],
-        source: query,
+        source: item.manager,
       }
     );
   });
@@ -74,12 +74,12 @@ describe('AegisItem.refresh', () => {
     const query = new AegisQuery<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
-    item.refresh(fetcher);
+    item.refresh(fetcher, 'keep');
     queryEventSpy.mockReset();
 
     query.complete({ id: item.id, value: 1 });
 
-    expect(item.status).toBe('completed');
+    expect(item.isLoading).toBe(false);
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
@@ -115,12 +115,12 @@ describe('AegisItem.refresh', () => {
     const query = new AegisQuery<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
-    item.refresh(fetcher);
+    item.refresh(fetcher, 'keep');
     queryEventSpy.mockReset();
 
     query.fail(new Error('failed !'));
 
-    expect(item.status).toBe('failed');
+    expect(item.isLoading).toBe(false);
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
@@ -182,28 +182,28 @@ describe('AegisItem.data', () => {
 
 describe('AegisItem.status', () => {
   it('should return pending if no query is running', () => {
-    expect(item.status).toBe('pending');
+    expect(item.isLoading).toBe(false);
   });
 
   it('should return query status', () => {
-    const query = item.refresh(() => new AegisQuery());
+    const query = item.refresh(() => new AegisQuery(), 'keep');
 
     // - pending
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('pending');
 
-    expect(item.status).toBe('pending');
+    expect(item.isLoading).toBe(true);
 
     // - completed
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('completed');
 
-    expect(item.status).toBe('completed');
+    expect(item.isLoading).toBe(false);
 
     // - error
     jest.spyOn(query, 'status', 'get')
       .mockReturnValue('failed');
 
-    expect(item.status).toBe('failed');
+    expect(item.isLoading).toBe(false);
   });
 });

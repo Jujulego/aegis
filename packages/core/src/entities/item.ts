@@ -1,26 +1,26 @@
-import { EventKey, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
-import { AegisQuery, QueryState, QueryStatus } from '../protocols';
+import { EventKey, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
+import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { StoreEventMap } from '../stores';
 import { PartialKey, StringKey } from '../utils';
 
 import { AegisEntity } from './entity';
 
-// Types
-export type ItemEventMap<D> = {
-  query: { data: Readonly<QueryState<D>>, filters: [QueryStatus] },
-};
-
 // Class
-export class AegisItem<D> extends EventSource<ItemEventMap<D>> {
+export class AegisItem<D> {
   // Attributes
-  private _query?: AegisQuery<D>;
+  private _manager = new QueryManager<D>();
 
   // Constructor
   constructor(
     readonly entity: AegisEntity<D>,
     readonly id: string,
   ) {
-    super();
+    // Subscribe to manager events
+    this._manager.subscribe('query.completed', (data) => {
+      if (data.status === 'completed') {
+        this.entity.setItem(this.id, data.result);
+      }
+    });
   }
 
   // Methods
@@ -29,51 +29,38 @@ export class AegisItem<D> extends EventSource<ItemEventMap<D>> {
     listener: EventListener<StoreEventMap<D>, 'update'>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
-  subscribe<T extends keyof ItemEventMap<D>>(
-    key: StringKey<PartialKey<EventKey<ItemEventMap<D>, T>>>,
-    listener: EventListener<ItemEventMap<D>, T>,
+  subscribe(
+    key: StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
+    listener: EventListener<QueryManagerEventMap<D>, 'query'>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
   subscribe(
-    key: 'update' | StringKey<PartialKey<EventKey<ItemEventMap<D>, keyof ItemEventMap<D>>>>,
-    listener: EventListener<StoreEventMap<D>, 'update'> | EventListener<ItemEventMap<D>, keyof ItemEventMap<D>>,
+    key: 'update' | StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
+    listener: EventListener<StoreEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D>, 'query'>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
     if (key === 'update') {
       return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, 'update'>, opts);
     }
 
-    return super.subscribe(key, listener as EventListener<ItemEventMap<D>, keyof ItemEventMap<D>>, opts);
+    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, 'query'>, opts);
   }
 
-  refresh(fetcher: () => AegisQuery<D>): AegisQuery<D> {
-    if (this._query?.status !== 'pending') {
-      // Register query
-      this._query = fetcher();
-
-      this._query.subscribe('update', (data, mtd) => {
-        if (this._query !== mtd.source) return;
-
-        this.emit(`query.${data.status}`, data, { source: mtd.source });
-
-        if (data.status === 'completed') {
-          this.entity.setItem(this.id, data.result);
-        }
-      });
-
-      this.emit('query.pending', this._query.state, { source: this._query });
-    }
-
-    return this._query;
+  refresh(fetcher: () => AegisQuery<D>, strategy: RefreshStrategy): AegisQuery<D> {
+    return this._manager.refresh(fetcher, strategy);
   }
 
   // Properties
-  get status(): QueryStatus {
-    return this._query?.status ?? 'pending';
+  get manager(): QueryManager<D> {
+    return this._manager;
   }
 
   get query(): AegisQuery<D> | undefined {
-    return this._query;
+    return this._manager.query;
+  }
+
+  get isLoading(): boolean {
+    return this.query?.status === 'pending';
   }
 
   get data(): D | undefined {
