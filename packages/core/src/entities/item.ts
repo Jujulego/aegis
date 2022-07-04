@@ -1,7 +1,7 @@
-import { EventKey, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
+import { EventType, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
 import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { StoreEventMap } from '../stores';
-import { PartialKey, StringKey } from '../utils';
+import { ExtractKey, PartialKey } from '../utils';
 
 import { AegisEntity } from './entity';
 
@@ -17,33 +17,31 @@ export class AegisItem<D> {
   ) {
     // Subscribe to manager events
     this._manager.subscribe('query.completed', (data) => {
-      if (data.status === 'completed') {
-        this.entity.setItem(this.id, data.result);
-      }
+      this.entity.setItem(this.id, data.result);
     });
   }
 
   // Methods
   subscribe(
     key: 'update',
-    listener: EventListener<StoreEventMap<D>, 'update'>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe;
+  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
+    type: T,
+    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
   subscribe(
-    key: StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
-    listener: EventListener<QueryManagerEventMap<D>, 'query'>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    key: 'update' | StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
-    listener: EventListener<StoreEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D>, 'query'>,
+    key: 'update' | PartialKey<EventType<QueryManagerEventMap<D>>>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
     if (key === 'update') {
-      return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, 'update'>, opts);
+      return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, `update.${string}.${string}`>, opts);
     }
 
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, 'query'>, opts);
+    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>, opts);
   }
 
   refresh(fetcher: () => AegisQuery<D>, strategy: RefreshStrategy): AegisQuery<D> {

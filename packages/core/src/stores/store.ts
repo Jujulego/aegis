@@ -7,9 +7,7 @@ export interface StoreUpdateEvent<D = unknown> {
   new: Readonly<D>;
 }
 
-export type StoreEventMap<D = unknown> = {
-  update: { data: StoreUpdateEvent<D>, filters: [string, string] }
-}
+export type StoreEventMap<D = unknown> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
 
 // Store
 export abstract class AegisStore extends EventSource<StoreEventMap> {

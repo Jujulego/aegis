@@ -1,12 +1,14 @@
 import { EventSource } from '../events';
 
-import { AegisQuery, QueryState, QueryStatus } from './query';
+import { AegisQuery, QueryStateCompleted, QueryStateFailed, QueryStatePending } from './query';
 
 // Types
 export type RefreshStrategy = 'keep' | 'replace';
 
 export type QueryManagerEventMap<D> = {
-  query: { data: Readonly<QueryState<D>>, filters: [QueryStatus] },
+  'query.pending': QueryStatePending,
+  'query.completed': QueryStateCompleted<D>,
+  'query.failed': QueryStateFailed,
 }
 
 // Class
@@ -40,7 +42,7 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
       this.emit(`query.${state.status}`, state, { source: metadata.source });
     });
 
-    this.emit('query.pending', this._query.state);
+    this.emit(`query.${this._query.state.status}`, this._query.state);
 
     return this._query;
   }

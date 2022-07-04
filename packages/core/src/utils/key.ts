@@ -18,6 +18,14 @@ export type RestOfKey<K extends Key> =
     : '';
 
 /**
+ * Extract keys by beginning
+ */
+export type ExtractKey<K extends Key, S extends Key> =
+  K extends `${S}.${string}`
+    ? K
+    : Extract<K, S>;
+
+/**
  * Partial key
  */
 export type PartialKey<K extends Key> =
