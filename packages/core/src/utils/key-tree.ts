@@ -7,6 +7,22 @@ export class KeyTree<T, K extends Key> {
   private readonly _children = new Map<FirstOfKey<K>, KeyTree<T, RestOfKey<K>>>();
 
   // Methods
+  private _splitKey(key: PartialKey<K>): [FirstOfKey<K>, PartialKey<RestOfKey<K>>] {
+    const idx = key.indexOf('.');
+
+    if (idx === -1) {
+      return [
+        key as string as FirstOfKey<K>,
+        '' as PartialKey<RestOfKey<K>>
+      ];
+    }
+
+    return [
+      key.substring(0, idx) as FirstOfKey<K>,
+      key.substring(idx + 1) as PartialKey<RestOfKey<K>>
+    ];
+  }
+
   private _getChild(part: FirstOfKey<K>): KeyTree<T, RestOfKey<K>> {
     let child = this._children.get(part);
 
@@ -23,11 +39,11 @@ export class KeyTree<T, K extends Key> {
       yield elem;
     }
 
-    const [part, ...rest] = key.split('.');
-    const child = this._children.get(part as FirstOfKey<K>);
+    const [part, rest] = this._splitKey(key);
+    const child = this._children.get(part);
 
     if (child) {
-      yield* child.searchWithParent(rest.join('.') as PartialKey<RestOfKey<K>>);
+      yield* child.searchWithParent(rest);
     }
   }
 
@@ -35,10 +51,10 @@ export class KeyTree<T, K extends Key> {
     if (key.length === 0) {
       this._elements.add(elem);
     } else {
-      const [part, ...rest] = key.split('.');
+      const [part, rest] = this._splitKey(key);
 
-      const child = this._getChild(part as FirstOfKey<K>);
-      child.insert(rest.join('.') as PartialKey<RestOfKey<K>>, elem);
+      const child = this._getChild(part);
+      child.insert(rest, elem);
     }
   }
 
