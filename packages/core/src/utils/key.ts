@@ -1,45 +1,34 @@
 // Types
-export type KeyPart = string | number;
-export type Key = KeyPart[];
+export type Key = string;
 
 /**
  * Extract first element of key
  */
 export type FirstOfKey<K extends Key> =
-  K extends []
-    ? never
-    : K extends [infer P extends KeyPart, ...KeyPart[]]
-      ? P
-      : KeyPart;
+  K extends `${infer P}.${string}`
+    ? P
+    : K;
 
 /**
  * Extract all elements of key expect the first one
  */
 export type RestOfKey<K extends Key> =
-  K extends []
-    ? []
-    : K extends [KeyPart, ...(infer R extends KeyPart[])]
-      ? R
-      : KeyPart[];
+  K extends `${infer P}.${infer R}`
+    ? R
+    : '';
 
 /**
  * Partial key
  */
 export type PartialKey<K extends Key> =
-  K extends []
-    ? []
-    : K extends [infer P extends KeyPart, ...(infer R extends KeyPart[])]
-      ? [P] | [P, ...PartialKey<R>]
-      : KeyPart[];
+  K extends `${infer P}.${infer R}`
+    ? P | `${P}.${PartialKey<R>}`
+    : K;
 
 /**
- * Key type as string
+ * Splits string key type
  */
-export type StringKey<K extends Key> =
-  K extends []
-    ? ''
-    : K extends [infer P extends KeyPart]
-      ? `${P}`
-      : K extends [infer P extends KeyPart, ...(infer R extends KeyPart[])]
-        ? `${P}.${StringKey<R>}`
-        : string;
+export type SplitKey<K extends string> =
+  K extends `${infer P}.${infer R}`
+    ? [P, ...SplitKey<R>]
+    : [K];

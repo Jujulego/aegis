@@ -23,11 +23,11 @@ export class KeyTree<T, K extends Key> {
       yield elem;
     }
 
-    const [part, ...rest] = key;
+    const [part, ...rest] = key.split('.');
     const child = this._children.get(part as FirstOfKey<K>);
 
     if (child) {
-      yield* child.searchWithParent(rest as PartialKey<RestOfKey<K>>);
+      yield* child.searchWithParent(rest.join('.') as PartialKey<RestOfKey<K>>);
     }
   }
 
@@ -35,10 +35,10 @@ export class KeyTree<T, K extends Key> {
     if (key.length === 0) {
       this._elements.add(elem);
     } else {
-      const [part, ...rest] = key;
+      const [part, ...rest] = key.split('.');
 
       const child = this._getChild(part as FirstOfKey<K>);
-      child.insert(rest as PartialKey<RestOfKey<K>>, elem);
+      child.insert(rest.join('.') as PartialKey<RestOfKey<K>>, elem);
     }
   }
 
