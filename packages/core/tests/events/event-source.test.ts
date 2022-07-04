@@ -1,9 +1,7 @@
 import { EventSource } from '../../src';
 
 // Types
-type TestEventMap = {
-  test: { data: null, filters: [number] },
-};
+type TestEventMap = Record<`test.${number}`, null>;
 
 // Tests
 describe('EventSource', () => {
@@ -18,8 +16,8 @@ describe('EventSource', () => {
 
     src.emit('test.1', null);
 
-    expect(typeListener).toHaveBeenCalledWith(null, { type: 'test', filters: ['1'], source: src });
-    expect(targetListener).toHaveBeenCalledWith(null, { type: 'test', filters: ['1'], source: src });
+    expect(typeListener).toHaveBeenCalledWith(null, { type: 'test.1', source: src });
+    expect(targetListener).toHaveBeenCalledWith(null, { type: 'test.1', source: src });
   });
 
   it('should not call unsubscribed listeners', () => {

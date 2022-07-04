@@ -1,7 +1,7 @@
 import { EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
 import { AegisQuery } from '../protocols';
 import { AegisStore, StoreEventMap } from '../stores';
-import { PartialKey, StringKey } from '../utils';
+import { PartialKey } from '../utils';
 
 import { AegisItem } from './item';
 import { AegisList } from './list';
@@ -26,14 +26,14 @@ export class AegisEntity<D> {
   // Methods
   // - events
   subscribe(
-    key: StringKey<PartialKey<['update', string]>>,
-    listener: EventListener<StoreEventMap<D>, 'update'>,
+    key: PartialKey<`update.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
     const [type, ...filters] = key.split('.');
 
-    return this.store.subscribe<'update'>(
-      [type, this.name, ...filters].join('.') as StringKey<PartialKey<['update', string, string]>>,
+    return this.store.subscribe(
+      [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}`>,
       listener,
       opts
     );

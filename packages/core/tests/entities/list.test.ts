@@ -47,7 +47,6 @@ describe('new AegisList', () => {
       ],
       {
         type: 'update',
-        filters: [],
         source: list,
       }
     );
@@ -73,8 +72,7 @@ describe('AegisList.refresh', () => {
         status: 'pending'
       },
       {
-        type: 'query',
-        filters: ['pending'],
+        type: 'query.pending',
         source: list.manager,
       }
     );

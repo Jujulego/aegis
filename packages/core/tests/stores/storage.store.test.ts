@@ -31,8 +31,7 @@ describe('new AegisStorageStore', () => {
         new: 2,
       },
       {
-        type: 'update',
-        filters: ['test', 'event'],
+        type: 'update.test.event',
         source: store,
       }
     );
@@ -53,8 +52,7 @@ describe('new AegisStorageStore', () => {
         new: 3,
       },
       {
-        type: 'update',
-        filters: ['test', 'event'],
+        type: 'update.test.event',
         source: store,
       }
     );
@@ -101,8 +99,7 @@ describe('AegisStorageStore.set', () => {
         new: 1,
       },
       {
-        type: 'update',
-        filters: ['test', 'set'],
+        type: 'update.test.set',
         source: store,
       }
     );
@@ -126,8 +123,7 @@ describe('AegisStorageStore.set', () => {
         new: 2,
       },
       {
-        type: 'update',
-        filters: ['test', 'set'],
+        type: 'update.test.set',
         source: store,
       }
     );

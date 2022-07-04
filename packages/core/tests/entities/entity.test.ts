@@ -31,7 +31,7 @@ beforeEach(() => {
 // Tests
 describe('AegisEntity.subscribe', () => {
   it('should subscribe to store with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
@@ -42,7 +42,7 @@ describe('AegisEntity.subscribe', () => {
   });
 
   it('should subscribe to store with key prepended', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
@@ -117,8 +117,7 @@ describe('AegisEntity.query', () => {
         new: { id: 'item', value: 1 }
       },
       {
-        type: 'update',
-        filters: [entity.name, 'item'],
+        type: `update.${entity.name}.item`,
         source: store,
       }
     );
@@ -151,8 +150,7 @@ describe('AegisEntity.mutation', () => {
         new: { id: 'update', value: 2 }
       },
       {
-        type: 'update',
-        filters: [entity.name, 'update'],
+        type: `update.${entity.name}.update`,
         source: store
       }
     );
@@ -185,8 +183,7 @@ describe('AegisEntity.mutation', () => {
         new: { id: 'update', value: 2 }
       },
       {
-        type: 'update',
-        filters: [entity.name, 'update'],
+        type: `update.${entity.name}.update`,
         source: store,
       }
     );

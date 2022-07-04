@@ -1,24 +1,17 @@
-import { PartialKey, StringKey } from '../utils';
+import { ExtractKey, PartialKey } from '../utils';
 
 // Types
-export type EventMap = Record<string, { data: unknown, filters: (string | number)[] }>;
-
-/**
- * Extract data for given event type
- */
-export type EventData<M extends EventMap, T extends keyof M & string> = M[T]['data'];
-
-/**
- * Extract filters for given event type
- */
-export type EventFilters<M extends EventMap, T extends keyof M & string> = M[T]['filters'];
+export type EventMap = Record<string, unknown>;
 
 /**
  * Build key type for given event type
  */
-export type EventKey<M extends EventMap, T extends keyof M & string> = {
-  [K in keyof M & string]: [K, ...EventFilters<M, K>]
-}[T];
+export type EventType<M extends EventMap> = keyof M & string;
+
+/**
+ * Extract data for given event type
+ */
+export type EventData<M extends EventMap, T extends EventType<M> = EventType<M>> = M[T];
 
 /**
  * Event emit options
@@ -37,31 +30,30 @@ export interface EventListenerOptions {
 /**
  * Event metadata
  */
-export interface EventMetadata<M extends EventMap, T extends keyof M & string> {
+export interface EventMetadata<M extends EventMap, T extends EventType<M> = EventType<M>> {
   type: T;
-  filters: EventFilters<M, T>;
   source: unknown;
 }
 
 /**
  * Event listener
  */
-export type EventListener<M extends EventMap, T extends keyof M & string> =
+export type EventListener<M extends EventMap, T extends EventType<M> = EventType<M>> =
   (data: EventData<M, T>, metadata: EventMetadata<M, T>) => void;
 
 export type EventUnsubscribe = () => void;
 
 export interface EventEmitter<M extends EventMap = EventMap> {
   // Emit
-  emit<T extends keyof M & string>(
-    key: StringKey<EventKey<M, T>>,
+  emit<T extends EventType<M>>(
+    type: T,
     data: EventData<M, T>,
     opts?: EventOptions
   ): void;
 
-  subscribe<T extends keyof M & string>(
-    key: StringKey<PartialKey<EventKey<M, T>>>,
-    listener: EventListener<M, T>,
-    opts?: EventListenerOptions
+  subscribe<T extends PartialKey<EventType<M>>>(
+    type: T,
+    listener: EventListener<M, ExtractKey<EventType<M>, T>>,
+    opts?: EventListenerOptions,
   ): EventUnsubscribe;
 }

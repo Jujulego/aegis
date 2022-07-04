@@ -1,16 +1,16 @@
 import { EventSource } from '../events';
 
 // Types
-interface QueryStatePending {
+export interface QueryStatePending {
   readonly status: 'pending';
 }
 
-interface QueryStateCompleted<D> {
+export interface QueryStateCompleted<D> {
   readonly status: 'completed';
   readonly result: D;
 }
 
-interface QueryStateFailed {
+export interface QueryStateFailed {
   readonly status: 'failed';
   readonly error: Error;
 }
@@ -19,7 +19,8 @@ export type QueryState<D> = QueryStatePending | QueryStateCompleted<D> | QuerySt
 export type QueryStatus = QueryState<unknown>['status'];
 
 export type QueryEventMap<D> = {
-  update: { data: Readonly<QueryState<D>>, filters: [Exclude<QueryStatus, 'pending'>] },
+  'update.completed': QueryStateCompleted<D>,
+  'update.failed': QueryStateFailed,
 }
 
 // Query

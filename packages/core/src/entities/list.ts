@@ -1,12 +1,12 @@
-import { EventKey, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
+import { EventType, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
 import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
-import { PartialKey, StringKey } from '../utils';
+import { ExtractKey, PartialKey } from '../utils';
 
 import { AegisEntity } from './entity';
 
 // Types
 export type ListEventMap<D> = {
-  update: { data: D[], filters: [] },
+  update: D[],
 }
 
 // Class
@@ -27,11 +27,9 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
 
     // Subscribe to manager events
     this._manager.subscribe('query.completed', (data) => {
-      if (data.status === 'completed') {
-        this._ids = data.result.map(item => this.entity.storeItem(item));
-        this._cache = new WeakRef(data.result);
-        this._markDirty();
-      }
+      this._ids = data.result.map(item => this.entity.storeItem(item));
+      this._cache = new WeakRef(data.result);
+      this._markDirty();
     });
 
     // Subscribe to entity update events
@@ -63,21 +61,21 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
     listener: EventListener<ListEventMap<D>, 'update'>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
-  subscribe(
-    key: StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
-    listener: EventListener<QueryManagerEventMap<D[]>, 'query'>,
+  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
+    type: T,
+    listener: EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, T>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
   subscribe(
-    key: 'update' | StringKey<PartialKey<EventKey<QueryManagerEventMap<D>, 'query'>>>,
-    listener: EventListener<ListEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D[]>, 'query'>,
+    key: 'update' | PartialKey<EventType<QueryManagerEventMap<D[]>>>,
+    listener: EventListener<ListEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
     if (key === 'update') {
       return super.subscribe('update', listener as EventListener<ListEventMap<D>, 'update'>, opts);
     }
 
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, 'query'>, opts);
+    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'query'>>, opts);
   }
 
 
