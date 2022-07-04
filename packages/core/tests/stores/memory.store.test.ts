@@ -34,8 +34,7 @@ describe('AegisMemoryStore.set', () => {
         new: 1,
       },
       {
-        type: 'update',
-        filters: ['test', 'set'],
+        type: 'update.test.set',
         source: store,
       }
     );
@@ -59,8 +58,7 @@ describe('AegisMemoryStore.set', () => {
         new: 2,
       },
       {
-        type: 'update',
-        filters: ['test', 'set'],
+        type: 'update.test.set',
         source: store,
       }
     );

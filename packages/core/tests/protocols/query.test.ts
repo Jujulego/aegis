@@ -140,8 +140,7 @@ describe('AegisQuery.complete', () => {
         result: 'result'
       },
       {
-        type: 'update',
-        filters: ['completed'],
+        type: 'update.completed',
         source: query,
       }
     );
@@ -170,8 +169,7 @@ describe('AegisQuery.fail', () => {
         error: new Error('fail')
       },
       {
-        type: 'update',
-        filters: ['failed'],
+        type: 'update.failed',
         source: query,
       }
     );

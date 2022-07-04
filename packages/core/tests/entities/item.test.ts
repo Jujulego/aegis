@@ -35,7 +35,7 @@ beforeEach(() => {
 // Tests
 describe('AegisItem.subscribe', () => {
   it('should subscribe to entity with key set if type is \'updated\'', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, 'update'> = () => undefined;
+    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);
@@ -63,8 +63,7 @@ describe('AegisItem.refresh', () => {
         status: 'pending',
       },
       {
-        type: 'query',
-        filters: ['pending'],
+        type: 'query.pending',
         source: item.manager,
       }
     );
@@ -91,8 +90,7 @@ describe('AegisItem.refresh', () => {
         }
       },
       {
-        type: 'query',
-        filters: ['completed'],
+        type: 'query.completed',
         source: query,
       }
     );
@@ -104,8 +102,7 @@ describe('AegisItem.refresh', () => {
         new: { id: 'item', value: 1 },
       },
       {
-        type: 'update',
-        filters: ['test', 'item'],
+        type: `update.${entity.name}.item`,
         source: store,
       }
     );
@@ -129,8 +126,7 @@ describe('AegisItem.refresh', () => {
         error: new Error('failed !')
       },
       {
-        type: 'query',
-        filters: ['failed'],
+        type: 'query.failed',
         source: query,
       }
     );
@@ -164,8 +160,7 @@ describe('AegisItem.data', () => {
         new: { id: 'item', value: 2 },
       },
       {
-        type: 'update',
-        filters: ['test', 'item'],
+        type: `update.${entity.name}.item`,
         source: store,
       }
     );
