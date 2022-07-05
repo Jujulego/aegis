@@ -5,12 +5,14 @@
       <sourceFolder url="file://$MODULE_DIR$/packages/core/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/packages/react/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/packages/api/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/packages/aegis/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/packages/core/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/packages/react/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/packages/api/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/aegis/coverage" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
