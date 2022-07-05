@@ -124,10 +124,10 @@ jobs:
     
     steps:
       - name: Test
-        run: echo ${{ toJSON(needs.*.status) }}
+        run: echo ${{ toJSON(needs.*.result) }}
 
       - name: Failed
-        if: ${{ contains(needs.*.status, 'failure') || contains(needs.*.status, 'cancelled') || contains(needs.*.status, 'skipped') }}
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
         run: exit 1
 
       - name: Success
