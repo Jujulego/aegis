@@ -1,4 +1,4 @@
-import { AegisItem } from '@jujulego/aegis-core';
+import { AegisItem } from '@jujulego/aegis';
 import { useDebugValue } from 'react';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
