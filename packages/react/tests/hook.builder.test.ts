@@ -1,6 +1,7 @@
+import { $entity, $store, AegisItem, AegisList, AegisQuery } from '@jujulego/aegis';
 import { act, renderHook } from '@testing-library/react';
 
-import { $entity, $hook, $store, AegisQuery, AegisItem, AegisList } from '../src';
+import { $hook } from '../src';
 
 // Types
 interface TestEntity {

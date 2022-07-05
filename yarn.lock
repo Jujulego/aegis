@@ -906,7 +906,6 @@ __metadata:
   resolution: "@jujulego/aegis-react@workspace:packages/react"
   dependencies:
     "@jujulego/aegis": ^1.0.0-alpha.1
-    "@jujulego/aegis-core": ^1.0.0-alpha.21
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.209
@@ -970,6 +969,7 @@ __metadata:
     gulp: 4.0.2
     gulp-cli: 2.3.0
     jest: 28.1.2
+    jest-environment-jsdom: 28.1.2
     regenerator-runtime: 0.13.9
     ts-node: 10.8.2
     typescript: 4.7.4

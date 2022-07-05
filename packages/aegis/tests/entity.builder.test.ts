@@ -1,6 +1,6 @@
-import { $store, AegisEntity, AegisItem, AegisList, AegisQuery } from '@jujulego/aegis-core';
+import { AegisEntity, AegisItem, AegisList, AegisQuery } from '@jujulego/aegis-core';
 
-import { $entity } from '../src';
+import { $entity, $store } from '../src';
 
 // Types
 interface TestEntity {
