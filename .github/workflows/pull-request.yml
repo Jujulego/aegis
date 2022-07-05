@@ -109,9 +109,6 @@ jobs:
       - name: Test
         run: yarn workspace ${{ matrix.name }} test
 
-      - name: Failed
-        run: exit 1
-
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.slug }}-coverage
@@ -123,9 +120,6 @@ jobs:
     if: ${{ always() }}
     
     steps:
-      - name: Test
-        run: echo "${{ toJSON(needs.*.result) }}"
-
       - name: Failed
         if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
         run: exit 1
