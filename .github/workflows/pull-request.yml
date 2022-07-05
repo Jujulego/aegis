@@ -109,6 +109,9 @@ jobs:
       - name: Test
         run: yarn workspace ${{ matrix.name }} test
 
+      - name: Failed
+        run: exit 1
+
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.slug }}-coverage
@@ -119,5 +122,12 @@ jobs:
     needs: [lint, test]
     
     steps:
+      - name: Test
+        run: echo ${{ needs.*.status }}
+
+      - name: Failed
+        if: ${{ contains(needs.*.status, 'failure') || contains(needs.*.status, 'skipped') }}
+        run: exit 1
+
       - name: Success
         run: echo 'You are soooo curious ;)'
