@@ -1,5 +1,5 @@
-import { AegisMemoryStore } from './memory.store';
-import { AegisStorageStore } from './storage.store';
+import { AegisMemoryStore } from '@jujulego/aegis-core/src/stores/memory.store';
+import { AegisStorageStore } from '@jujulego/aegis-core/src/stores/storage.store';
 
 // Store builders
 export const $store = {

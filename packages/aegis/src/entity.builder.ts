@@ -1,12 +1,14 @@
-import { AegisQuery } from '../protocols';
-import { AegisStore } from '../stores';
+import {
+  AegisEntity,
+  AegisItem,
+  AegisList,
+  AegisQuery,
+  AegisStore,
+  EntityIdExtractor,
+  EntityMerge
+} from '@jujulego/aegis-core';
 
-import { AegisItem } from './item';
-import { AegisList } from './list';
-
-import { AegisEntity, EntityIdExtractor, EntityMerge } from './entity';
-
-// Type
+// Types
 export type Aegis<T, M> = M & {
   $entity: AegisEntity<T>;
 

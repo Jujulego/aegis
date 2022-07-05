@@ -1,4 +1,5 @@
-import { Aegis, AegisItem, AegisList } from '@jujulego/aegis-core';
+import { Aegis } from '@jujulego/aegis';
+import { AegisItem, AegisList } from '@jujulego/aegis-core';
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { useAegisItem, useAegisList, useDeepMemo } from './hooks';

@@ -1,4 +1,6 @@
-import { $store, AegisMemoryStore, AegisStorageStore } from '../../src';
+import { AegisMemoryStore, AegisStorageStore } from '@jujulego/aegis-core';
+
+import { $store } from '../src';
 
 // Tests
 describe('$store', () => {
