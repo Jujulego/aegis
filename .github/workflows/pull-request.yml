@@ -120,7 +120,7 @@ jobs:
   complete:
     runs-on: ubuntu-latest
     needs: [lint, test]
-    if: ${{ success() || failure() || skipped() }}
+    if: ${{ always() }}
     
     steps:
       - name: Test
