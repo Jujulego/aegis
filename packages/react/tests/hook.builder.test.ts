@@ -1,4 +1,4 @@
-import { $entity, $store, AegisItem, AegisList, AegisQuery } from '@jujulego/aegis';
+import { $entity, $store, Item, List, Query } from '@jujulego/aegis';
 import { act, renderHook } from '@testing-library/react';
 
 import { $hook } from '../src';
@@ -12,7 +12,7 @@ interface TestEntity {
 // Tests
 describe('$hook().item', () => {
   it('should fetch item', () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
     const fetch = jest.fn(() => query);
 
     // Build entity
@@ -27,7 +27,7 @@ describe('$hook().item', () => {
     expect(fetch).toHaveBeenCalledWith({ id: 'test' });
     expect(result.current).toEqual({
       isLoading: true,
-      item: expect.any(AegisItem),
+      item: expect.any(Item),
       refresh: expect.any(Function),
     });
 
@@ -39,14 +39,14 @@ describe('$hook().item', () => {
     expect(result.current).toEqual({
       isLoading: false,
       data: { id: 'test', success: true },
-      item: expect.any(AegisItem),
+      item: expect.any(Item),
       refresh: expect.any(Function),
     });
   });
 
   it('should refetch when refresh call', () => {
-    let query: AegisQuery<TestEntity>;
-    const fetch = jest.fn(() => query = new AegisQuery());
+    let query: Query<TestEntity>;
+    const fetch = jest.fn(() => query = new Query());
 
     // Build entity
     const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
@@ -69,13 +69,13 @@ describe('$hook().item', () => {
     expect(result.current).toEqual({
       isLoading: true,
       data: { id: 'test', success: true },
-      item: expect.any(AegisItem),
+      item: expect.any(Item),
       refresh: expect.any(Function),
     });
   });
 
   it('should refetch when id changes', () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
     const fetch = jest.fn(() => query);
 
     // Build entity
@@ -92,7 +92,7 @@ describe('$hook().item', () => {
     expect(fetch).toHaveBeenCalledWith({ id: 'test-1' });
     expect(result.current).toEqual({
       isLoading: true,
-      item: expect.any(AegisItem),
+      item: expect.any(Item),
       refresh: expect.any(Function),
     });
 
@@ -102,7 +102,7 @@ describe('$hook().item', () => {
     expect(fetch).toHaveBeenCalledWith({ id: 'test-2' });
     expect(result.current).toEqual({
       isLoading: true,
-      item: expect.any(AegisItem),
+      item: expect.any(Item),
       refresh: expect.any(Function),
     });
   });
@@ -110,7 +110,7 @@ describe('$hook().item', () => {
 
 describe('$hook().list', () => {
   it('should fetch list', () => {
-    const query = new AegisQuery<TestEntity[]>();
+    const query = new Query<TestEntity[]>();
     const fetch = jest.fn((..._: [number, boolean]) => query);
 
     // Build entity
@@ -126,7 +126,7 @@ describe('$hook().list', () => {
     expect(result.current).toEqual({
       isLoading: true,
       data: [],
-      list: expect.any(AegisList),
+      list: expect.any(List),
       refresh: expect.any(Function),
     });
 
@@ -144,7 +144,7 @@ describe('$hook().list', () => {
         { id: 'test-1', success: true },
         { id: 'test-2', success: true },
       ],
-      list: expect.any(AegisList),
+      list: expect.any(List),
       refresh: expect.any(Function),
     });
   });
