@@ -1,25 +1,25 @@
 import { EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
-import { AegisQuery } from '../protocols';
-import { AegisStore, StoreEventMap } from '../stores';
+import { Query } from '../protocols';
+import { Store, StoreEventMap } from '../stores';
 import { PartialKey } from '../utils';
 
-import { AegisItem } from './item';
-import { AegisList } from './list';
+import { Item } from './item';
+import { List } from './list';
 
 // Types
 export type EntityIdExtractor<D> = (entity: D) => string;
 export type EntityMerge<D, R> = (stored: D, result: R) => D;
 
 // Class
-export class AegisEntity<D> {
+export class Entity<D> {
   // Attributes
-  private readonly _items = new Map<string, WeakRef<AegisItem<D>>>();
-  private readonly _lists = new Map<string, WeakRef<AegisList<D>>>();
+  private readonly _items = new Map<string, WeakRef<Item<D>>>();
+  private readonly _lists = new Map<string, WeakRef<List<D>>>();
 
   // Constructor
   constructor(
     readonly name: string,
-    readonly store: AegisStore,
+    readonly store: Store,
     readonly extractor: EntityIdExtractor<D>
   ) {}
 
@@ -44,11 +44,11 @@ export class AegisEntity<D> {
    * Get item manager by id
    * @param id
    */
-  item(id: string): AegisItem<D> {
+  item(id: string): Item<D> {
     let item = this._items.get(id)?.deref();
 
     if (!item) {
-      item = new AegisItem(this, id);
+      item = new Item(this, id);
       this._items.set(id, new WeakRef(item));
     }
 
@@ -59,11 +59,11 @@ export class AegisEntity<D> {
    * Get list manager by key
    * @param key
    */
-  list(key: string): AegisList<D> {
+  list(key: string): List<D> {
     let list = this._lists.get(key)?.deref();
 
     if (!list) {
-      list = new AegisList(this, key);
+      list = new List(this, key);
       this._lists.set(key, new WeakRef(list));
     }
 
@@ -75,7 +75,7 @@ export class AegisEntity<D> {
    * Will resolves to item manager for returned item
    * @param query
    */
-  query(query: AegisQuery<D>): AegisQuery<AegisItem<D>> {
+  query(query: Query<D>): Query<Item<D>> {
     return query.then((item) => this.item(this.storeItem(item)));
   }
 
@@ -84,7 +84,7 @@ export class AegisEntity<D> {
    * @param id
    * @param query
    */
-  mutation(id: string, query: AegisQuery<D>): AegisQuery<D>;
+  mutation(id: string, query: Query<D>): Query<D>;
 
   /**
    * Register a mutation. Query result will be merged with stored item.
@@ -93,9 +93,9 @@ export class AegisEntity<D> {
    * @param query
    * @param merge
    */
-  mutation<R>(id: string, query: AegisQuery<R>, merge: EntityMerge<D, R>): AegisQuery<D>;
+  mutation<R>(id: string, query: Query<R>, merge: EntityMerge<D, R>): Query<D>;
 
-  mutation(id: string, query: AegisQuery<unknown>, merge?: EntityMerge<D, unknown>): AegisQuery<D> {
+  mutation(id: string, query: Query<unknown>, merge?: EntityMerge<D, unknown>): Query<D> {
     return query.then((result) => {
       if (merge) {
         const item = this.getItem(id);
@@ -122,7 +122,7 @@ export class AegisEntity<D> {
    * @param id
    * @param query
    */
-  deletion(id: string, query: AegisQuery<unknown>): AegisQuery<D | undefined> {
+  deletion(id: string, query: Query<unknown>): Query<D | undefined> {
     return query.then(() => this.deleteItem(id));
   }
 

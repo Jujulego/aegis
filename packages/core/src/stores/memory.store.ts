@@ -1,7 +1,7 @@
-import { AegisStore } from './store';
+import { Store } from './store';
 
 // Class
-export class AegisMemoryStore extends AegisStore {
+export class MemoryStore extends Store {
   // Attributes
   private readonly _map = new Map<string, unknown>();
 

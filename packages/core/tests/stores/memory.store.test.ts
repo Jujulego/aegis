@@ -1,24 +1,24 @@
-import { AegisMemoryStore, StoreUpdateEvent } from '../../src';
+import { MemoryStore, StoreUpdateEvent } from '../../src';
 
 // Setup
-let store: AegisMemoryStore;
+let store: MemoryStore;
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
 
 beforeEach(() => {
-  store = new AegisMemoryStore();
+  store = new MemoryStore();
 
   updateEventSpy.mockReset();
   store.subscribe('update', updateEventSpy);
 });
 
 // Tests
-describe('AegisMemoryStore.get', () => {
+describe('MemoryStore.get', () => {
   it('should return undefined for unknown entities', () => {
     expect(store.get('unknown', 'unknown')).toBeUndefined();
   });
 });
 
-describe('AegisMemoryStore.set', () => {
+describe('MemoryStore.set', () => {
   it('should store given entities', () => {
     expect(store.set('test', 'set', 1)).toBeUndefined();
     expect(store.get<number>('test', 'set')).toBe(1);
@@ -65,7 +65,7 @@ describe('AegisMemoryStore.set', () => {
   });
 });
 
-describe('AegisMemoryStore.delete', () => {
+describe('MemoryStore.delete', () => {
   it('should do nothing if entities does not exists', () => {
     expect(store.delete('test', 'delete')).toBeUndefined();
   });

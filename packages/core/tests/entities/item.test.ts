@@ -1,8 +1,8 @@
 import {
-  AegisEntity,
-  AegisItem,
-  AegisMemoryStore,
-  AegisQuery, EventListener, QueryState, StoreEventMap,
+  Entity,
+  Item,
+  MemoryStore,
+  Query, EventListener, QueryState, StoreEventMap,
   StoreUpdateEvent,
 } from '../../src';
 
@@ -13,17 +13,17 @@ interface TestEntity {
 }
 
 // Setup
-let store: AegisMemoryStore;
-let entity: AegisEntity<TestEntity>;
-let item: AegisItem<TestEntity>;
+let store: MemoryStore;
+let entity: Entity<TestEntity>;
+let item: Item<TestEntity>;
 
 const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity>>]>();
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
-  store = new AegisMemoryStore();
-  entity = new AegisEntity('test', store, ({ id }) => id);
-  item = new AegisItem(entity, 'item');
+  store = new MemoryStore();
+  entity = new Entity('test', store, ({ id }) => id);
+  item = new Item(entity, 'item');
 
   queryEventSpy.mockReset();
   updateEventSpy.mockReset();
@@ -33,7 +33,7 @@ beforeEach(() => {
 });
 
 // Tests
-describe('AegisItem.subscribe', () => {
+describe('Item.subscribe', () => {
   it('should subscribe to entity with key set if type is \'updated\'', () => {
     const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
@@ -46,9 +46,9 @@ describe('AegisItem.subscribe', () => {
   });
 });
 
-describe('AegisItem.refresh', () => {
+describe('Item.refresh', () => {
   it('should call fetcher and emit query pending event', () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
     item.refresh(fetcher, 'keep');
@@ -70,7 +70,7 @@ describe('AegisItem.refresh', () => {
   });
 
   it('should transmit query update completed event, store result and emit update event', () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
     item.refresh(fetcher, 'keep');
@@ -109,7 +109,7 @@ describe('AegisItem.refresh', () => {
   });
 
   it('should transmit query update error event', () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
     const fetcher = jest.fn().mockReturnValue(query);
 
     item.refresh(fetcher, 'keep');
@@ -135,7 +135,7 @@ describe('AegisItem.refresh', () => {
   });
 });
 
-describe('AegisItem.data', () => {
+describe('Item.data', () => {
   it('should read data from entity', () => {
     jest.spyOn(entity, 'getItem').mockReturnValue({
       id: item.id,
@@ -175,13 +175,13 @@ describe('AegisItem.data', () => {
   });
 });
 
-describe('AegisItem.status', () => {
+describe('Item.status', () => {
   it('should return pending if no query is running', () => {
     expect(item.isLoading).toBe(false);
   });
 
   it('should return query status', () => {
-    const query = item.refresh(() => new AegisQuery(), 'keep');
+    const query = item.refresh(() => new Query(), 'keep');
 
     // - pending
     jest.spyOn(query, 'status', 'get')

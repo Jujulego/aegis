@@ -34,7 +34,7 @@ export type QueryEventMap<D> = {
  *
  * An update event is emitted when the query's stats changes, containing both the new query state
  */
-export class AegisQuery<D> extends EventSource<QueryEventMap<D>> implements PromiseLike<D> {
+export class Query<D> extends EventSource<QueryEventMap<D>> implements PromiseLike<D> {
   // Attributes
   private _state: QueryState<D> = { status: 'pending' };
 
@@ -53,8 +53,8 @@ export class AegisQuery<D> extends EventSource<QueryEventMap<D>> implements Prom
    * @param prom the promise to follow
    * @param controller AbortController to be used by query
    */
-  static fromPromise<D>(prom: PromiseLike<D>, controller?: AbortController): AegisQuery<D> {
-    const query = new AegisQuery<D>(controller);
+  static fromPromise<D>(prom: PromiseLike<D>, controller?: AbortController): Query<D> {
+    const query = new Query<D>(controller);
 
     prom.then((result) => query.complete(result), (error) => query.fail(error));
 
@@ -65,8 +65,8 @@ export class AegisQuery<D> extends EventSource<QueryEventMap<D>> implements Prom
   then<R1 = D, R2 = never>(
     onfulfilled?: ((value: D) => PromiseLike<R1> | R1) | null | undefined,
     onrejected?: ((reason: Error) => PromiseLike<R2> | R2) | null | undefined
-  ): AegisQuery<R1 | R2> {
-    const result = new AegisQuery<R1 | R2>(this.controller);
+  ): Query<R1 | R2> {
+    const result = new Query<R1 | R2>(this.controller);
 
     const listener = async (state: QueryState<D>) => {
       try {

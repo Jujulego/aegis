@@ -1,8 +1,8 @@
 import { EventType, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
-import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
+import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { ExtractKey, PartialKey } from '../utils';
 
-import { AegisEntity } from './entity';
+import { Entity } from './entity';
 
 // Types
 export type ListEventMap<D> = {
@@ -10,7 +10,7 @@ export type ListEventMap<D> = {
 }
 
 // Class
-export class AegisList<D> extends EventSource<ListEventMap<D>> {
+export class List<D> extends EventSource<ListEventMap<D>> {
   // Attributes
   private _ids: string[] = [];
   private _cache?: WeakRef<D[]>;
@@ -20,7 +20,7 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
 
   // Constructor
   constructor(
-    readonly entity: AegisEntity<D>,
+    readonly entity: Entity<D>,
     readonly key: string,
   ) {
     super();
@@ -79,7 +79,7 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
   }
 
 
-  refresh(fetcher:  () => AegisQuery<D[]>, strategy: RefreshStrategy): AegisQuery<D[]> {
+  refresh(fetcher:  () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
     return this._manager.refresh(fetcher, strategy);
   }
 
@@ -88,7 +88,7 @@ export class AegisList<D> extends EventSource<ListEventMap<D>> {
     return this._manager;
   }
 
-  get query(): AegisQuery<D[]> | undefined {
+  get query(): Query<D[]> | undefined {
     return this._manager.query;
   }
 

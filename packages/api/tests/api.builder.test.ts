@@ -1,4 +1,4 @@
-import { AegisQuery } from '@jujulego/aegis-core';
+import { Query } from '@jujulego/aegis-core';
 import axios from 'axios';
 
 import { $api } from '../src';
@@ -18,7 +18,7 @@ describe('$api.get', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -40,7 +40,7 @@ describe('$api.head', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -62,7 +62,7 @@ describe('$api.options', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -84,7 +84,7 @@ describe('$api.delete', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -106,7 +106,7 @@ describe('$api.post', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -128,7 +128,7 @@ describe('$api.put', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'
@@ -150,7 +150,7 @@ describe('$api.patch', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(query).toBeInstanceOf(AegisQuery);
+    expect(query).toBeInstanceOf(Query);
     expect(query.state).toEqual({
       status: 'completed',
       result: 'success'

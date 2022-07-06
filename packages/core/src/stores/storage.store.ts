@@ -1,7 +1,7 @@
-import { AegisStore } from './store';
+import { Store } from './store';
 
 // Class
-export class AegisStorageStore extends AegisStore {
+export class StorageStore extends Store {
   // Attributes
   private _cache = new Map<string, WeakRef<object>>();
 

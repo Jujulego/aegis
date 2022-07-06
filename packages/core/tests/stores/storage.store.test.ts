@@ -1,19 +1,19 @@
-import { AegisStorageStore, StoreUpdateEvent } from '../../src';
+import { StorageStore, StoreUpdateEvent } from '../../src';
 
 // Setup
-let store: AegisStorageStore;
+let store: StorageStore;
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
 
 beforeEach(() => {
   localStorage.clear();
-  store = new AegisStorageStore(localStorage);
+  store = new StorageStore(localStorage);
 
   updateEventSpy.mockReset();
   store.subscribe('update', updateEventSpy);
 });
 
 // Tests
-describe('new AegisStorageStore', () => {
+describe('new StorageStore', () => {
   it('should emit update event when StorageEvent is received', () => {
     localStorage.setItem('aegis:test:event', JSON.stringify(2));
 
@@ -69,7 +69,7 @@ describe('new AegisStorageStore', () => {
   });
 });
 
-describe('AegisStorageStore.get', () => {
+describe('StorageStore.get', () => {
   it('should return undefined for unknown entities', () => {
     expect(store.get('unknown', 'unknown')).toBeUndefined();
   });
@@ -82,7 +82,7 @@ describe('AegisStorageStore.get', () => {
   });
 });
 
-describe('AegisStorageStore.set', () => {
+describe('StorageStore.set', () => {
   it('should store given entities', () => {
     expect(store.set('test', 'set', 1)).toBeUndefined();
     expect(store.get<number>('test', 'set')).toBe(1);
@@ -130,7 +130,7 @@ describe('AegisStorageStore.set', () => {
   });
 });
 
-describe('AegisStorageStore.delete', () => {
+describe('StorageStore.delete', () => {
   it('should do nothing if entities does not exists', () => {
     expect(store.delete('test', 'delete')).toBeUndefined();
   });

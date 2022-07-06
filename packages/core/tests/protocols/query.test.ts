@@ -1,13 +1,13 @@
-import { AegisQuery, QueryState } from '../../src';
+import { Query, QueryState } from '../../src';
 
 // Setup
 let controller: AbortController;
-let query: AegisQuery<string>;
+let query: Query<string>;
 const updateEventSpy = jest.fn<void, [Readonly<QueryState<string>>]>();
 
 beforeEach(() => {
   controller = new AbortController();
-  query = new AegisQuery(controller);
+  query = new Query(controller);
 
   updateEventSpy.mockReset();
   query.subscribe('update', updateEventSpy);
@@ -15,15 +15,15 @@ beforeEach(() => {
 });
 
 // Tests
-describe('new AegisQuery', () => {
+describe('new Query', () => {
   it('should return be in "pending" state after initialization', () => {
     expect(query.status).toBe('pending');
     expect(query.state).toEqual({ status: 'pending' });
   });
 });
 
-describe('AegisQuery.fromPromise', () => {
-  let query: AegisQuery<string>;
+describe('Query.fromPromise', () => {
+  let query: Query<string>;
   let controller: AbortController;
   let resolve: (result: string) => void;
   let reject: (error: Error) => void;
@@ -35,7 +35,7 @@ describe('AegisQuery.fromPromise', () => {
     });
 
     controller = new AbortController();
-    query = AegisQuery.fromPromise(prom, controller);
+    query = Query.fromPromise(prom, controller);
   });
 
   it('should return a pending query', () => {
@@ -64,7 +64,7 @@ describe('AegisQuery.fromPromise', () => {
   });
 });
 
-describe('AegisQuery.then', () => {
+describe('Query.then', () => {
   it('should resolve as a promise (await)', async () => {
     query.complete('result');
 
@@ -118,7 +118,7 @@ describe('AegisQuery.then', () => {
   });
 });
 
-describe('AegisQuery.complete', () => {
+describe('Query.complete', () => {
   it('should update internal state', () => {
     // Change query to "success" state
     query.complete('result');
@@ -147,7 +147,7 @@ describe('AegisQuery.complete', () => {
   });
 });
 
-describe('AegisQuery.fail', () => {
+describe('Query.fail', () => {
   it('should update internal state', () => {
     // Change query to "error" state
     query.fail(new Error('fail'));
@@ -176,7 +176,7 @@ describe('AegisQuery.fail', () => {
   });
 });
 
-describe('AegisQuery.cancel', () => {
+describe('Query.cancel', () => {
   it('should call given AbortController\'s abort', () => {
     query.cancel();
 

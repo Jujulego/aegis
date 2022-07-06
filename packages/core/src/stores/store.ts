@@ -10,7 +10,7 @@ export interface StoreUpdateEvent<D = unknown> {
 export type StoreEventMap<D = unknown> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
 
 // Store
-export abstract class AegisStore extends EventSource<StoreEventMap> {
+export abstract class Store extends EventSource<StoreEventMap> {
   // Methods
   abstract get<T>(entity: string, id: string): T | undefined;
   abstract set<T>(entity: string, id: string, data: T): T | undefined;

@@ -1,6 +1,6 @@
 import { EventSource } from '../events';
 
-import { AegisQuery, QueryStateCompleted, QueryStateFailed, QueryStatePending } from './query';
+import { Query, QueryStateCompleted, QueryStateFailed, QueryStatePending } from './query';
 
 // Types
 export type RefreshStrategy = 'keep' | 'replace';
@@ -14,10 +14,10 @@ export type QueryManagerEventMap<D> = {
 // Class
 export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
   // Attributes
-  private _query?: AegisQuery<D>;
+  private _query?: Query<D>;
 
   // Methods
-  refresh(fetcher: () => AegisQuery<D>, strategy: RefreshStrategy): AegisQuery<D> {
+  refresh(fetcher: () => Query<D>, strategy: RefreshStrategy): Query<D> {
     // Handle previous query
     if (this._query?.status === 'pending') {
       if (strategy === 'keep') {
@@ -48,7 +48,7 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
   }
 
   // Properties
-  get query(): AegisQuery<D> | undefined {
+  get query(): Query<D> | undefined {
     return this._query;
   }
 }

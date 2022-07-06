@@ -1,4 +1,4 @@
-import { AegisEntity, AegisItem, AegisList, AegisQuery } from '@jujulego/aegis-core';
+import { Entity, Item, List, Query } from '@jujulego/aegis-core';
 
 import { $entity, $store } from '../src';
 
@@ -14,14 +14,14 @@ describe( '$entity', () => {
     const store = $store.memory();
     const ent = $entity<TestEntity>('test', store, ({ id }) => id);
 
-    expect(ent.$entity).toBeInstanceOf(AegisEntity);
+    expect(ent.$entity).toBeInstanceOf(Entity);
     expect(ent.$entity.name).toBe('test');
     expect(ent.$entity.store).toBe(store);
   });
 
   describe('$entity.$get', () => {
     it('should register an item query at given name', () => {
-      const query = new AegisQuery<TestEntity>();
+      const query = new Query<TestEntity>();
       const sender = jest.fn(() => query);
 
       // Call builder
@@ -35,7 +35,7 @@ describe( '$entity', () => {
 
       const itm = ent.getItem({ id: 'item' });
 
-      expect(itm).toBeInstanceOf(AegisItem);
+      expect(itm).toBeInstanceOf(Item);
       expect(itm.id).toBe('item');
       expect(itm.entity).toBe(ent.$entity);
       expect(itm.query).toBe(query);
@@ -48,7 +48,7 @@ describe( '$entity', () => {
 
   describe('$entity.$query', () => {
     it('should register a query at given name', async () => {
-      const query = new AegisQuery<TestEntity>();
+      const query = new Query<TestEntity>();
       const sender = jest.fn((_: number) => query);
 
       // Call builder
@@ -68,7 +68,7 @@ describe( '$entity', () => {
       // Item
       query.complete({ id: 'query', data: true });
 
-      await expect(prm).resolves.toBeInstanceOf(AegisItem);
+      await expect(prm).resolves.toBeInstanceOf(Item);
 
       const itm = await prm;
       expect(itm.id).toBe('query');
@@ -78,7 +78,7 @@ describe( '$entity', () => {
 
   describe('$entity.$list', () => {
     it('should register a list query at given name', () => {
-      const query = new AegisQuery<TestEntity[]>();
+      const query = new Query<TestEntity[]>();
       const sender = jest.fn((_: number) => query);
 
       // Call builder
@@ -92,7 +92,7 @@ describe( '$entity', () => {
 
       const lst = ent.getList('test', 5);
 
-      expect(lst).toBeInstanceOf(AegisList);
+      expect(lst).toBeInstanceOf(List);
       expect(lst.key).toBe('test');
       expect(lst.entity).toBe(ent.$entity);
       expect(lst.query).toBe(query);
@@ -105,7 +105,7 @@ describe( '$entity', () => {
 
   describe('$entity.$create', () => {
     it('should register a create query at given name', async () => {
-      const query = new AegisQuery<TestEntity>();
+      const query = new Query<TestEntity>();
       const sender = jest.fn((_: number) => query);
 
       // Call builder
@@ -125,7 +125,7 @@ describe( '$entity', () => {
       // Item
       query.complete({ id: 'create', data: true });
 
-      await expect(prm).resolves.toBeInstanceOf(AegisItem);
+      await expect(prm).resolves.toBeInstanceOf(Item);
 
       const itm = await prm;
       expect(itm.id).toBe('create');
@@ -135,7 +135,7 @@ describe( '$entity', () => {
 
   describe('$entity.$update', () => {
     it('should send mutation request and update cached item with result', () => {
-      const query = new AegisQuery<TestEntity>();
+      const query = new Query<TestEntity>();
       const sender = jest.fn((id: string, _: number) => query);
 
       // Call builder
@@ -163,7 +163,7 @@ describe( '$entity', () => {
     });
 
     it('should send mutation request and update cached item by merging it with result', () => {
-      const query = new AegisQuery<boolean>();
+      const query = new Query<boolean>();
       const sender = jest.fn((id: string, _: number) => query);
       const merge = jest.fn((old: TestEntity, data: boolean) => ({ ...old, data }));
 
@@ -197,7 +197,7 @@ describe( '$entity', () => {
 
   describe('$entity.$delete', () => {
     it('should register a delete query at given name', async () => {
-      const query = new AegisQuery<void>();
+      const query = new Query<void>();
       const sender = jest.fn(() => query);
 
       // Call builder
@@ -209,7 +209,7 @@ describe( '$entity', () => {
       // Call sender
       jest.spyOn(ent.$entity, 'deletion');
 
-      expect(ent.deleteItem('delete')).toBeInstanceOf(AegisQuery);
+      expect(ent.deleteItem('delete')).toBeInstanceOf(Query);
 
       expect(sender).toHaveBeenCalledWith('delete');
       expect(ent.$entity.deletion).toHaveBeenCalledWith('delete', query);

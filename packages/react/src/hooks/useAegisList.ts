@@ -1,4 +1,4 @@
-import { AegisList } from '@jujulego/aegis';
+import { List } from '@jujulego/aegis';
 import { useDebugValue } from 'react';
 import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
@@ -9,7 +9,7 @@ export interface AegisListState<T> {
 }
 
 // Hooks
-export function useAegisList<T>(list: AegisList<T>): AegisListState<T> {
+export function useAegisList<T>(list: List<T>): AegisListState<T> {
   const isLoading = useSyncExternalStore((cb) => list.subscribe('query', cb), () => list.isLoading);
   const data = useSyncExternalStore((cb) => list.subscribe('update', cb), () => list.data);
 

@@ -1,18 +1,18 @@
 import { EventType, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
-import { AegisQuery, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
+import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { StoreEventMap } from '../stores';
 import { ExtractKey, PartialKey } from '../utils';
 
-import { AegisEntity } from './entity';
+import { Entity } from './entity';
 
 // Class
-export class AegisItem<D> {
+export class Item<D> {
   // Attributes
   private _manager = new QueryManager<D>();
 
   // Constructor
   constructor(
-    readonly entity: AegisEntity<D>,
+    readonly entity: Entity<D>,
     readonly id: string,
   ) {
     // Subscribe to manager events
@@ -44,7 +44,7 @@ export class AegisItem<D> {
     return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>, opts);
   }
 
-  refresh(fetcher: () => AegisQuery<D>, strategy: RefreshStrategy): AegisQuery<D> {
+  refresh(fetcher: () => Query<D>, strategy: RefreshStrategy): Query<D> {
     return this._manager.refresh(fetcher, strategy);
   }
 
@@ -53,7 +53,7 @@ export class AegisItem<D> {
     return this._manager;
   }
 
-  get query(): AegisQuery<D> | undefined {
+  get query(): Query<D> | undefined {
     return this._manager.query;
   }
 

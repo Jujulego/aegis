@@ -1,8 +1,8 @@
 import {
-  AegisEntity,
-  AegisItem, AegisList,
-  AegisMemoryStore,
-  AegisQuery,
+  Entity,
+  Item, List,
+  MemoryStore,
+  Query,
   EventListener, StoreEventMap,
   StoreUpdateEvent,
 } from '../../src';
@@ -14,14 +14,14 @@ interface TestEntity {
 }
 
 // Setup
-let entity: AegisEntity<TestEntity>;
-let store: AegisMemoryStore;
+let entity: Entity<TestEntity>;
+let store: MemoryStore;
 
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
-  store = new AegisMemoryStore();
-  entity = new AegisEntity<TestEntity>('test', store, ({ id }) => id);
+  store = new MemoryStore();
+  entity = new Entity<TestEntity>('test', store, ({ id }) => id);
 
   updateEventSpy.mockReset();
 
@@ -29,7 +29,7 @@ beforeEach(() => {
 });
 
 // Tests
-describe('AegisEntity.subscribe', () => {
+describe('Entity.subscribe', () => {
   it('should subscribe to store with key set', () => {
     const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
@@ -53,11 +53,11 @@ describe('AegisEntity.subscribe', () => {
   });
 });
 
-describe('AegisEntity.item', () => {
-  it('should return an AegisItem instance', () => {
+describe('Entity.item', () => {
+  it('should return an Item instance', () => {
     const item = entity.item('item');
 
-    expect(item).toBeInstanceOf(AegisItem);
+    expect(item).toBeInstanceOf(Item);
     expect(item.id).toBe('item');
     expect(item.entity).toBe(entity);
   });
@@ -70,11 +70,11 @@ describe('AegisEntity.item', () => {
   });
 });
 
-describe('AegisEntity.list', () => {
-  it('should return an AegisList instance', () => {
+describe('Entity.list', () => {
+  it('should return an List instance', () => {
     const list = entity.list('all');
 
-    expect(list).toBeInstanceOf(AegisList);
+    expect(list).toBeInstanceOf(List);
     expect(list.key).toBe('all');
     expect(list.entity).toBe(entity);
   });
@@ -87,11 +87,11 @@ describe('AegisEntity.list', () => {
   });
 });
 
-describe('AegisEntity.query', () => {
-  let query: AegisQuery<TestEntity>;
+describe('Entity.query', () => {
+  let query: Query<TestEntity>;
 
   beforeEach(() => {
-    query = new AegisQuery();
+    query = new Query();
   });
 
   it('should resolve to an item when the query completes', async () => {
@@ -101,12 +101,12 @@ describe('AegisEntity.query', () => {
     // Register query
     const prom = entity.query(query);
 
-    expect(prom).toBeInstanceOf(AegisQuery);
+    expect(prom).toBeInstanceOf(Query);
 
     // Query completes
     query.complete({ id: 'item', value: 1 });
 
-    await expect(prom).resolves.toBeInstanceOf(AegisItem);
+    await expect(prom).resolves.toBeInstanceOf(Item);
 
     expect(store.set).toHaveBeenCalledWith(entity.name, 'item', { id: 'item', value: 1 });
     expect(entity.item).toHaveBeenCalledWith('item');
@@ -124,9 +124,9 @@ describe('AegisEntity.query', () => {
   });
 });
 
-describe('AegisEntity.mutation', () => {
+describe('Entity.mutation', () => {
   it('should update cached item with query result', async () => {
-    const query = new AegisQuery<TestEntity>();
+    const query = new Query<TestEntity>();
 
     jest.spyOn(store, 'set');
     store.set(entity.name, 'update', { id: 'update', value: 1 });
@@ -134,7 +134,7 @@ describe('AegisEntity.mutation', () => {
     // Register query
     const prom = entity.mutation('update', query);
 
-    expect(prom).toBeInstanceOf(AegisQuery);
+    expect(prom).toBeInstanceOf(Query);
 
     // Query completes
     query.complete({ id: 'update', value: 2 });
@@ -157,7 +157,7 @@ describe('AegisEntity.mutation', () => {
   });
 
   it('should update cached item by merging it with query result', async () => {
-    const query = new AegisQuery<number>();
+    const query = new Query<number>();
 
     jest.spyOn(store, 'get');
     jest.spyOn(store, 'set');
@@ -166,7 +166,7 @@ describe('AegisEntity.mutation', () => {
     // Register query
     const prom = entity.mutation('update', query, (data, result) => ({ ...data, value: result }));
 
-    expect(prom).toBeInstanceOf(AegisQuery);
+    expect(prom).toBeInstanceOf(Query);
 
     // Query completes
     query.complete(2);
@@ -190,7 +190,7 @@ describe('AegisEntity.mutation', () => {
   });
 
   it('should ignore unknown item if trying to merge it', async () => {
-    const query = new AegisQuery<number>();
+    const query = new Query<number>();
 
     jest.spyOn(store, 'get');
     jest.spyOn(store, 'set');
@@ -198,7 +198,7 @@ describe('AegisEntity.mutation', () => {
     // Register query
     const prom = entity.mutation('update', query, (data, result) => ({ ...data, value: result }));
 
-    expect(prom).toBeInstanceOf(AegisQuery);
+    expect(prom).toBeInstanceOf(Query);
 
     // Query completes
     query.complete(2);
@@ -212,11 +212,11 @@ describe('AegisEntity.mutation', () => {
   });
 });
 
-describe('AegisEntity.deletion', () => {
-  let query: AegisQuery<void>;
+describe('Entity.deletion', () => {
+  let query: Query<void>;
 
   beforeEach(() => {
-    query = new AegisQuery();
+    query = new Query();
   });
 
   it('should remove cached item when query completes', async () => {
@@ -226,7 +226,7 @@ describe('AegisEntity.deletion', () => {
     // Register query
     const prom = entity.deletion('delete', query);
 
-    expect(prom).toBeInstanceOf(AegisQuery);
+    expect(prom).toBeInstanceOf(Query);
 
     // Query completes
     query.complete();

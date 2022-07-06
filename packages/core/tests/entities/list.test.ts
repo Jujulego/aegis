@@ -1,8 +1,8 @@
 import {
-  AegisEntity,
-  AegisList,
-  AegisMemoryStore,
-  AegisQuery, QueryState,
+  Entity,
+  List,
+  MemoryStore,
+  Query, QueryState,
 } from '../../src';
 
 // Types
@@ -12,17 +12,17 @@ interface TestEntity {
 }
 
 // Setup
-let store: AegisMemoryStore;
-let entity: AegisEntity<TestEntity>;
-let list: AegisList<TestEntity>;
+let store: MemoryStore;
+let entity: Entity<TestEntity>;
+let list: List<TestEntity>;
 
 const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity[]>>]>();
 const updateEventSpy = jest.fn<void, [TestEntity[]]>();
 
 beforeEach(() => {
-  store = new AegisMemoryStore();
-  entity = new AegisEntity('test', store, ({ id }) => id);
-  list = new AegisList(entity, 'list');
+  store = new MemoryStore();
+  entity = new Entity('test', store, ({ id }) => id);
+  list = new List(entity, 'list');
 
   queryEventSpy.mockReset();
   updateEventSpy.mockReset();
@@ -32,7 +32,7 @@ beforeEach(() => {
 });
 
 // Tests
-describe('new AegisList', () => {
+describe('new List', () => {
   it('should transmit store update event for items within result list', async () => {
     list.data = [{ id: 'item-1', value: 0 }];
     updateEventSpy.mockReset();
@@ -59,9 +59,9 @@ describe('new AegisList', () => {
   });
 });
 
-describe('AegisList.refresh', () => {
+describe('List.refresh', () => {
   it('should store query and emit query pending event', () => {
-    const query = new AegisQuery<TestEntity[]>();
+    const query = new Query<TestEntity[]>();
     list.refresh(() => query, 'replace');
 
     expect(list.query).toBe(query);
@@ -79,13 +79,13 @@ describe('AegisList.refresh', () => {
   });
 });
 
-describe('AegisList.isLoading', () => {
+describe('List.isLoading', () => {
   it('should return pending if no query is running', () => {
     expect(list.isLoading).toBe(false);
   });
 
   it('should return query status', () => {
-    const query = list.refresh(() => new AegisQuery(), 'replace');
+    const query = list.refresh(() => new Query(), 'replace');
 
     // - pending
     jest.spyOn(query, 'status', 'get')

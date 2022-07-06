@@ -1,14 +1,14 @@
-import { AegisQuery } from '@jujulego/aegis-core';
+import { Query } from '@jujulego/aegis-core';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { $url, ApiUrlArg } from './url';
 
 // Types
-export type ApiQuery<T, P extends string[]> = (arg: ApiUrlArg<P>, opts?: Omit<AxiosRequestConfig, 'signal'>) => AegisQuery<T>;
+export type ApiQuery<T, P extends string[]> = (arg: ApiUrlArg<P>, opts?: Omit<AxiosRequestConfig, 'signal'>) => Query<T>;
 
 export interface ApiBodyQuery<T, D, P extends string[]> {
   // Call
-  (arg: ApiUrlArg<P>, body: D, opts?: Omit<AxiosRequestConfig<D>, 'signal'>): AegisQuery<T>
+  (arg: ApiUrlArg<P>, body: D, opts?: Omit<AxiosRequestConfig<D>, 'signal'>): Query<T>
 
   // Methods
   withBody<B>(): ApiBodyQuery<T, B, P>;
@@ -24,7 +24,7 @@ export const $api = {
 
     return (arg, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.get<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -40,7 +40,7 @@ export const $api = {
 
     return (arg, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.head<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -56,7 +56,7 @@ export const $api = {
 
     return (arg, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.options<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -72,7 +72,7 @@ export const $api = {
 
     return (arg, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.delete<T>(builder(arg), { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -88,7 +88,7 @@ export const $api = {
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.post<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -106,7 +106,7 @@ export const $api = {
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.put<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
@@ -124,7 +124,7 @@ export const $api = {
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
       const ctrl = new AbortController();
-      return AegisQuery.fromPromise(
+      return Query.fromPromise(
         axios.patch<T>(builder(arg), body, { ...opts, signal: ctrl.signal })
           .then((res) => res.data),
         ctrl
