@@ -27,7 +27,7 @@ export function $entity<T, I extends AegisId>(name: string, store: Store, extrac
     $query<N extends string, A extends unknown[]>(name: N, fetcher: (...args: A) => Query<T>, id?: AegisIdExtractor<A, I>, strategy: RefreshStrategy = 'keep') {
       this[name] = (...args: A) => {
         if (!id) {
-          return $item<T, I>(entity, entity.query(fetcher(...args)));
+          return $item<T, I>(entity, fetcher(...args));
         } else {
           const item = $item(entity, id(...args), () => fetcher(...args));
           item.$item.refresh(() => fetcher(...args), strategy);

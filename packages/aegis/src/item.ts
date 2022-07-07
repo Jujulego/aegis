@@ -41,9 +41,9 @@ export interface AegisUnknownItem<T, I extends AegisId = AegisId> extends AegisI
 // Item builder
 export function $item<T, I extends AegisId>(entity: Entity<T>, id: I): AegisItem<T, I>;
 export function $item<T, I extends AegisId>(entity: Entity<T>, id: I, refresh: () => Query<T>): AegisItem<T, I> & Refreshable<T>;
-export function $item<T, I extends AegisId>(entity: Entity<T>, item: Query<Item<T>>): AegisUnknownItem<T, I>;
+export function $item<T, I extends AegisId>(entity: Entity<T>, item: Query<T>): AegisUnknownItem<T, I>;
 
-export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<Item<T>>, refresh?: () => Query<T>) {
+export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T>, refresh?: () => Query<T>) {
   if (arg1 instanceof Query) {
     const events = new EventSource<StoreEventMap<T> & QueryManagerEventMap<T>>();
 
@@ -68,20 +68,23 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<I
     });
 
     arg1.subscribe('update.completed', ({ result }, mtd) => {
+      const id = entity.storeItem(result);
+      const $item = entity.item(id);
+
       Object.assign(item, {
-        $id: JSON.parse(result.id),
-        $item: result
+        $id: JSON.parse(id),
+        $item
       });
 
-      result.subscribe('update', (data, mtd) => {
+      $item.subscribe('update', (data, mtd) => {
         events.emit(mtd.type, data, { source: mtd.source });
       });
 
-      result.subscribe('query', (data, mtd) => {
+      $item.subscribe('query', (data, mtd) => {
         events.emit(mtd.type, data, { source: mtd.source });
       });
 
-      events.emit('query.completed', { status: 'completed', result: result.data! }, { source: mtd.source });
+      events.emit('query.completed', { status: 'completed', result: result }, { source: mtd.source });
     });
 
     return item;
