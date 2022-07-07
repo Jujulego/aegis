@@ -25,7 +25,7 @@ interface AegisItemBase<T> {
   ): EventUnsubscribe;
 
   readonly isLoading: boolean;
-  readonly data?: T;
+  data?: T;
 }
 
 export interface AegisItem<T, I extends AegisId = AegisId> extends AegisItemBase<T> {
@@ -57,8 +57,16 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T
       get isLoading() {
         return this.$item?.isLoading ?? (arg1.status === 'pending');
       },
+
       get data() {
         return this.$item?.data;
+      },
+      set data(value: T | undefined) {
+        if (!this.$item) {
+          throw new Error('Cannot update unknown item');
+        }
+
+        this.$item.data = value;
       }
     };
 
@@ -101,8 +109,12 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T
       get isLoading() {
         return this.$item.isLoading;
       },
+
       get data() {
         return this.$item.data;
+      },
+      set data(value: T | undefined) {
+        this.$item.data = value;
       }
     };
 
