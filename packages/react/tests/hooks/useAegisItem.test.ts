@@ -10,12 +10,12 @@ interface TestEntity {
 }
 
 // Setup
-const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id);
+const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id);
 
 // Tests
 describe('useAegisItem', () => {
   it('should return item data', () => {
-    const itm = ent.$entity.item('test-1');
+    const itm = ent.$item('test-1');
     itm.data = {
       id: 'test-1',
       success: true
@@ -24,13 +24,7 @@ describe('useAegisItem', () => {
     // Render
     const { result } = renderHook(() => useAegisItem(itm));
 
-    expect(result.current).toEqual({
-      isLoading: false,
-      data: {
-        id: 'test-1',
-        success: true
-      }
-    });
+    expect(result.current).toEqual(itm);
 
     // Update
     act(() => {
@@ -40,12 +34,6 @@ describe('useAegisItem', () => {
       };
     });
 
-    expect(result.current).toEqual({
-      isLoading: false,
-      data: {
-        id: 'test-1',
-        success: false
-      }
-    });
+    expect(result.current).toEqual(itm);
   });
 });

@@ -13,11 +13,11 @@ interface TestEntity {
 describe('$hook().item', () => {
   it('should fetch item', () => {
     const query = new Query<TestEntity>();
-    const fetch = jest.fn(() => query);
+    const fetch = jest.fn((arg: { id: 'test' }) => query);
 
     // Build entity
-    const ent = $entity<TestEntity>('test', $store.memory(), (itm) => itm.id)
-      .$get('getById', fetch);
+    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
+      .$query('getById', fetch, (arg) => arg.id);
 
     const useTestEntity = $hook(ent).item('getById');
 
@@ -26,8 +26,11 @@ describe('$hook().item', () => {
 
     expect(fetch).toHaveBeenCalledWith({ id: 'test' });
     expect(result.current).toEqual({
+      $id: 'test',
+      $item: expect.any(Item),
+      $entity: ent.$entity,
+
       isLoading: true,
-      item: expect.any(Item),
       refresh: expect.any(Function),
     });
 

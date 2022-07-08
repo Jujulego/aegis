@@ -10,8 +10,13 @@ import {
 import { AegisId, Refreshable } from './utils';
 
 // Types
-interface AegisItemBase<T> {
+export interface AegisUnknownItem<T, I extends AegisId = AegisId> {
+  readonly $id?: I;
+  readonly $item?: Item<T>;
   readonly $entity: Entity<T>;
+
+  readonly isLoading: boolean;
+  data?: T;
 
   subscribe(
     key: 'update',
@@ -23,19 +28,11 @@ interface AegisItemBase<T> {
     listener: EventListener<QueryManagerEventMap<T>, ExtractKey<EventType<QueryManagerEventMap<T>>, T>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
-
-  readonly isLoading: boolean;
-  data?: T;
 }
 
-export interface AegisItem<T, I extends AegisId = AegisId> extends AegisItemBase<T> {
+export interface AegisItem<T, I extends AegisId = AegisId> extends AegisUnknownItem<T, I> {
   readonly $id: I;
   readonly $item: Item<T>;
-}
-
-export interface AegisUnknownItem<T, I extends AegisId = AegisId> extends AegisItemBase<T> {
-  readonly $id?: I;
-  readonly $item?: Item<T>;
 }
 
 // Item builder
@@ -102,8 +99,8 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T
       $item: entity.item(JSON.stringify(arg1)),
       $entity: entity,
 
-      get subscribe() {
-        return this.$item.subscribe.bind(this.$item);
+      subscribe(...args: unknown[]) {
+        return this.$item.subscribe(...args);
       },
 
       get isLoading() {
