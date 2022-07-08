@@ -9,8 +9,8 @@ interface ITest {
   success: boolean;
 }
 
-const $Test = $entity('Test', $store.memory(), (test: ITest) => test.id)
-  .$query('get', (arg: { id: string }) => new Query(), ({ id }) => id);
+const $Test = $entity('Test', $store.memory(), (test: ITest) => [test.id, test.try] as const)
+  .$query('get', (arg: { id: string, try: number }) => new Query(), (arg) => [arg.id, arg.try]);
 
-const r = $Test.get({ id: 'toto' });
+const r = $Test.get({ id: 'toto', try: 2 });
 const d = r.data;

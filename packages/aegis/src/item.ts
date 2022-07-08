@@ -41,7 +41,7 @@ export interface AegisUnknownItem<T, I extends AegisId = AegisId> extends AegisI
 // Item builder
 export function $item<T, I extends AegisId>(entity: Entity<T>, id: I): AegisItem<T, I>;
 export function $item<T, I extends AegisId>(entity: Entity<T>, id: I, refresh: () => Query<T>): AegisItem<T, I> & Refreshable<T>;
-export function $item<T, I extends AegisId>(entity: Entity<T>, item: Query<T>): AegisUnknownItem<T, I>;
+export function $item<T, I extends AegisId>(entity: Entity<T>, query: Query<T>): AegisUnknownItem<T, I>;
 
 export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T>, refresh?: () => Query<T>) {
   if (arg1 instanceof Query) {
