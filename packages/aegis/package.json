@@ -35,7 +35,7 @@
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {
-    "@jujulego/aegis-core": "^1.0.0-alpha.21"
+    "@jujulego/aegis-core": "^1.0.0-alpha.22"
   },
   "devDependencies": {
     "@jujulego/flow": "1.1.0",
