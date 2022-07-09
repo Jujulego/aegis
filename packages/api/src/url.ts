@@ -3,10 +3,10 @@ export type ApiUrlArg<P extends string[]> =
   P extends []
     ? void
     : P extends [infer N extends string]
-      ? { readonly [K in N]: string | number }
+      ? { readonly [K in N]: string }
       : P extends [infer N extends string, ...(infer R extends string[])]
-        ? { readonly [K in N]: string | number } & ApiUrlArg<R>
-        : Record<string, string | number>;
+        ? { readonly [K in N]: string } & ApiUrlArg<R>
+        : Record<string, string>;
 
 export type ApiUrlBuilder<P extends string[]> = (arg: ApiUrlArg<P>) => string;
 
