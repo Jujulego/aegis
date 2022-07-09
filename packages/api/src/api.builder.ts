@@ -4,14 +4,14 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { $url, ApiUrlArg } from './url';
 
 // Types
-export type ApiQuery<T, P extends string[]> = (arg: ApiUrlArg<P>, opts?: Omit<AxiosRequestConfig, 'signal'>) => Query<T>;
+export type ApiFetcher<T, P extends string[]> = (arg: ApiUrlArg<P>, opts?: Omit<AxiosRequestConfig, 'signal'>) => Query<T>;
 
-export interface ApiBodyQuery<T, D, P extends string[]> {
+export interface ApiBodyFetcher<T, D, P extends string[]> {
   // Call
   (arg: ApiUrlArg<P>, body: D, opts?: Omit<AxiosRequestConfig<D>, 'signal'>): Query<T>
 
   // Methods
-  withBody<B>(): ApiBodyQuery<T, B, P>;
+  withBody<B>(): ApiBodyFetcher<T, B, P>;
 }
 
 // Builder
@@ -19,7 +19,7 @@ export const $api = {
   /**
    * Generate a GET request at the given url
    */
-  get<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
+  get<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<T, P> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts = {}) => {
@@ -35,7 +35,7 @@ export const $api = {
   /**
    * Generate a HEAD request at the given url
    */
-  head<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
+  head<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<T, P> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts = {}) => {
@@ -51,7 +51,7 @@ export const $api = {
   /**
    * Generate a OPTIONS request at the given url
    */
-  options<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
+  options<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<T, P> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts = {}) => {
@@ -67,7 +67,7 @@ export const $api = {
   /**
    * Generate a DELETE request at the given url
    */
-  delete<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiQuery<T, P> {
+  delete<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<T, P> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts = {}) => {
@@ -83,7 +83,7 @@ export const $api = {
   /**
    * Generate a POST request at the given url
    */
-  post<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
+  post<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyFetcher<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
@@ -101,7 +101,7 @@ export const $api = {
   /**
    * Generate a PUT request at the given url
    */
-  put<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
+  put<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyFetcher<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {
@@ -119,7 +119,7 @@ export const $api = {
   /**
    * Generate a PATCH request at the given url
    */
-  patch<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyQuery<T, unknown, P> {
+  patch<T, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiBodyFetcher<T, unknown, P> {
     const builder = $url<P>(strings, ...param);
 
     return Object.assign((arg: ApiUrlArg<P>, body: unknown, opts = {}) => {

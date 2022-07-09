@@ -905,7 +905,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-react@workspace:packages/react"
   dependencies:
-    "@jujulego/aegis": ^1.0.0-alpha.1
+    "@jujulego/aegis": ^1.0.0-alpha.2
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.211
@@ -940,13 +940,13 @@ __metadata:
     typescript: 4.7.4
     use-sync-external-store: ^1.1.0
   peerDependencies:
-    "@jujulego/aegis": ^1.0.0-alpha.1
+    "@jujulego/aegis": ^1.0.0-alpha.2
     react: ^17.0.0 || ^18.0.0
     regenerator-runtime: ^0.13.0
   languageName: unknown
   linkType: soft
 
-"@jujulego/aegis@^1.0.0-alpha.1, @jujulego/aegis@workspace:packages/aegis":
+"@jujulego/aegis@^1.0.0-alpha.2, @jujulego/aegis@workspace:packages/aegis":
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis@workspace:packages/aegis"
   dependencies:
