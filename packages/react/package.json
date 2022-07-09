@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis-react",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -32,7 +32,7 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "@jujulego/aegis": "^1.0.0-alpha.1",
+    "@jujulego/aegis": "^1.0.0-alpha.2",
     "react": "^17.0.0 || ^18.0.0",
     "regenerator-runtime": "^0.13.0"
   },
@@ -41,7 +41,7 @@
     "use-sync-external-store": "^1.1.0"
   },
   "devDependencies": {
-    "@jujulego/aegis": "^1.0.0-alpha.1",
+    "@jujulego/aegis": "^1.0.0-alpha.2",
     "@jujulego/flow": "1.1.0",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.210",
@@ -73,5 +73,6 @@
     "regenerator-runtime": "0.13.9",
     "ts-node": "10.8.2",
     "typescript": "4.7.4"
-  }
+  },
+  "stableVersion": "1.0.0-alpha.6"
 }
