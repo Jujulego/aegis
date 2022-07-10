@@ -10,6 +10,6 @@ describe('url', () => {
 
   it('should return a builder', () => {
     const builder = $url`/test/${'id'}`;
-    expect(builder({ id: 8 })).toBe('/test/8');
+    expect(builder({ id: '8' })).toBe('/test/8');
   });
 });

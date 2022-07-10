@@ -1,7 +1,7 @@
 // Types
 export type ApiUrlArg<P extends string[]> =
   P extends []
-    ? void
+    ? Record<string, never> | void
     : P extends [infer N extends string]
       ? { readonly [K in N]: string }
       : P extends [infer N extends string, ...(infer R extends string[])]
@@ -17,7 +17,7 @@ export type ApiUrlBuilder<P extends string[]> = (arg: ApiUrlArg<P>) => string;
  *
  * @example
  * const builder = url`/example/${'id'}`;
- * builder({ id: 8 }) === '/example/8';
+ * builder({ id: '8' }) === '/example/8';
  *
  * @see useApi
  * @see useApiUrl
