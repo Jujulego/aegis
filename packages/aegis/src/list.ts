@@ -9,32 +9,32 @@ import {
 import { Refreshable } from './utils';
 
 // Types
-export interface AegisList<T> {
+export interface AegisList<D> {
   readonly $key: string;
-  readonly $list: List<T>;
-  readonly $entity: Entity<T>;
+  readonly $list: List<D>;
+  readonly $entity: Entity<D>;
 
   readonly isLoading: boolean;
-  data: T[];
+  data: D[];
 
   subscribe(
     key: 'update',
-    listener: EventListener<ListEventMap<T>, 'update'>,
+    listener: EventListener<ListEventMap<D>, 'update'>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<T>>>>(
+  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
     type: T,
-    listener: EventListener<QueryManagerEventMap<T>, ExtractKey<EventType<QueryManagerEventMap<T>>, T>>,
+    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
 }
 
 // Item builder
-export function $list<T>(entity: Entity<T>, key: string): AegisList<T>;
-export function $list<T>(entity: Entity<T>, key: string, refresh: () => Query<T[]>): AegisList<T> & Refreshable<T>;
+export function $list<D>(entity: Entity<D>, key: string): AegisList<D>;
+export function $list<D>(entity: Entity<D>, key: string, refresh: () => Query<D[]>): AegisList<D> & Refreshable<D>;
 
-export function $list<T>(entity: Entity<T>, key: string, refresh?: () => Query<T[]>) {
-  const list: AegisList<T> = {
+export function $list<D>(entity: Entity<D>, key: string, refresh?: () => Query<D[]>) {
+  const list: AegisList<D> = {
     $key: key,
     $list: entity.list(key),
     $entity: entity,
@@ -50,7 +50,7 @@ export function $list<T>(entity: Entity<T>, key: string, refresh?: () => Query<T
     get data() {
       return this.$list.data ?? [];
     },
-    set data(value: T[]) {
+    set data(value: D[]) {
       this.$list.data = value;
     }
   };
