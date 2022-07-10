@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -35,7 +35,7 @@
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {
-    "@jujulego/aegis-core": "^1.0.0-alpha.22"
+    "@jujulego/aegis-core": "^1.0.0-alpha.23"
   },
   "devDependencies": {
     "@jujulego/flow": "1.1.0",
@@ -60,6 +60,5 @@
     "regenerator-runtime": "0.13.9",
     "ts-node": "10.8.2",
     "typescript": "4.7.4"
-  },
-  "stableVersion": "1.0.0-alpha.1"
+  }
 }

@@ -19,7 +19,7 @@ export type AegisEntity<T, I extends AegisId, P extends AegisProtocol> = P & {
 // Entity builder
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function $entity<T, I extends AegisId>(name: string, store: Store, extractor: (itm: T) => I): AegisEntity<T, I, {}> {
-  const entity = new Entity<T>(name, store, (itm) => JSON.stringify(extractor(itm)));
+  const entity = new Entity<T>(name, store, (itm: T) => JSON.stringify(extractor(itm)));
 
   return {
     $entity: entity,

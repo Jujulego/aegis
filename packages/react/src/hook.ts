@@ -4,26 +4,26 @@ import { useMemo } from 'react';
 import { useAegisItem, useAegisList, useDeepMemo } from './hooks';
 
 // Types
-export type AegisItemKeys<P extends AegisProtocol> = {
-  [K in keyof P]: P[K] extends Fetcher<unknown[], AegisUnknownItem<unknown>> ? K : never;
+export type AegisItemKeys<T, P extends AegisProtocol> = {
+  [K in keyof P]: P[K] extends Fetcher<any[], AegisUnknownItem<T>> ? K : never;
 }[keyof P];
 
-export type AegisListKeys<P extends AegisProtocol> = {
-  [K in keyof P]: P[K] extends Fetcher<unknown[], AegisList<unknown>> ? K : never;
+export type AegisListKeys<T, P extends AegisProtocol> = {
+  [K in keyof P]: P[K] extends Fetcher<any[], AegisList<T>> ? K : never;
 }[keyof P];
 
 // Builder
 export function $hook<T, I extends AegisId, P extends AegisProtocol>(entity: AegisEntity<T, I, P>) {
   return {
-    item<N extends AegisItemKeys<P>>(name: N) {
+    item<N extends AegisItemKeys<T, P>>(name: N) {
       return function useItem(...args: Parameters<P[N]>): ReturnType<P[N]> {
         const _args = useDeepMemo(args);
-        const item = useMemo(() => entity[name](..._args) as AegisUnknownItem<T>, [_args]);
+        const item = useMemo(() => entity[name](..._args) as AegisUnknownItem<T, I>, [_args]);
 
         return useAegisItem(item) as ReturnType<P[N]>;
       };
     },
-    list<N extends AegisListKeys<P>>(name: N) {
+    list<N extends AegisListKeys<T, P>>(name: N) {
       return function useItem(...args: Parameters<P[N]>): ReturnType<P[N]> {
         const _args = useDeepMemo(args);
         const list = useMemo(() => entity[name](..._args) as AegisList<T>, [_args]);

@@ -1,13 +1,13 @@
 import { EventSource } from '../events';
 
 // Types
-export interface StoreUpdateEvent<D = unknown> {
+export interface StoreUpdateEvent<D = any> {
   id: string;
   old?: Readonly<D>;
   new: Readonly<D>;
 }
 
-export type StoreEventMap<D = unknown> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
+export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
 
 // Store
 export abstract class Store extends EventSource<StoreEventMap> {
