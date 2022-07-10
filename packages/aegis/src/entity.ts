@@ -1,19 +1,24 @@
-import { Entity, Query, RefreshStrategy, Store } from '@jujulego/aegis-core';
+import { Entity, EntityMerge, Query, RefreshStrategy, Store } from '@jujulego/aegis-core';
 
 import { $item, AegisItem, AegisUnknownItem } from './item';
 import { $list, AegisList } from './list';
+import { $mutation, AegisMutation, AegisUnknownMutation } from './mutation';
 import { AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types
-export type AegisEntity<T, I extends AegisId, P extends AegisProtocol> = P & {
-  readonly $entity: Entity<T>;
+export type AegisEntity<D, I extends AegisId, P extends AegisProtocol> = P & {
+  readonly $entity: Entity<D>;
 
-  $item(id: I): AegisItem<T, I>;
-  $queryItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<T>>): AegisEntity<T, I, P & Record<N, Fetcher<A, AegisUnknownItem<T, I>>>>;
-  $queryItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<T>>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): AegisEntity<T, I, P & Record<N, Fetcher<A, AegisItem<T, I> & Refreshable<T>>>>;
+  $item(id: I): AegisItem<D, I>;
+  $queryItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<D>>): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisUnknownItem<D, I>>>>;
+  $queryItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<D>>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisItem<D, I> & Refreshable<D>>>>;
+  $mutateItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<D>>): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisUnknownMutation<D>>>>;
+  $mutateItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<D>>, id: AegisIdExtractor<A, I>): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisMutation<D>>>>;
+  $mutateItem<N extends string, A extends unknown[], R>(name: N, fetcher: Fetcher<A, Query<R>>, id: AegisIdExtractor<A, I>, merge: EntityMerge<D, R>): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisMutation<D>>>>;
+  $deleteItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<unknown>>, id: AegisIdExtractor<A, I>): AegisEntity<D, I, P & Record<N, Fetcher<A, AegisMutation<D>>>>;
 
-  $list(key: string): AegisList<T>;
-  $queryList<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<T[]>>, strategy?: RefreshStrategy): AegisEntity<T, I, P & Record<N, Fetcher<[string, ...A], AegisList<T>>>>;
+  $list(key: string): AegisList<D>;
+  $queryList<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<D[]>>, strategy?: RefreshStrategy): AegisEntity<D, I, P & Record<N, Fetcher<[string, ...A], AegisList<D>>>>;
 }
 
 // Entity builder
@@ -38,6 +43,36 @@ export function $entity<T, I extends AegisId>(name: string, store: Store, extrac
 
           return item;
         }
+      };
+
+      return this;
+    },
+
+    $mutateItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<unknown>>, id?: AegisIdExtractor<A, I>, merge?: EntityMerge<T, unknown>) {
+      this[name] = (...args: A) => {
+        const query = fetcher(...args);
+
+        if (!id) {
+          return $mutation(entity, query as Query<T>);
+        }
+
+        const _id = id(...args);
+
+        if (!merge) {
+          return $mutation(entity, entity.mutation(JSON.stringify(_id), query as Query<T>), _id);
+        }
+
+        return $mutation(entity, entity.mutation(JSON.stringify(_id), query, merge), _id);
+      };
+
+      return this;
+    },
+
+
+    $deleteItem<N extends string, A extends unknown[]>(name: N, fetcher: Fetcher<A, Query<unknown>>, id: AegisIdExtractor<A, I>) {
+      this[name] = (...args: A) => {
+        const _id = id(...args);
+        return $mutation(entity, entity.deletion(JSON.stringify(_id), fetcher(...args)), _id);
       };
 
       return this;

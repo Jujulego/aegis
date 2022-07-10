@@ -10,46 +10,43 @@ import {
 import { AegisId, Refreshable } from './utils';
 
 // Types
-export interface AegisUnknownItem<T, I extends AegisId = AegisId> {
+export interface AegisUnknownItem<D, I extends AegisId = AegisId> {
   readonly $id?: I;
-  readonly $item?: Item<T>;
-  readonly $entity: Entity<T>;
+  readonly $item?: Item<D>;
+  readonly $entity: Entity<D>;
 
   readonly isLoading: boolean;
-  data?: T;
+  data?: D;
 
   subscribe(
     key: 'update',
-    listener: EventListener<StoreEventMap<T>, `update.${string}.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<T>>>>(
+  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
     type: T,
-    listener: EventListener<QueryManagerEventMap<T>, ExtractKey<EventType<QueryManagerEventMap<T>>, T>>,
+    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
 }
 
-export interface AegisItem<T, I extends AegisId = AegisId> extends AegisUnknownItem<T, I> {
+export interface AegisItem<D, I extends AegisId = AegisId> extends AegisUnknownItem<D, I> {
   readonly $id: I;
-  readonly $item: Item<T>;
+  readonly $item: Item<D>;
 }
 
 // Item builder
-export function $item<T, I extends AegisId>(entity: Entity<T>, id: I): AegisItem<T, I>;
-export function $item<T, I extends AegisId>(entity: Entity<T>, id: I, refresh: () => Query<T>): AegisItem<T, I> & Refreshable<T>;
-export function $item<T, I extends AegisId>(entity: Entity<T>, query: Query<T>): AegisUnknownItem<T, I>;
+export function $item<D, I extends AegisId>(entity: Entity<D>, id: I): AegisItem<D, I>;
+export function $item<D, I extends AegisId>(entity: Entity<D>, id: I, refresh: () => Query<D>): AegisItem<D, I> & Refreshable<D>;
+export function $item<D, I extends AegisId>(entity: Entity<D>, query: Query<D>): AegisUnknownItem<D, I>;
 
-export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T>, refresh?: () => Query<T>) {
+export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D>, refresh?: () => Query<D>) {
   if (arg1 instanceof Query) {
-    const events = new EventSource<StoreEventMap<T> & QueryManagerEventMap<T>>();
+    const events = new EventSource<StoreEventMap<D> & QueryManagerEventMap<D>>();
 
-    const item: AegisUnknownItem<T, I> = {
+    const item: AegisUnknownItem<D, I> = {
       $entity: entity,
-
-      get subscribe() {
-        return events.subscribe.bind(events);
-      },
+      subscribe: events.subscribe.bind(events),
 
       get isLoading() {
         return this.$item?.isLoading ?? (arg1.status === 'pending');
@@ -58,7 +55,7 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T
       get data() {
         return this.$item?.data;
       },
-      set data(value: T | undefined) {
+      set data(value: D | undefined) {
         if (!this.$item) {
           throw new Error('Cannot update unknown item');
         }
@@ -94,31 +91,31 @@ export function $item<T, I extends AegisId>(entity: Entity<T>, arg1: I | Query<T
 
     return item;
   } else {
-    const item: AegisItem<T, I> = {
+    const $item = entity.item(JSON.stringify(arg1));
+
+    const item: AegisItem<D, I> = {
       $id: arg1,
-      $item: entity.item(JSON.stringify(arg1)),
+      $item,
       $entity: entity,
 
-      subscribe(...args: unknown[]) {
-        return this.$item.subscribe(...args);
-      },
+      subscribe: $item.subscribe.bind($item),
 
       get isLoading() {
-        return this.$item.isLoading;
+        return $item.isLoading;
       },
 
       get data() {
-        return this.$item.data;
+        return $item.data;
       },
-      set data(value: T | undefined) {
-        this.$item.data = value;
+      set data(value: D | undefined) {
+        $item.data = value;
       }
     };
 
     if (refresh) {
       return Object.assign(item, {
         refresh(strategy: RefreshStrategy = 'keep') {
-          return item.$item.refresh(refresh, strategy);
+          return $item.refresh(refresh, strategy);
         }
       });
     }
