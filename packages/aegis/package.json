@@ -40,7 +40,7 @@
   "devDependencies": {
     "@jujulego/flow": "1.1.0",
     "@swc/cli": "0.1.57",
-    "@swc/core": "1.2.211",
+    "@swc/core": "1.2.212",
     "@swc/jest": "0.2.21",
     "@types/gulp": "4.0.9",
     "@types/jest": "28.1.4",
