@@ -3,7 +3,7 @@ import { Entity, EntityMerge, Query, RefreshStrategy, Store } from '@jujulego/ae
 import { $item, AegisItem, AegisUnknownItem } from './item';
 import { $list, AegisList } from './list';
 import { $mutation, AegisMutation, AegisUnknownMutation } from './mutation';
-import { AegisId, AegisIdExtractor, Fetcher, Refreshable } from './utils';
+import { AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types
 interface AegisEntityItem<D, I extends AegisId> {
@@ -83,9 +83,10 @@ export interface AegisEntity<D, I extends AegisId> {
    * Inner entity object
    */
   readonly $entity: Entity<D>;
+  readonly $item: AegisEntityItem<D, I>;
+  readonly $list: AegisEntityList<D>;
 
-  readonly item: AegisEntityItem<D, I>;
-  readonly list: AegisEntityList<D>;
+  $protocol<P extends AegisProtocol>(builder: (entity: AegisEntity<D, I>) => P): AegisEntity<D, I> & P;
 }
 
 // Entity builder
@@ -152,14 +153,18 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
   return {
     $entity: entity,
 
-    item: Object.assign((id: I): AegisItem<D, I> => $item(entity, id), {
+    $item: Object.assign((id: I): AegisItem<D, I> => $item(entity, id), {
       query: queryItem,
       mutate: mutateItem,
       delete: deleteItem,
     }),
 
-    list: Object.assign((key: string): AegisList<D> => $list(entity, key), {
+    $list: Object.assign((key: string): AegisList<D> => $list(entity, key), {
       query: queryList,
     }),
+
+    $protocol<P extends AegisProtocol>(this: AegisEntity<D, I>, builder: (entity: AegisEntity<D, I>) => P) {
+      return Object.assign(this, builder(this));
+    }
   };
 }

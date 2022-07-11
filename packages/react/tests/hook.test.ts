@@ -16,10 +16,12 @@ describe('$hook().item', () => {
     const fetch = jest.fn((arg: { id: 'test' }) => query);
 
     // Build entity
-    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id);
-    const getById = ent.item.query(fetch, (arg) => arg.id);
+    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook.item(getById);
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result } = renderHook(() => useTestEntity({ id: 'test' }));
@@ -51,10 +53,12 @@ describe('$hook().item', () => {
     const fetch = jest.fn((arg: { id: 'test' }) => query = new Query());
 
     // Build entity
-    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id);
-    const getById = ent.item.query(fetch, (arg) => arg.id);
+    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook.item(getById);
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result } = renderHook(() => useTestEntity({ id: 'test' }));
@@ -79,10 +83,12 @@ describe('$hook().item', () => {
     const fetch = jest.fn((arg: { id: string }) => query);
 
     // Build entity
-    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id);
-    const getById = ent.item.query(fetch, (arg) => arg.id);
+    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook.item(getById);
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result, rerender } = renderHook(({ id }) => useTestEntity({ id }), {
@@ -110,10 +116,12 @@ describe('$hook().list', () => {
     const fetch = jest.fn((..._: [number, boolean]) => query);
 
     // Build entity
-    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id);
-    const listAll = ent.list.query(fetch);
+    const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
+      .$protocol(({ $list }) => ({
+        listAll: $list.query(fetch)
+      }));
 
-    const useTestEntity = $hook.list(listAll);
+    const useTestEntity = $hook.list(ent.listAll);
 
     // Render
     const { result } = renderHook(() => useTestEntity('all', 6, false));
