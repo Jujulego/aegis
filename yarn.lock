@@ -840,7 +840,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-api@workspace:packages/api"
   dependencies:
-    "@jujulego/aegis-core": 1.0.0-alpha.23
+    "@jujulego/aegis-core": 1.0.0-rc
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.212
@@ -864,13 +864,13 @@ __metadata:
     ts-node: 10.8.2
     typescript: 4.7.4
   peerDependencies:
-    "@jujulego/aegis-core": ^1.0.0-alpha.23
+    "@jujulego/aegis-core": ^1.0.0-rc
     axios: ^0.27.0
     regenerator-runtime: ^0.13.0
   languageName: unknown
   linkType: soft
 
-"@jujulego/aegis-core@1.0.0-alpha.23, @jujulego/aegis-core@^1.0.0-alpha.23, @jujulego/aegis-core@workspace:packages/core":
+"@jujulego/aegis-core@1.0.0-rc, @jujulego/aegis-core@^1.0.0-rc, @jujulego/aegis-core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-core@workspace:packages/core"
   dependencies:
@@ -905,7 +905,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-react@workspace:packages/react"
   dependencies:
-    "@jujulego/aegis": ^1.0.0-alpha.4
+    "@jujulego/aegis": ^1.0.0-rc
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.212
@@ -940,17 +940,17 @@ __metadata:
     typescript: 4.7.4
     use-sync-external-store: ^1.1.0
   peerDependencies:
-    "@jujulego/aegis": ^1.0.0-alpha.4
+    "@jujulego/aegis": ^1.0.0-rc
     react: ^17.0.0 || ^18.0.0
     regenerator-runtime: ^0.13.0
   languageName: unknown
   linkType: soft
 
-"@jujulego/aegis@^1.0.0-alpha.4, @jujulego/aegis@workspace:packages/aegis":
+"@jujulego/aegis@^1.0.0-rc, @jujulego/aegis@workspace:packages/aegis":
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis@workspace:packages/aegis"
   dependencies:
-    "@jujulego/aegis-core": ^1.0.0-alpha.23
+    "@jujulego/aegis-core": ^1.0.0-rc
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.212

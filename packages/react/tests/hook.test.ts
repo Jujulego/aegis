@@ -17,9 +17,11 @@ describe('$hook().item', () => {
 
     // Build entity
     const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
-      .$queryItem('getById', fetch, (arg) => arg.id);
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook(ent).item('getById');
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result } = renderHook(() => useTestEntity({ id: 'test' }));
@@ -52,9 +54,11 @@ describe('$hook().item', () => {
 
     // Build entity
     const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
-      .$queryItem('getById', fetch, (arg) => arg.id);
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook(ent).item('getById');
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result } = renderHook(() => useTestEntity({ id: 'test' }));
@@ -80,9 +84,11 @@ describe('$hook().item', () => {
 
     // Build entity
     const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
-      .$queryItem('getById', fetch, (arg) => arg.id);
+      .$protocol(({ $item }) => ({
+        getById: $item.query(fetch, (arg) => arg.id)
+      }));
 
-    const useTestEntity = $hook(ent).item('getById');
+    const useTestEntity = $hook.item(ent.getById);
 
     // Render
     const { result, rerender } = renderHook(({ id }) => useTestEntity({ id }), {
@@ -111,9 +117,11 @@ describe('$hook().list', () => {
 
     // Build entity
     const ent = $entity('test', $store.memory(), (itm: TestEntity) => itm.id)
-      .$queryList('listAll', fetch);
+      .$protocol(({ $list }) => ({
+        listAll: $list.query(fetch)
+      }));
 
-    const useTestEntity = $hook(ent).list('listAll');
+    const useTestEntity = $hook.list(ent.listAll);
 
     // Render
     const { result } = renderHook(() => useTestEntity('all', 6, false));
