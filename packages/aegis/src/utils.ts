@@ -11,3 +11,8 @@ export interface Refreshable<T> {
 }
 
 export type Fetcher<A extends unknown[], R> = (...args: A) => R;
+
+// Utils
+export function $queryfy<D>(prom: PromiseLike<D>): Query<D> {
+  return prom instanceof Query ? prom : Query.fromPromise(prom);
+}

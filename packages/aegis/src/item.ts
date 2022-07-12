@@ -10,7 +10,7 @@ import {
 import { AegisId, Refreshable } from './utils';
 
 // Types
-export interface AegisUnknownItem<D, I extends AegisId = AegisId> {
+export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends PromiseLike<D> {
   readonly $id?: I;
   readonly $item?: Item<D>;
   readonly $entity: Entity<D>;
@@ -46,7 +46,15 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
 
     const item: AegisUnknownItem<D, I> = {
       $entity: entity,
+
       subscribe: events.subscribe.bind(events),
+      then<R1 = D, R2 = never>(
+        this: AegisUnknownItem<D, I>,
+        onfulfilled?: ((value: D) => (PromiseLike<R1> | R1)) | undefined | null,
+        onrejected?: ((reason: Error) => (PromiseLike<R2> | R2)) | undefined | null
+      ): PromiseLike<R1 | R2> {
+        return (this.$item?.query ?? arg1).then(onfulfilled, onrejected);
+      },
 
       get isLoading() {
         return this.$item?.isLoading ?? (arg1.status === 'pending');
@@ -99,6 +107,43 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
       $entity: entity,
 
       subscribe: $item.subscribe.bind($item),
+      then<R1 = D, R2 = never>(
+        onfulfilled?: ((value: D) => (PromiseLike<R1> | R1)) | undefined | null,
+        onrejected?: ((reason: Error) => (PromiseLike<R2> | R2)) | undefined | null
+      ): PromiseLike<R1 | R2> {
+        if ($item.query) {
+          return $item.query.then(onfulfilled, onrejected);
+        }
+
+        return new Promise((res, rej) => {
+          try {
+            if ($item.data) {
+              res(onfulfilled ? onfulfilled($item.data) : $item.data as unknown as R1);
+            } else {
+              const unsub = $item.subscribe('query', async (state) => {
+                try {
+                  if (state.status === 'completed') {
+                    unsub();
+                    res(onfulfilled ? onfulfilled(state.result) : state.result as unknown as R1);
+                  } else if (state.status === 'failed') {
+                    unsub();
+
+                    if (onrejected) {
+                      res(await onrejected(state.error));
+                    } else {
+                      rej(state.error);
+                    }
+                  }
+                } catch (err) {
+                  rej(err);
+                }
+              });
+            }
+          } catch (err) {
+            rej(err);
+          }
+        });
+      },
 
       get isLoading() {
         return $item.isLoading;
