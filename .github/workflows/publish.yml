@@ -109,7 +109,8 @@ jobs:
       - name: Test
         run: yarn workspace ${{ matrix.name }} test
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.slug }}-coverage
           path: ${{ matrix.root }}/coverage
@@ -143,3 +144,39 @@ jobs:
         run: yarn workspaces foreach --no-private npm publish --access public --tolerate-republish
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: [setup, test]
+    if: ${{ fromJson(needs.setup.outputs.matrix-lint)[0] }}
+
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix-test) }}
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download test coverage
+        uses: actions/download-artifact@v3
+        continue-on-error: true
+        with:
+          name: ${{ matrix.slug }}-coverage
+          path: ${{ matrix.root }}/coverage
+
+      - name: Load package.json
+        id: info
+        run: echo ::set-output name=package::`cat ${{ matrix.root }}/package.json`
+
+      - name: Sonarcloud
+        uses: sonarsource/sonarcloud-github-action@v1.6
+        with:
+          projectBaseDir: ${{ matrix.root }}
+          args: >
+            -Dsonar.projectVersion=${{ fromJSON(steps.info.outputs.package).version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
