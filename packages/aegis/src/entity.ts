@@ -75,7 +75,7 @@ interface AegisEntityList<D> {
    * @param fetcher
    * @param strategy Refresh strategy to use on first load
    */
-  query<A extends unknown[]>(fetcher: Fetcher<A, Query<D[]>>, strategy?: RefreshStrategy): Fetcher<[string, ...A], AegisList<D>>;
+  query<A extends unknown[]>(fetcher: Fetcher<A, Query<D[]>>, strategy?: RefreshStrategy): Fetcher<[string, ...A], AegisList<D> & Refreshable<D[]>>;
 }
 
 export interface AegisEntity<D, I extends AegisId> {

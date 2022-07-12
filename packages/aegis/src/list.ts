@@ -31,7 +31,7 @@ export interface AegisList<D> {
 
 // Item builder
 export function $list<D>(entity: Entity<D>, key: string): AegisList<D>;
-export function $list<D>(entity: Entity<D>, key: string, refresh: () => Query<D[]>): AegisList<D> & Refreshable<D>;
+export function $list<D>(entity: Entity<D>, key: string, refresh: () => Query<D[]>): AegisList<D> & Refreshable<D[]>;
 
 export function $list<D>(entity: Entity<D>, key: string, refresh?: () => Query<D[]>) {
   const list: AegisList<D> = {

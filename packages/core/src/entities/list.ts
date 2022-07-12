@@ -78,7 +78,6 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'query'>>, opts);
   }
 
-
   refresh(fetcher:  () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
     return this._manager.refresh(fetcher, strategy);
   }
