@@ -33,6 +33,7 @@ describe('$hook().item', () => {
       $entity: ent.$entity,
 
       isLoading: true,
+      then: expect.any(Function),
       refresh: expect.any(Function),
       subscribe: expect.any(Function),
     });
@@ -134,6 +135,7 @@ describe('$hook().list', () => {
 
       isLoading: true,
       data: [],
+      then: expect.any(Function),
       refresh: expect.any(Function),
       subscribe: expect.any(Function),
     });

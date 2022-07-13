@@ -10,7 +10,7 @@ import {
 import { AegisId, Refreshable } from './utils';
 
 // Types
-export interface AegisUnknownItem<D, I extends AegisId = AegisId> {
+export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends PromiseLike<D> {
   readonly $id?: I;
   readonly $item?: Item<D>;
   readonly $entity: Entity<D>;
@@ -46,7 +46,15 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
 
     const item: AegisUnknownItem<D, I> = {
       $entity: entity,
+
       subscribe: events.subscribe.bind(events),
+      then<R1 = D, R2 = never>(
+        this: AegisUnknownItem<D, I>,
+        onfulfilled?: ((value: D) => (PromiseLike<R1> | R1)) | undefined | null,
+        onrejected?: ((reason: Error) => (PromiseLike<R2> | R2)) | undefined | null
+      ): PromiseLike<R1 | R2> {
+        return (this.$item?.query ?? arg1).then(onfulfilled, onrejected);
+      },
 
       get isLoading() {
         return this.$item?.isLoading ?? (arg1.status === 'pending');
@@ -99,6 +107,17 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
       $entity: entity,
 
       subscribe: $item.subscribe.bind($item),
+      then<R1 = D, R2 = never>(
+        onfulfilled?: ((value: D) => (PromiseLike<R1> | R1)) | undefined | null,
+        onrejected?: ((reason: Error) => (PromiseLike<R2> | R2)) | undefined | null
+      ): PromiseLike<R1 | R2> {
+        if (!$item.isLoading && $item.data) {
+          return Promise.resolve($item.data).then(onfulfilled, onrejected);
+        }
+
+        return $item.manager.nextResult()
+          .then(onfulfilled, onrejected);
+      },
 
       get isLoading() {
         return $item.isLoading;

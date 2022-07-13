@@ -61,3 +61,37 @@ describe('EventSource', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 });
+
+describe('EventSource.waitFor', () => {
+  it('should resolve when event is emitted', async () => {
+    const src = new EventSource<TestEventMap>();
+
+    const prom = src.waitFor('test');
+    src.emit('test.1', null);
+
+    await expect(prom).resolves.toEqual([null, { type: 'test.1', source: src }]);
+  });
+
+  it('should reject if controller aborted', async () => {
+    const ctrl = new AbortController();
+    const src = new EventSource<TestEventMap>();
+
+    const prom = src.waitFor('test', { signal: ctrl.signal });
+    ctrl.abort();
+
+    await expect(prom).rejects.toBeInstanceOf(Error);
+  });
+
+  it('should reject if inner controller aborted', async () => {
+    class AbortableSource extends EventSource<TestEventMap> {
+      controller = new AbortController();
+    }
+
+    const src = new AbortableSource();
+
+    const prom = src.waitFor('test');
+    src.controller.abort();
+
+    await expect(prom).rejects.toBeInstanceOf(Error);
+  });
+});

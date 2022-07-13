@@ -1,12 +1,8 @@
-# @jujulego/aegis
-[![Version](https://img.shields.io/npm/v/@jujulego/aegis)](https://www.npmjs.com/package/@jujulego/aegis)
+# Aegis
 ![Licence](https://img.shields.io/github/license/jujulego/aegis)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jujulego_aegis&metric=alert_status)](https://sonarcloud.io/dashboard?id=jujulego_aegis)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jujulego_aegis&metric=coverage)](https://sonarcloud.io/dashboard?id=jujulego_aegis)
-[![Bundled size](https://badgen.net/bundlephobia/minzip/@jujulego/aegis)](https://bundlephobia.com/package/@jujulego/aegis)
-[![Tree shaking](https://badgen.net/bundlephobia/tree-shaking/@jujulego/aegis)](https://bundlephobia.com/package/@jujulego/aegis)
-
-## Description
+![Language](https://img.shields.io/github/languages/top/jujulego/aegis)
+[![Publish](https://github.com/Jujulego/aegis/actions/workflows/publish.yml/badge.svg)](https://github.com/Jujulego/aegis/actions/workflows/publish.yml)
+[![CodeQL](https://github.com/Jujulego/aegis/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Jujulego/aegis/actions/workflows/codeql-analysis.yml)
 
 ## Description
 This library aims to optimize async resources (like APIs) fetching and managing.
@@ -47,3 +43,9 @@ const authorBook2 = $Author.getById('author-id');
 ```
 
 Like that even if both authors at the end has the same id, aegis will only send 1 request.
+
+## Packages
+- [@jujulego/aegis](https://github.com/Jujulego/aegis/tree/master/packages)
+- [@jujulego/aegis-api](https://github.com/Jujulego/aegis/tree/master/packages/api)
+- [@jujulego/aegis-core](https://github.com/Jujulego/aegis/tree/master/packages/core)
+- [@jujulego/aegis-react](https://github.com/Jujulego/aegis/tree/master/packages/react)
