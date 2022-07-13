@@ -47,6 +47,13 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
     return this._query;
   }
 
+  nextResult(): Promise<D> {
+    return Promise.race([
+      this.waitFor('query.completed').then(([data]) => data.result),
+      this.waitFor('query.failed').then(([data]) => { throw data.error; })
+    ]);
+  }
+
   // Properties
   get query(): Query<D> | undefined {
     return this._query;
