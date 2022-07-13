@@ -43,6 +43,9 @@ export type EventListener<M extends EventMap, T extends EventType<M> = EventType
 
 export type EventUnsubscribe = () => void;
 
+export type EventPromise<M extends EventMap, T extends EventType<M> = EventType<M>> =
+  Promise<[data: EventData<M, T>, metadata: EventMetadata<M, T>]>;
+
 export interface EventEmitter<M extends EventMap = EventMap> {
   // Emit
   emit<T extends EventType<M>>(
