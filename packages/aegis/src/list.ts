@@ -46,38 +46,12 @@ export function $list<D>(entity: Entity<D>, key: string, refresh?: () => Query<D
       onfulfilled?: ((value: D[]) => (PromiseLike<R1> | R1)) | undefined | null,
       onrejected?: ((reason: Error) => (PromiseLike<R2> | R2)) | undefined | null
     ): PromiseLike<R1 | R2> {
-      if ($list.query) {
-        return $list.query.then(onfulfilled, onrejected);
+      if (!$list.isLoading && $list.data) {
+        return Promise.resolve($list.data).then(onfulfilled, onrejected);
       }
 
-      return new Promise((res, rej) => {
-        try {
-          if ($list.data) {
-            res(onfulfilled ? onfulfilled($list.data) : $list.data as unknown as R1);
-          } else {
-            const unsub = $list.subscribe('query', async (state) => {
-              try {
-                if (state.status === 'completed') {
-                  unsub();
-                  res(onfulfilled ? onfulfilled(state.result) : state.result as unknown as R1);
-                } else if (state.status === 'failed') {
-                  unsub();
-
-                  if (onrejected) {
-                    res(await onrejected(state.error));
-                  } else {
-                    rej(state.error);
-                  }
-                }
-              } catch (err) {
-                rej(err);
-              }
-            });
-          }
-        } catch (err) {
-          rej(err);
-        }
-      });
+      return $list.manager.nextResult()
+        .then(onfulfilled, onrejected);
     },
 
     get isLoading() {
