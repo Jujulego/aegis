@@ -10,6 +10,16 @@ export type ListEventMap<D> = {
 }
 
 // Class
+/**
+ * Represents a list of items.
+ * Constructs the data array for item in the store, this object only keeps items id.
+ *
+ * Events emitted:
+ * - 'update' emitted when list contents changes
+ * - 'query.pending' emitted when a new query is started
+ * - 'query.completed' emitted when the running query completes
+ * - 'query.failed' emitted when the running query fails
+ */
 export class List<D> extends EventSource<ListEventMap<D>> {
   // Attributes
   private _ids: string[] = [];
@@ -78,6 +88,13 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'query'>>, opts);
   }
 
+  /**
+   * Refresh list contents using given fetcher, using inner manager
+   * @see QueryManager.refresh
+   *
+   * @param fetcher should returns a new query
+   * @param strategy refresh strategy to use (see {@link QueryManager} for details)
+   */
   refresh(fetcher:  () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
     return this._manager.refresh(fetcher, strategy);
   }
