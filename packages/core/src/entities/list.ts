@@ -10,6 +10,19 @@ export type ListEventMap<D> = {
 }
 
 // Class
+/**
+ * Represents a list of items.
+ * Lists are identified by a string "key", 2 lists with the same key
+ * for the same entity is considered as the same list.
+ *
+ * The list items are store in the entity's store, this object only keeps their ids to build an array containing all items.
+ *
+ * Events emitted:
+ * - 'update' emitted when list contents changes
+ * - 'query.pending' emitted when a new query is started
+ * - 'query.completed' emitted when the running query completes
+ * - 'query.failed' emitted when the running query fails
+ */
 export class List<D> extends EventSource<ListEventMap<D>> {
   // Attributes
   private _ids: string[] = [];
@@ -78,23 +91,46 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'query'>>, opts);
   }
 
+  /**
+   * Refresh list contents using given fetcher, using inner manager
+   * @see QueryManager.refresh
+   *
+   * @param fetcher should returns a new query
+   * @param strategy refresh strategy to use (see {@link QueryManager} for details)
+   */
   refresh(fetcher:  () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
     return this._manager.refresh(fetcher, strategy);
   }
 
   // Properties
+  /**
+   * Used {@link QueryManager} for the list, handles refresh and queries
+   */
   get manager(): QueryManager<D[]> {
     return this._manager;
   }
 
+  /**
+   * Returns current pending query or last completed/failed query
+   * @see QueryManager.query
+   */
   get query(): Query<D[]> | undefined {
     return this._manager.query;
   }
 
+  /**
+   * Returns true if a query for this list is currently pending
+   * @see Query
+   */
   get isLoading(): boolean {
     return this.query?.status === 'pending';
   }
 
+  /**
+   * Rebuilds list contents as array, using stored ids.
+   * Result is cached so 2 consecutive access will return the same array.
+   * @see Entity.getItem
+   */
   get data(): D[] {
     // Use cache first
     const cached = this._cache?.deref();
@@ -107,7 +143,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     const data: D[] = [];
 
     for (const id of this._ids) {
-      const ent = this.entity.store.get<D>(this.entity.name, id);
+      const ent = this.entity.getItem(id);
 
       if (ent) {
         data.push(ent);
@@ -119,6 +155,14 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     return data;
   }
 
+  /**
+   * Locally updates the list.
+   * Create or update list items in the store, and keep their ids.
+   * Given object will be stored in the cache.
+   * @see Entity.storeItem
+   *
+   * @param data
+   */
   set data(data: D[]) {
     this._ids = data.map(item => this.entity.storeItem(item));
     this._cache = new WeakRef(data);

@@ -61,10 +61,15 @@ describe('new List', () => {
 
 describe('List.refresh', () => {
   it('should store query and emit query pending event', () => {
+    jest.spyOn(list.manager, 'refresh');
+
     const query = new Query<TestEntity[]>();
-    list.refresh(() => query, 'replace');
+    const fetcher = jest.fn().mockReturnValue(query);
+
+    list.refresh(fetcher, 'replace');
 
     expect(list.query).toBe(query);
+    expect(list.manager.refresh).toHaveBeenCalledWith(fetcher, 'replace');
 
     expect(queryEventSpy).toHaveBeenCalledTimes(1);
     expect(queryEventSpy).toHaveBeenCalledWith(
@@ -74,6 +79,38 @@ describe('List.refresh', () => {
       {
         type: 'query.pending',
         source: list.manager,
+      }
+    );
+  });
+
+  it('should store query result and emit update event', async () => {
+    const query = new Query<TestEntity[]>();
+    list.refresh(() => query, 'replace');
+
+    query.complete([
+      { id: 'item-1', value: 1 },
+      { id: 'item-2', value: 2 },
+      { id: 'item-3', value: 3 },
+    ]);
+
+    expect(list.data).toEqual([
+      { id: 'item-1', value: 1 },
+      { id: 'item-2', value: 2 },
+      { id: 'item-3', value: 3 },
+    ]);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [
+        { id: 'item-1', value: 1 },
+        { id: 'item-2', value: 2 },
+        { id: 'item-3', value: 3 },
+      ],
+      {
+        type: 'update',
+        source: list,
       }
     );
   });
@@ -107,3 +144,28 @@ describe('List.isLoading', () => {
   });
 });
 
+describe('List.data', () => {
+  it('should update and store list', () => {
+    const data = [
+      { id: 'item-1', value: 1 },
+      { id: 'item-2', value: 2 },
+      { id: 'item-3', value: 3 },
+    ];
+
+    list.data = data;
+    expect(list.data).toBe(data);
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [
+        { id: 'item-1', value: 1 },
+        { id: 'item-2', value: 2 },
+        { id: 'item-3', value: 3 },
+      ],
+      {
+        type: 'update',
+        source: list,
+      }
+    );
+  });
+});
