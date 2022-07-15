@@ -22,4 +22,5 @@ jobs:
         run: yarn install --immutable
 
       - name: Build docs
-        run: yarn workspace docs run build
+        working-directory: docs
+        run: yarn run build
