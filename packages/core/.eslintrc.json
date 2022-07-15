@@ -1,10 +1,18 @@
 {
-  "extends": [
-    "../../.eslintrc.json",
-    "plugin:jest/recommended",
-    "plugin:jest/style"
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**"
   ],
-  "globals": {
-    "jest/globals": true
-  }
+  "overrides": [
+    {
+      "files": "tests/**/*.{js,jsx,ts,tsx}",
+      "globals": {
+        "jest/globals": true
+      },
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest/style"
+      ]
+    }
+  ]
 }
