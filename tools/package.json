@@ -2,11 +2,8 @@
   "name": "aegis-tools",
   "version": "1.0.0",
   "private": true,
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "build": "tsc --build"
