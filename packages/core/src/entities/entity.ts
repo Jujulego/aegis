@@ -11,6 +11,13 @@ export type EntityIdExtractor<D> = (entity: D) => string;
 export type EntityMerge<D, R> = (stored: D, result: R) => D;
 
 // Class
+/**
+ * Represents a distant entity.
+ * Manages local items and list representatives and item storage.
+ *
+ * Events emitted:
+ * - 'update.{id}' emitted when an item's contents changes
+ */
 export class Entity<D> {
   // Attributes
   private readonly _items = new Map<string, WeakRef<Item<D>>>();
@@ -41,7 +48,10 @@ export class Entity<D> {
 
   // - query managers
   /**
-   * Get item manager by id
+   * Get an {@link Item} object for given id.
+   * Will return the same {@link Item} for the same id.
+   * @see Entity.storeItem
+   *
    * @param id
    */
   item(id: string): Item<D> {
@@ -56,7 +66,9 @@ export class Entity<D> {
   }
 
   /**
-   * Get list manager by key
+   * Get an {@link List} object for given key.
+   * Will return the same {@link List} for the same key.
+   *
    * @param key
    */
   list(key: string): List<D> {
@@ -72,7 +84,9 @@ export class Entity<D> {
 
   // - queries
   /**
-   * Will resolves to item manager for returned item
+   * Will resolves to the {@link Item} handling the query result.
+   * Query result will add or update item in the store.
+   *
    * @param query
    */
   query(query: Query<D>): Query<Item<D>> {
@@ -81,6 +95,7 @@ export class Entity<D> {
 
   /**
    * Register a mutation. Query result will replace stored item.
+   *
    * @param id
    * @param query
    */
@@ -89,6 +104,7 @@ export class Entity<D> {
   /**
    * Register a mutation. Query result will be merged with stored item.
    * Resolved to the result of the merge.
+   *
    * @param id
    * @param query
    * @param merge
@@ -117,8 +133,9 @@ export class Entity<D> {
   }
 
   /**
-   * Deletes the item in store as soon as the query completes.
+   * Deletes an item in store as soon as the query completes.
    * Returns deleted item from store.
+   *
    * @param id
    * @param query
    */
@@ -129,6 +146,8 @@ export class Entity<D> {
   // - store access
   /**
    * Direct access to stored item, by id.
+   * @see Store.get
+   *
    * @param id
    */
   getItem(id: string): D | undefined {
@@ -137,6 +156,8 @@ export class Entity<D> {
 
   /**
    * Update local item, by id.
+   * @see Store.set
+   *
    * @param id
    * @param value
    */
@@ -146,6 +167,8 @@ export class Entity<D> {
 
   /**
    * Delete local item, by id.
+   * @see Store.delete
+   *
    * @param id
    */
   deleteItem(id: string): D | undefined {
@@ -153,8 +176,9 @@ export class Entity<D> {
   }
 
   /**
-   * Stores given item. Uses extractor to get item's id.
+   * Add or updates given item. Uses extractor to get item's id.
    * Returns item's id.
+   * @see Entity.setItem
    *
    * @param item
    */

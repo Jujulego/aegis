@@ -1,6 +1,10 @@
 import { Store } from './store';
 
 // Class
+/**
+ * Stores data within a {@link Map}.
+ * @see Store
+ */
 export class MemoryStore extends Store {
   // Attributes
   private readonly _map = new Map<string, unknown>();

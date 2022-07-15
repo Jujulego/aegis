@@ -1,6 +1,12 @@
 import { Store } from './store';
 
 // Class
+/**
+ * Stores data within a {@link Storage} object, like {@link localStorage} or {@link sessionStorage}.
+ * Listen to window's storage events, so updates from other windows will be propagated here.
+ *
+ * @see Store
+ */
 export class StorageStore extends Store {
   // Attributes
   private _cache = new Map<string, WeakRef<object>>();
