@@ -13,6 +13,9 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/react/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/packages/api/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/packages/aegis/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/.yarn" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
