@@ -1,5 +1,10 @@
 {
   "extends": [
-    "../../.eslintrc.json"
-  ]
+    "../../.eslintrc.json",
+    "plugin:jest/recommended",
+    "plugin:jest/style"
+  ],
+  "globals": {
+    "jest/globals": true
+  }
 }
