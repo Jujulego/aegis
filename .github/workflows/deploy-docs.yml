@@ -25,7 +25,8 @@ jobs:
         run: yarn install --immutable
 
       - name: Build docs
-        run: yarn workspace docs run build
+        working-directory: docs
+        run: yarn run build
 
       - name: Deploy to Github Pages
         uses: peaceiris/actions-gh-pages@v3

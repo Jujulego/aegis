@@ -1,7 +1,6 @@
 {
   "ignorePatterns": [
-    "coverage/**",
-    "dist/**"
+    "build/**"
   ],
   "settings": {
     "react": {
@@ -10,26 +9,20 @@
   },
   "overrides": [
     {
+      "files": "*.config.js",
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
       "files": "**/*.{js,jsx,ts,tsx}",
       "extends": [
         "plugin:react/recommended",
-        "plugin:react/jsx-runtime",
         "plugin:react-hooks/recommended"
       ],
       "rules": {
         "jsx-quotes": ["error", "prefer-double"]
       }
-    },
-    {
-      "files": "tests/**/*.{js,jsx,ts,tsx}",
-      "globals": {
-        "jest/globals": true
-      },
-      "extends": [
-        "plugin:jest/recommended",
-        "plugin:jest/style",
-        "plugin:testing-library/react"
-      ]
     }
   ]
 }

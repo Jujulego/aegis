@@ -25,7 +25,7 @@
     "default": "./dist/esm/index.js"
   },
   "scripts": {
-    "lint": "eslint {src,tests}/**/*.*",
+    "lint": "eslint .",
     "clean": "gulp clean",
     "build": "gulp build",
     "watch": "gulp watch",
@@ -44,7 +44,7 @@
     "@types/node": "16.11.44",
     "@typescript-eslint/eslint-plugin": "5.30.6",
     "@typescript-eslint/parser": "5.30.6",
-    "aegis-tools": "1.0.0",
+    "aegis-tools": "workspace:*",
     "browserslist": "4.21.2",
     "del": "6.1.1",
     "eslint": "8.19.0",
