@@ -2914,7 +2914,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.215
-    "@swc/jest": 0.2.21
+    "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
     "@types/node": 16.11.45
@@ -2947,7 +2947,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.215
-    "@swc/jest": 0.2.21
+    "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
     "@types/node": 16.11.45
@@ -2979,7 +2979,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.215
-    "@swc/jest": 0.2.21
+    "@swc/jest": 0.2.22
     "@testing-library/react": 13.3.0
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
@@ -3024,7 +3024,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.215
-    "@swc/jest": 0.2.21
+    "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
     "@types/node": 16.11.45
@@ -3617,14 +3617,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/jest@npm:0.2.21":
-  version: 0.2.21
-  resolution: "@swc/jest@npm:0.2.21"
+"@swc/jest@npm:0.2.22":
+  version: 0.2.22
+  resolution: "@swc/jest@npm:0.2.22"
   dependencies:
     "@jest/create-cache-key-function": ^27.4.2
   peerDependencies:
     "@swc/core": "*"
-  checksum: 8208032fc7ccc26a9bcae744b7b7dc2d3ea313af1ea049e95dfe3c8b6abd708c6f8fd0a2cce45315e7e5627044f6c3e08363b89eb958df7d8a8693a2e45edecb
+  checksum: c624cfcc9325a719fc7d811536011c4bde0c63c808827b47d7bbcc57621323146cb3891d8702fd01c1bebfc54a9148692f772af4db8e839eb2c6ccd7850fa5f5
   languageName: node
   linkType: hard
 
