@@ -42,7 +42,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.0.0-rc.1",
     "@tsconfig/docusaurus": "1.0.6",
-    "@types/react": "17.0.47",
+    "@types/react": "17.0.48",
     "@typescript-eslint/eslint-plugin": "5.32.0",
     "@typescript-eslint/parser": "5.32.0",
     "eslint": "8.20.0",
