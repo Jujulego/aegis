@@ -2922,7 +2922,7 @@ __metadata:
     "@typescript-eslint/parser": 5.32.0
     aegis-tools: "workspace:*"
     axios: 0.27.2
-    browserslist: 4.21.2
+    browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.20.0
     eslint-plugin-jest: 26.6.0
@@ -2954,7 +2954,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.32.0
     "@typescript-eslint/parser": 5.32.0
     aegis-tools: "workspace:*"
-    browserslist: 4.21.2
+    browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.20.0
     eslint-plugin-jest: 26.6.0
@@ -2990,7 +2990,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.32.0
     "@typescript-eslint/parser": 5.32.0
     aegis-tools: "workspace:*"
-    browserslist: 4.21.2
+    browserslist: 4.21.3
     del: 6.1.1
     dequal: ^2.0.2
     eslint: 8.20.0
@@ -3031,7 +3031,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.32.0
     "@typescript-eslint/parser": 5.32.0
     aegis-tools: "workspace:*"
-    browserslist: 4.21.2
+    browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.20.0
     eslint-plugin-jest: 26.6.0
@@ -5890,7 +5890,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:4.21.2, browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.6, browserslist@npm:^4.18.1, browserslist@npm:^4.20.3, browserslist@npm:^4.21.1":
+"browserslist@npm:4.21.3":
+  version: 4.21.3
+  resolution: "browserslist@npm:4.21.3"
+  dependencies:
+    caniuse-lite: ^1.0.30001370
+    electron-to-chromium: ^1.4.202
+    node-releases: ^2.0.6
+    update-browserslist-db: ^1.0.5
+  bin:
+    browserslist: cli.js
+  checksum: ff512a7bcca1c530e2854bbdfc7be2791d0fb524097a6340e56e1d5924164c7e4e0a9b070de04cdc4c149d15cb4d4275cb7c626ebbce954278a2823aaad2452a
+  languageName: node
+  linkType: hard
+
+"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.6, browserslist@npm:^4.18.1, browserslist@npm:^4.20.3, browserslist@npm:^4.21.1":
   version: 4.21.2
   resolution: "browserslist@npm:4.21.2"
   dependencies:
@@ -6102,6 +6116,13 @@ __metadata:
   version: 1.0.30001341
   resolution: "caniuse-lite@npm:1.0.30001341"
   checksum: 7262b093fb0bf49dbc5328418f5ce4e3dbb0b13e39c015f986ba1807634c123ac214efc94df7d095a336f57f86852b4b63ee61838f18dcc3a4a35f87b390c8f5
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1.0.30001370":
+  version: 1.0.30001370
+  resolution: "caniuse-lite@npm:1.0.30001370"
+  checksum: 28e1fd4d623a52945220b189b703556178ec8a185d317e4ae2557a24f68f88bd8168db67700970164690dbf7d29df69efbd318b54457b335a4361314bb530792
   languageName: node
   linkType: hard
 
@@ -7678,6 +7699,13 @@ __metadata:
   version: 1.4.188
   resolution: "electron-to-chromium@npm:1.4.188"
   checksum: 7c18659273e51b72dbaba31bb50e160e33dc794907e749e0eb9ba56f954cb9d63c27db5ceebec6c566a3300fdceb2deabd5b528b967de5c1f78382089871ad2f
+  languageName: node
+  linkType: hard
+
+"electron-to-chromium@npm:^1.4.202":
+  version: 1.4.202
+  resolution: "electron-to-chromium@npm:1.4.202"
+  checksum: f6210322a16eb67c3743a5fd18c0e99fc71720132a6da61d93f26a96a4b6fc30b1b1f44e0b1f8eb91358b859f687f745d405515ad5482ded6ee69e5117907aa7
   languageName: node
   linkType: hard
 
@@ -16876,6 +16904,20 @@ __metadata:
   bin:
     browserslist-lint: cli.js
   checksum: 7c7da28d0fc733b17e01c8fa9385ab909eadce64b8ea644e9603867dc368c2e2a6611af8247e72612b23f9e7cb87ac7c7585a05ff94e1759e9d646cbe9bf49a7
+  languageName: node
+  linkType: hard
+
+"update-browserslist-db@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "update-browserslist-db@npm:1.0.5"
+  dependencies:
+    escalade: ^3.1.1
+    picocolors: ^1.0.0
+  peerDependencies:
+    browserslist: ">= 4.21.0"
+  bin:
+    browserslist-lint: cli.js
+  checksum: 7e425fe5dbbebdccf72a84ce70ec47fc74dce561d28f47bc2b84a1c2b84179a862c2261b18ab66a5e73e261c7e2ef9e11c6129112989d4d52e8f75a56bb923f8
   languageName: node
   linkType: hard
 
