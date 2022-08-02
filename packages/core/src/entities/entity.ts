@@ -16,7 +16,7 @@ export type EntityMerge<D, R> = (stored: D, result: R) => D;
  * Manages local items and list representatives and item storage.
  *
  * Events emitted:
- * - 'update.{id}' emitted when an item's contents changes
+ * - 'update.\{id\}' emitted when an item's contents changes
  */
 export class Entity<D> {
   // Attributes

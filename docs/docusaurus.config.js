@@ -37,21 +37,64 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
+  ],
+
+  plugins: [
+    ['docusaurus-plugin-typedoc', {
+      id: 'aegis',
+      entryPoints: ['../packages/aegis/src'],
+      tsconfig: '../packages/aegis/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis'
+      }
+    }],
+    ['docusaurus-plugin-typedoc', {
+      id: 'aegis-api',
+      entryPoints: ['../packages/api/src'],
+      tsconfig: '../packages/api/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis-api',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis-api'
+      }
+    }],
+    ['docusaurus-plugin-typedoc', {
+      id: 'aegis-core',
+      entryPoints: ['../packages/core/src'],
+      tsconfig: '../packages/core/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis-core',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis-core'
+      }
+    }],
+    ['docusaurus-plugin-typedoc', {
+      id: 'aegis-react',
+      entryPoints: ['../packages/react/src'],
+      tsconfig: '../packages/react/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis-react',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis-react'
+      }
+    }],
   ],
 
   themeConfig:
@@ -70,7 +113,30 @@ const config = {
             position: 'left',
             label: 'Tutorial',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            type: 'dropdown',
+            label: 'References',
+            position: 'left',
+            items: [
+              {
+                label: '@jujulego/aegis',
+                to: '/docs/refs/aegis'
+              },
+              {
+                label: '@jujulego/aegis-api',
+                to: '/docs/refs/aegis-api'
+              },
+              {
+                label: '@jujulego/aegis-core',
+                to: '/docs/refs/aegis-core'
+              },
+              {
+                label: '@jujulego/aegis-react',
+                to: '/docs/refs/aegis-react'
+              },
+            ]
+          },
+          // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/facebook/docusaurus',
             label: 'GitHub',
@@ -90,33 +156,33 @@ const config = {
               },
             ],
           },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-            ],
-          },
+          // {
+          //   title: 'Community',
+          //   items: [
+          //     {
+          //       label: 'Stack Overflow',
+          //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+          //     },
+          //     {
+          //       label: 'Discord',
+          //       href: 'https://discordapp.com/invite/docusaurus',
+          //     },
+          //     {
+          //       label: 'Twitter',
+          //       href: 'https://twitter.com/docusaurus',
+          //     },
+          //   ],
+          // },
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
+              // {
+              //   label: 'Blog',
+              //   to: '/blog',
+              // },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/jujulego/aegis',
               },
             ],
           },
@@ -127,6 +193,11 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+        }
+      }
     }),
 };
 
