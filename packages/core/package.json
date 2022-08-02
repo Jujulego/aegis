@@ -24,6 +24,9 @@
     "require": "./dist/cjs/index.js",
     "default": "./dist/esm/index.js"
   },
+  "typedoc": {
+    "entryPoint": "./src/index.ts"
+  },
   "scripts": {
     "lint": "eslint .",
     "clean": "gulp clean",

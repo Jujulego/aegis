@@ -18,7 +18,7 @@ export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreU
  * - each time an item is updated, the store must emit an update event
  *
  * Events emitted:
- * - 'update.{entity}.{id}' emitted when an item is updated
+ * - 'update.\{entity\}.\{id\}' emitted when an item is updated
  */
 export abstract class Store extends EventSource<StoreEventMap> {
   // Methods
