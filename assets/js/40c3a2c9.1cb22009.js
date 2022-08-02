@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkaegis_website=self.webpackChunkaegis_website||[]).push([[3396],{715:e=>{e.exports=JSON.parse('{"permalink":"/aegis/blog/tags/hello","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

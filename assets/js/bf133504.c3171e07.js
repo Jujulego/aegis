@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkaegis_website=self.webpackChunkaegis_website||[]).push([[9693],{3767:s=>{s.exports=JSON.parse('{"label":"docusaurus","permalink":"/aegis/blog/tags/docusaurus","allTagsPath":"/aegis/blog/tags","count":4}')}}]);
