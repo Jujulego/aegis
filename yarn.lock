@@ -4194,17 +4194,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.48":
-  version: 17.0.48
-  resolution: "@types/react@npm:17.0.48"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: b683fa33f751ced0b8c8715df9f40de15513c1d7ce66064a75cdfb8805cc913b0b214a2e7022ef0b724bd62a1e8651d040cd265dd0452bde03cca9b8e495742d
-  languageName: node
-  linkType: hard
-
 "@types/react@npm:18.0.15":
   version: 18.0.15
   resolution: "@types/react@npm:18.0.15"
@@ -4930,7 +4919,7 @@ __metadata:
     "@docusaurus/preset-classic": 2.0.0-rc.1
     "@mdx-js/react": 1.6.22
     "@tsconfig/docusaurus": 1.0.6
-    "@types/react": 17.0.48
+    "@types/react": 18.0.15
     "@typescript-eslint/eslint-plugin": 5.32.0
     "@typescript-eslint/parser": 5.32.0
     clsx: 1.2.1
