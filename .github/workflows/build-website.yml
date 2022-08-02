@@ -1,4 +1,4 @@
-name: 'Build Docs'
+name: 'Build website'
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-docs:
+  build-website:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +21,6 @@ jobs:
       - name: Install
         run: yarn install --immutable
 
-      - name: Build docs
-        working-directory: docs
+      - name: Build website
+        working-directory: website
         run: yarn run build
