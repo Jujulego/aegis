@@ -237,9 +237,6 @@ describe('$item', () => {
     it('should resolve when current query completes', async () => {
       const item = $item(entity, query);
 
-      expect(item.$entity).toBe(entity);
-      expect(item.isLoading).toBe(true);
-
       // Emit event
       setTimeout(() => query.complete({ id: 'test', success: true }), 0);
 
@@ -249,9 +246,6 @@ describe('$item', () => {
 
     it('should reject when current query fails', async () => {
       const item = $item(entity, query);
-
-      expect(item.$entity).toBe(entity);
-      expect(item.isLoading).toBe(true);
 
       // Emit event
       setTimeout(() => query.fail(new Error('Failed !')), 0);

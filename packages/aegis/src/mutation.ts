@@ -10,12 +10,12 @@ import { $item, AegisItem, AegisUnknownItem } from './item';
 import { AegisId } from './utils';
 
 // Types
-export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> {
+export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> extends PromiseLike<R> {
   readonly $id?: I;
   readonly $query: Query<R>;
   readonly $entity: Entity<D>;
 
-  readonly item?: AegisUnknownItem<D, I>;
+  readonly item: AegisUnknownItem<D, I>;
   readonly isLoading: boolean;
   readonly result?: R;
 
@@ -42,6 +42,7 @@ export function $mutation<D, I extends AegisId>(entity: Entity<D>, query: Query<
     $entity: entity,
 
     subscribe: query.subscribe.bind(query),
+    then: query.then.bind(query),
 
     get item() {
       return $item(entity, this.$id ?? query);
