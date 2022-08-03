@@ -288,7 +288,7 @@ describe('$item', () => {
       const data = { id: 'toto', success: false };
       item.data = data;
 
-      expect(store.set).toHaveBeenCalledWith(entity.name, item.$item?.id, data);
+      expect(store.set).toHaveBeenCalledWith(entity.name, item.$item.id, data);
       expect(item.data).toBe(data);
     });
 
@@ -345,7 +345,7 @@ describe('$item', () => {
         },
         {
           type: 'query.pending',
-          source: item.$item?.manager,
+          source: item.$item.manager,
         }
       );
 
