@@ -233,6 +233,26 @@ describe('$item', () => {
 
       expect(item.isLoading).toBe(false);
     });
+
+    it('should resolve when current query completes', async () => {
+      const item = $item(entity, query);
+
+      // Emit event
+      setTimeout(() => query.complete({ id: 'test', success: true }), 0);
+
+      await expect(item)
+        .resolves.toEqual({ id: 'test', success: true });
+    });
+
+    it('should reject when current query fails', async () => {
+      const item = $item(entity, query);
+
+      // Emit event
+      setTimeout(() => query.fail(new Error('Failed !')), 0);
+
+      await expect(item)
+        .rejects.toEqual(new Error('Failed !'));
+    });
   });
 
   describe('Known item (id)', () => {
@@ -245,6 +265,14 @@ describe('$item', () => {
       expect(item.data).toBe(data);
     });
 
+    it('should resolve to data from store', async () => {
+      const data = { id: 'test', success: true };
+      store.set(entity.name, JSON.stringify('test'), data);
+
+      const item = $item(entity, 'test');
+      await expect(item).resolves.toBe(data);
+    });
+
     it('should update stored data', () => {
       const item = $item(entity, 'test');
 
@@ -254,8 +282,21 @@ describe('$item', () => {
       const data = { id: 'toto', success: false };
       item.data = data;
 
-      expect(store.set).toHaveBeenCalledWith(entity.name, item.$item?.id, data);
+      expect(store.set).toHaveBeenCalledWith(entity.name, item.$item.id, data);
       expect(item.data).toBe(data);
+    });
+
+    it('should register refresh method', () => {
+      const fetcher = jest.fn(() => new Query<Test>());
+      const item = $item(entity, 'test', fetcher);
+
+      expect(item).toHaveProperty('refresh');
+
+      // Call refresh
+      jest.spyOn(item.$item, 'refresh');
+      item.refresh('replace');
+
+      expect(item.$item.refresh).toHaveBeenCalledWith(fetcher, 'replace');
     });
 
     it('should emit store events (update)', () => {
@@ -290,7 +331,7 @@ describe('$item', () => {
       item.subscribe('query.pending', spy);
 
       // Emit event
-      item.$item?.refresh(() => new Query(), 'replace');
+      item.$item.refresh(() => new Query(), 'replace');
 
       expect(spy).toHaveBeenCalledWith(
         {
@@ -298,7 +339,7 @@ describe('$item', () => {
         },
         {
           type: 'query.pending',
-          source: item.$item?.manager,
+          source: item.$item.manager,
         }
       );
 
@@ -310,7 +351,7 @@ describe('$item', () => {
 
       // Refresh query
       const query = new Query<Test>();
-      item.$item?.refresh(() => query, 'replace');
+      item.$item.refresh(() => query, 'replace');
 
       // Register listener
       const spy = jest.fn();
@@ -338,7 +379,7 @@ describe('$item', () => {
 
       // Refresh query
       const query = new Query<Test>();
-      item.$item?.refresh(() => query, 'replace');
+      item.$item.refresh(() => query, 'replace');
 
       // Register listener
       const spy = jest.fn();
@@ -359,6 +400,34 @@ describe('$item', () => {
       );
 
       expect(item.isLoading).toBe(false);
+    });
+
+    it('should resolve when current query completes', async () => {
+      const item = $item(entity, 'test');
+
+      // Refresh query
+      const query = new Query<Test>();
+      item.$item.refresh(() => query, 'replace');
+
+      // Emit event
+      setTimeout(() => query.complete({ id: 'test', success: false }), 0);
+
+      await expect(item)
+        .resolves.toEqual({ id: 'test', success: false });
+    });
+
+    it('should rejects when current query fails', async () => {
+      const item = $item(entity, 'test');
+
+      // Refresh query
+      const query = new Query<Test>();
+      item.$item.refresh(() => query, 'replace');
+
+      // Emit event
+      setTimeout(() => query.fail(new Error('Failed !')), 0);
+
+      await expect(item)
+        .rejects.toEqual(new Error('Failed !'));
     });
   });
 });
