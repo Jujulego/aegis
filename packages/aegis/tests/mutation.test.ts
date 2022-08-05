@@ -59,14 +59,14 @@ describe('$mutation', () => {
     expect(mutation.item.$id).toBe('test');
   });
 
-  it('should emit query events (update.completed)', () => {
+  it('should emit query events (status.completed)', () => {
     const mutation = $mutation(entity, query);
 
     expect(mutation.isLoading).toBe(true);
 
     // Register listener
     const spy = jest.fn();
-    mutation.subscribe('update.completed', spy);
+    mutation.subscribe('status.completed', spy);
 
     // Emit event
     query.complete({ id: 'test', success: true });
@@ -77,7 +77,7 @@ describe('$mutation', () => {
         result: { id: 'test', success: true }
       },
       {
-        type: 'update.completed',
+        type: 'status.completed',
         source: query,
       }
     );
@@ -85,14 +85,14 @@ describe('$mutation', () => {
     expect(mutation.isLoading).toBe(false);
   });
 
-  it('should emit query events (update.failed)', () => {
+  it('should emit query events (status.failed)', () => {
     const mutation = $mutation(entity, query);
 
     expect(mutation.isLoading).toBe(true);
 
     // Register listener
     const spy = jest.fn();
-    mutation.subscribe('update.failed', spy);
+    mutation.subscribe('status.failed', spy);
 
     // Emit event
     query.fail(new Error('Failed !'));
@@ -103,7 +103,7 @@ describe('$mutation', () => {
         error: new Error('Failed !')
       },
       {
-        type: 'update.failed',
+        type: 'status.failed',
         source: query,
       }
     );

@@ -73,11 +73,11 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
     };
 
     // Events
-    arg1.subscribe('update.failed', (state, mtd) => {
-      events.emit('query.failed', state, { source: mtd.source });
+    arg1.subscribe('status.failed', (state, mtd) => {
+      events.emit('status.failed', state, { source: mtd.source });
     });
 
-    arg1.subscribe('update.completed', ({ result }, mtd) => {
+    arg1.subscribe('status.completed', ({ result }, mtd) => {
       const id = entity.storeItem(result);
       const $item = entity.item(id);
 
@@ -90,11 +90,11 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
         events.emit(mtd.type, data, { source: mtd.source });
       });
 
-      $item.subscribe('query', (data, mtd) => {
+      $item.subscribe('status', (data, mtd) => {
         events.emit(mtd.type, data, { source: mtd.source });
       });
 
-      events.emit('query.completed', { status: 'completed', result: result }, { source: mtd.source });
+      events.emit('status.completed', { status: 'completed', result: result }, { source: mtd.source });
     });
 
     return item;

@@ -97,14 +97,14 @@ describe('$item', () => {
       expect(item.data).toEqual({ id: 'test', success: false });
     });
 
-    it('should emit query manager events (query.pending)', () => {
+    it('should emit query manager events (status.pending)', () => {
       const item = $item(entity, query);
 
       query.complete({ id: 'test', success: true });
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.pending', spy);
+      item.subscribe('status.pending', spy);
 
       // Emit event
       item.$item?.refresh(() => new Query(), 'replace');
@@ -114,7 +114,7 @@ describe('$item', () => {
           status: 'pending'
         },
         {
-          type: 'query.pending',
+          type: 'status.pending',
           source: item.$item?.manager,
         }
       );
@@ -122,7 +122,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(true);
     });
 
-    it('should emit query manager events (query.completed)', () => {
+    it('should emit query manager events (status.completed)', () => {
       const item = $item(entity, query);
       query.complete({ id: 'test', success: true });
 
@@ -132,7 +132,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.completed', spy);
+      item.subscribe('status.completed', spy);
 
       // Emit event
       q2.complete({ id: 'test', success: false });
@@ -143,7 +143,7 @@ describe('$item', () => {
           result: { id: 'test', success: false }
         },
         {
-          type: 'query.completed',
+          type: 'status.completed',
           source: q2,
         }
       );
@@ -151,7 +151,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(false);
     });
 
-    it('should emit query manager events (query.failed)', () => {
+    it('should emit query manager events (status.failed)', () => {
       const item = $item(entity, query);
       query.complete({ id: 'test', success: true });
 
@@ -161,7 +161,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.failed', spy);
+      item.subscribe('status.failed', spy);
 
       // Emit event
       q2.fail(new Error('Failed !'));
@@ -172,7 +172,7 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'query.failed',
+          type: 'status.failed',
           source: q2,
         }
       );
@@ -180,7 +180,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(false);
     });
 
-    it('should emit query events (query.completed)', () => {
+    it('should emit query events (status.completed)', () => {
       const item = $item(entity, query);
 
       expect(item.$entity).toBe(entity);
@@ -188,7 +188,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.completed', spy);
+      item.subscribe('status.completed', spy);
 
       // Emit event
       query.complete({ id: 'test', success: true });
@@ -199,7 +199,7 @@ describe('$item', () => {
           result: { id: 'test', success: true }
         },
         {
-          type: 'query.completed',
+          type: 'status.completed',
           source: query,
         }
       );
@@ -207,7 +207,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(false);
     });
 
-    it('should emit query events (query.failed)', () => {
+    it('should emit query events (status.failed)', () => {
       const item = $item(entity, query);
 
       expect(item.$entity).toBe(entity);
@@ -215,7 +215,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.failed', spy);
+      item.subscribe('status.failed', spy);
 
       // Emit event
       query.fail(new Error('Failed !'));
@@ -226,7 +226,7 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'query.failed',
+          type: 'status.failed',
           source: query,
         }
       );
@@ -323,12 +323,12 @@ describe('$item', () => {
       expect(item.data).toEqual({ id: 'test', success: false });
     });
 
-    it('should emit query manager events (query.pending)', () => {
+    it('should emit query manager events (status.pending)', () => {
       const item = $item(entity, 'test');
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.pending', spy);
+      item.subscribe('status.pending', spy);
 
       // Emit event
       item.$item.refresh(() => new Query(), 'replace');
@@ -338,7 +338,7 @@ describe('$item', () => {
           status: 'pending'
         },
         {
-          type: 'query.pending',
+          type: 'status.pending',
           source: item.$item.manager,
         }
       );
@@ -346,7 +346,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(true);
     });
 
-    it('should emit query manager events (query.completed)', () => {
+    it('should emit query manager events (status.completed)', () => {
       const item = $item(entity, 'test');
 
       // Refresh query
@@ -355,7 +355,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.completed', spy);
+      item.subscribe('status.completed', spy);
 
       // Emit event
       query.complete({ id: 'test', success: false });
@@ -366,7 +366,7 @@ describe('$item', () => {
           result: { id: 'test', success: false }
         },
         {
-          type: 'query.completed',
+          type: 'status.completed',
           source: query,
         }
       );
@@ -374,7 +374,7 @@ describe('$item', () => {
       expect(item.isLoading).toBe(false);
     });
 
-    it('should emit query manager events (query.failed)', () => {
+    it('should emit query manager events (status.failed)', () => {
       const item = $item(entity, 'test');
 
       // Refresh query
@@ -383,7 +383,7 @@ describe('$item', () => {
 
       // Register listener
       const spy = jest.fn();
-      item.subscribe('query.failed', spy);
+      item.subscribe('status.failed', spy);
 
       // Emit event
       query.fail(new Error('Failed !'));
@@ -394,7 +394,7 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'query.failed',
+          type: 'status.failed',
           source: query,
         }
       );

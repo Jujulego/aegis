@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="build (aegis-react)" type="js.build_tools.npm">
+  <configuration default="false" name="build (aegis-react)" type="js.build_tools.npm" folderName="build">
     <package-json value="$PROJECT_DIR$/packages/react/package.json" />
     <command value="run" />
     <scripts>
