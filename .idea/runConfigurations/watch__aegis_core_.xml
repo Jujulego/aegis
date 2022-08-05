@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="watch (aegis-core)" type="js.build_tools.npm">
+  <configuration default="false" name="watch (aegis-core)" type="js.build_tools.npm" folderName="watch">
     <package-json value="$PROJECT_DIR$/packages/core/package.json" />
     <command value="run" />
     <scripts>

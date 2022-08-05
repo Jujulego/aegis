@@ -109,12 +109,12 @@ describe('$list', () => {
     );
   });
 
-  it('should emit query manager events (query.pending)', () => {
+  it('should emit query manager events (status.pending)', () => {
     const list = $list(entity, 'test');
 
     // Register listener
     const spy = jest.fn();
-    list.subscribe('query.pending', spy);
+    list.subscribe('status.pending', spy);
 
     // Emit event
     list.$list.refresh(() => new Query(), 'replace');
@@ -124,7 +124,7 @@ describe('$list', () => {
         status: 'pending',
       },
       {
-        type: 'query.pending',
+        type: 'status.pending',
         source: list.$list.manager,
       }
     );
@@ -132,7 +132,7 @@ describe('$list', () => {
     expect(list.isLoading).toBe(true);
   });
 
-  it('should emit query manager events (query.completed)', () => {
+  it('should emit query manager events (status.completed)', () => {
     const list = $list(entity, 'test');
 
     // Refresh query
@@ -141,7 +141,7 @@ describe('$list', () => {
 
     // Register listener
     const spy = jest.fn();
-    list.subscribe('query.completed', spy);
+    list.subscribe('status.completed', spy);
 
     // Emit event
     query.complete([{ id: 'test', success: false }]);
@@ -152,7 +152,7 @@ describe('$list', () => {
         result: [{ id: 'test', success: false }]
       },
       {
-        type: 'query.completed',
+        type: 'status.completed',
         source: query,
       }
     );
@@ -160,7 +160,7 @@ describe('$list', () => {
     expect(list.isLoading).toBe(false);
   });
 
-  it('should emit query manager events (query.failed)', () => {
+  it('should emit query manager events (status.failed)', () => {
     const list = $list(entity, 'test');
 
     // Refresh query
@@ -169,7 +169,7 @@ describe('$list', () => {
 
     // Register listener
     const spy = jest.fn();
-    list.subscribe('query.failed', spy);
+    list.subscribe('status.failed', spy);
 
     // Emit event
     query.fail(new Error('Failed !'));
@@ -180,7 +180,7 @@ describe('$list', () => {
         error: new Error('Failed !'),
       },
       {
-        type: 'query.failed',
+        type: 'status.failed',
         source: query,
       }
     );

@@ -56,7 +56,7 @@ export function $mutation<D, I extends AegisId>(entity: Entity<D>, query: Query<
   };
 
   if (!id) {
-    (query as Query<D>).subscribe('update.completed', (data) => {
+    (query as Query<D>).subscribe('status.completed', (data) => {
       Object.assign(mutation, {
         $id: JSON.parse(entity.storeItem(data.result))
       });

@@ -3,14 +3,14 @@ import { Query, QueryState } from '../../src';
 // Setup
 let controller: AbortController;
 let query: Query<string>;
-const updateEventSpy = jest.fn<void, [Readonly<QueryState<string>>]>();
+const statusEventSpy = jest.fn<void, [Readonly<QueryState<string>>]>();
 
 beforeEach(() => {
   controller = new AbortController();
   query = new Query(controller);
 
-  updateEventSpy.mockReset();
-  query.subscribe('update', updateEventSpy);
+  statusEventSpy.mockReset();
+  query.subscribe('status', statusEventSpy);
   jest.spyOn(controller, 'abort').mockImplementation();
 });
 
@@ -133,14 +133,14 @@ describe('Query.complete', () => {
     query.complete('result');
 
     // Check event
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'completed',
         result: 'result'
       },
       {
-        type: 'update.completed',
+        type: 'status.completed',
         source: query,
       }
     );
@@ -162,14 +162,14 @@ describe('Query.fail', () => {
     query.fail(new Error('fail'));
 
     // Check event
-    expect(updateEventSpy).toHaveBeenCalledTimes(1);
-    expect(updateEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'failed',
         error: new Error('fail')
       },
       {
-        type: 'update.failed',
+        type: 'status.failed',
         source: query,
       }
     );

@@ -16,7 +16,7 @@ let store: MemoryStore;
 let entity: Entity<TestEntity>;
 let list: List<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity[]>>]>();
+const statusEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity[]>>]>();
 const updateEventSpy = jest.fn<void, [TestEntity[]]>();
 
 beforeEach(() => {
@@ -24,10 +24,10 @@ beforeEach(() => {
   entity = new Entity('test', store, ({ id }) => id);
   list = new List(entity, 'list');
 
-  queryEventSpy.mockReset();
+  statusEventSpy.mockReset();
   updateEventSpy.mockReset();
 
-  list.subscribe('query', queryEventSpy);
+  list.subscribe('status', statusEventSpy);
   list.subscribe('update', updateEventSpy);
 });
 
@@ -71,13 +71,13 @@ describe('List.refresh', () => {
     expect(list.query).toBe(query);
     expect(list.manager.refresh).toHaveBeenCalledWith(fetcher, 'replace');
 
-    expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'pending'
       },
       {
-        type: 'query.pending',
+        type: 'status.pending',
         source: list.manager,
       }
     );

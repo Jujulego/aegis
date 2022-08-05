@@ -26,7 +26,7 @@ export class Item<D> {
     readonly id: string,
   ) {
     // Subscribe to manager events
-    this._manager.subscribe('query.completed', (data) => {
+    this._manager.subscribe('status.completed', (data) => {
       this.entity.setItem(this.id, data.result);
     });
   }
@@ -51,7 +51,7 @@ export class Item<D> {
       return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, `update.${string}.${string}`>, opts);
     }
 
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>, opts);
+    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>, opts);
   }
 
   /**
