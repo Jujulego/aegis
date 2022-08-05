@@ -45,7 +45,7 @@ const authorBook2 = $Author.getById('author-id');
 Like that even if both authors at the end has the same id, aegis will only send 1 request.
 
 ## Packages
-- [@jujulego/aegis](https://github.com/Jujulego/aegis/tree/master/packages)
+- [@jujulego/aegis](https://github.com/Jujulego/aegis/tree/master/packages/aegis)
 - [@jujulego/aegis-api](https://github.com/Jujulego/aegis/tree/master/packages/api)
 - [@jujulego/aegis-core](https://github.com/Jujulego/aegis/tree/master/packages/core)
 - [@jujulego/aegis-react](https://github.com/Jujulego/aegis/tree/master/packages/react)
