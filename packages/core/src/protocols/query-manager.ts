@@ -6,9 +6,9 @@ import { Query, QueryStateCompleted, QueryStateFailed, QueryStatePending } from 
 export type RefreshStrategy = 'keep' | 'replace';
 
 export type QueryManagerEventMap<D> = {
-  'query.pending': QueryStatePending,
-  'query.completed': QueryStateCompleted<D>,
-  'query.failed': QueryStateFailed,
+  'status.pending': QueryStatePending,
+  'status.completed': QueryStateCompleted<D>,
+  'status.failed': QueryStateFailed,
 }
 
 // Class
@@ -21,9 +21,9 @@ export type QueryManagerEventMap<D> = {
  * - 'replace' strategy: cancel pending query, and start a new one
  *
  * Events emitted:
- * - 'query.pending' emitted when a new query is started
- * - 'query.completed' emitted when the running query completes
- * - 'query.failed' emitted when the running query fails
+ * - 'status.pending' emitted when a new query is started
+ * - 'status.completed' emitted when the running query completes
+ * - 'status.failed' emitted when the running query fails
  */
 export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
   // Attributes
@@ -57,12 +57,12 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
     // Register new query
     this._query = fetcher();
 
-    this._unsub = this._query.subscribe('update', (state, metadata) => {
+    this._unsub = this._query.subscribe('status', (state, metadata) => {
       // Emit event & store
-      this.emit(`query.${state.status}`, state, { source: metadata.source });
+      this.emit(`status.${state.status}`, state, { source: metadata.source });
     });
 
-    this.emit(`query.${this._query.state.status}`, this._query.state);
+    this.emit(`status.${this._query.state.status}`, this._query.state);
 
     return this._query;
   }
@@ -73,8 +73,8 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
    */
   nextResult(): Promise<D> {
     return Promise.race([
-      this.waitFor('query.completed').then(([data]) => data.result),
-      this.waitFor('query.failed').then(([data]) => { throw data.error; })
+      this.waitFor('status.completed').then(([data]) => data.result),
+      this.waitFor('status.failed').then(([data]) => { throw data.error; })
     ]);
   }
 

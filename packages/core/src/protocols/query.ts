@@ -19,8 +19,8 @@ export type QueryState<D> = QueryStatePending | QueryStateCompleted<D> | QuerySt
 export type QueryStatus = QueryState<unknown>['status'];
 
 export type QueryEventMap<D> = {
-  'update.completed': QueryStateCompleted<D>,
-  'update.failed': QueryStateFailed,
+  'status.completed': QueryStateCompleted<D>,
+  'status.failed': QueryStateFailed,
 }
 
 // Query
@@ -89,7 +89,7 @@ export class Query<D> extends EventSource<QueryEventMap<D>> implements PromiseLi
     };
 
     if (this.status === 'pending') {
-      this.subscribe('update', listener);
+      this.subscribe('status', listener);
     } else {
       listener(this.state);
     }
@@ -105,7 +105,7 @@ export class Query<D> extends EventSource<QueryEventMap<D>> implements PromiseLi
   complete(result: D): void {
     this._state = { status: 'completed', result };
 
-    this.emit('update.completed', this._state);
+    this.emit('status.completed', this._state);
   }
 
   /**
@@ -116,7 +116,7 @@ export class Query<D> extends EventSource<QueryEventMap<D>> implements PromiseLi
   fail(error: Error): void {
     this._state = { status: 'failed', error };
 
-    this.emit('update.failed', this._state);
+    this.emit('status.failed', this._state);
   }
 
   /**

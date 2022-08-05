@@ -8,13 +8,13 @@ interface Test {
 
 // Setup
 let manager: QueryManager<Test>;
-const spyQuery = jest.fn();
+const statusEventSpy = jest.fn();
 
 beforeEach(() => {
   manager = new QueryManager();
 
   jest.resetAllMocks();
-  manager.subscribe('query', spyQuery);
+  manager.subscribe('status', statusEventSpy);
 });
 
 // Tests
@@ -28,9 +28,9 @@ describe('QueryManager.refresh', () => {
 
     expect(manager.query).toBe(query);
     expect(fetcher).toHaveBeenCalled();
-    expect(spyQuery).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'pending' },
-      { type: 'query.pending', source: manager }
+      { type: 'status.pending', source: manager }
     );
   });
 
@@ -40,21 +40,21 @@ describe('QueryManager.refresh', () => {
 
     // Emit query events
     // - completed
-    spyQuery.mockReset();
+    statusEventSpy.mockReset();
     query.complete({ id: 'test', success: true });
 
-    expect(spyQuery).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'completed', result: { id: 'test', success: true } },
-      { type: 'query.completed', source: query }
+      { type: 'status.completed', source: query }
     );
 
     // - failed
-    spyQuery.mockReset();
+    statusEventSpy.mockReset();
     query.fail(new Error('Failed !'));
 
-    expect(spyQuery).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'failed', error: new Error('Failed !') },
-      { type: 'query.failed', source: query }
+      { type: 'status.failed', source: query }
     );
   });
 
@@ -116,13 +116,13 @@ describe('QueryManager.refresh', () => {
       const q2 = new Query<Test>();
       manager.refresh(() => q2, 'replace');
 
-      spyQuery.mockReset();
+      statusEventSpy.mockReset();
 
       // Emit query events from old query
       q1.complete({ id: 'test', success: true });
       q1.fail(new Error('Failed !'));
 
-      expect(spyQuery).not.toHaveBeenCalled();
+      expect(statusEventSpy).not.toHaveBeenCalled();
     });
   });
 

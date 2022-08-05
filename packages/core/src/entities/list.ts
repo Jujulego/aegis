@@ -39,7 +39,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     super();
 
     // Subscribe to manager events
-    this._manager.subscribe('query.completed', (data) => {
+    this._manager.subscribe('status.completed', (data) => {
       this._ids = data.result.map(item => this.entity.storeItem(item));
       this._cache = new WeakRef(data.result);
       this._markDirty();
@@ -81,14 +81,14 @@ export class List<D> extends EventSource<ListEventMap<D>> {
   ): EventUnsubscribe;
   subscribe(
     key: 'update' | PartialKey<EventType<QueryManagerEventMap<D[]>>>,
-    listener: EventListener<ListEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>,
+    listener: EventListener<ListEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
     if (key === 'update') {
       return super.subscribe('update', listener as EventListener<ListEventMap<D>, 'update'>, opts);
     }
 
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'query'>>, opts);
+    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'status'>>, opts);
   }
 
   /**

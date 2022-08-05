@@ -17,7 +17,7 @@ let store: MemoryStore;
 let entity: Entity<TestEntity>;
 let item: Item<TestEntity>;
 
-const queryEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity>>]>();
+const statusEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity>>]>();
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
 
 beforeEach(() => {
@@ -25,10 +25,10 @@ beforeEach(() => {
   entity = new Entity('test', store, ({ id }) => id);
   item = new Item(entity, 'item');
 
-  queryEventSpy.mockReset();
+  statusEventSpy.mockReset();
   updateEventSpy.mockReset();
 
-  item.subscribe('query', queryEventSpy);
+  item.subscribe('status', statusEventSpy);
   item.subscribe('update', updateEventSpy);
 });
 
@@ -57,13 +57,13 @@ describe('Item.refresh', () => {
 
     expect(item.query).toBe(query);
 
-    expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'pending',
       },
       {
-        type: 'query.pending',
+        type: 'status.pending',
         source: item.manager,
       }
     );
@@ -74,14 +74,14 @@ describe('Item.refresh', () => {
     const fetcher = jest.fn().mockReturnValue(query);
 
     item.refresh(fetcher, 'keep');
-    queryEventSpy.mockReset();
+    statusEventSpy.mockReset();
 
     query.complete({ id: item.id, value: 1 });
 
     expect(item.isLoading).toBe(false);
 
-    expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'completed',
         result: {
@@ -90,7 +90,7 @@ describe('Item.refresh', () => {
         }
       },
       {
-        type: 'query.completed',
+        type: 'status.completed',
         source: query,
       }
     );
@@ -113,20 +113,20 @@ describe('Item.refresh', () => {
     const fetcher = jest.fn().mockReturnValue(query);
 
     item.refresh(fetcher, 'keep');
-    queryEventSpy.mockReset();
+    statusEventSpy.mockReset();
 
     query.fail(new Error('failed !'));
 
     expect(item.isLoading).toBe(false);
 
-    expect(queryEventSpy).toHaveBeenCalledTimes(1);
-    expect(queryEventSpy).toHaveBeenCalledWith(
+    expect(statusEventSpy).toHaveBeenCalledTimes(1);
+    expect(statusEventSpy).toHaveBeenCalledWith(
       {
         status: 'failed',
         error: new Error('failed !')
       },
       {
-        type: 'query.failed',
+        type: 'status.failed',
         source: query,
       }
     );
