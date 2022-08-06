@@ -1,48 +1,25 @@
 import { AegisUnknownItem } from '@jujulego/aegis';
-import {
-  computed,
-  ComputedRef,
-  Ref,
-  shallowRef,
-  triggerRef,
-  watchEffect,
-  WritableComputedRef
-} from '@vue/composition-api';
-
-// Types
-export interface AegisItemState<T> {
-  isLoading$: ComputedRef<boolean>;
-  data$: WritableComputedRef<T | undefined>;
-}
+import { computed, ref, Ref, shallowRef, watchEffect } from '@vue/composition-api';
 
 // Composables
-export function useAegisItem<T>(item: AegisUnknownItem<T> | Ref<AegisUnknownItem<T>>): AegisItemState<T> {
+export function useAegisItem<I extends AegisUnknownItem<any>>(item: I | Ref<I>): Ref<I> {
   const item$ = shallowRef(item);
+  const trigger$ = ref(1);
 
-  // Initiate refs
-  const isLoading$ = computed(() => item$.value.isLoading);
-  const data$ = computed({
-    get: () => item$.value.data,
-    set(val) {
-      item$.value.data = val;
-    }
-  });
-
-  // Watch on effects
+  // Watch on events
   watchEffect((cleanUp) => {
     cleanUp(item$.value.subscribe('status', () => {
-      triggerRef(isLoading$);
+      trigger$.value++;
     }));
-  });
+  }, { flush: 'sync' });
 
   watchEffect((cleanUp) => {
     cleanUp(item$.value.subscribe('update', () => {
-      triggerRef(data$);
+      trigger$.value++;
     }));
-  });
+  }, { flush: 'sync' });
 
-  return {
-    isLoading$,
-    data$,
-  };
+  return computed(() => {
+    return (trigger$.value && item$.value) as I;
+  });
 }
