@@ -38,7 +38,7 @@ describe('useAegisItem', () => {
     expect(data$.value).toEqual( { id: 'test', success: true });
   });
 
-  it.only('should register new listeners if item changes', () => {
+  it('should register new listeners if item changes', () => {
     entity.$item('test-2').data = { id: 'test-2', success: true };
 
     // First item
