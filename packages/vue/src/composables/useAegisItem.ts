@@ -1,20 +1,43 @@
 import { AegisUnknownItem } from '@jujulego/aegis';
-import { ref, UnwrapRef, watchEffect } from '@vue/composition-api';
+import {
+  computed,
+  ComputedRef,
+  Ref,
+  shallowRef,
+  triggerRef,
+  watchEffect,
+  WritableComputedRef
+} from '@vue/composition-api';
+
+// Types
+export interface AegisItemState<T> {
+  isLoading$: ComputedRef<boolean>;
+  data$: WritableComputedRef<T | undefined>;
+}
 
 // Composables
-export function useAegisItem<T, I extends AegisUnknownItem<T>>(item: I) {
-  const isLoading$ = ref(item.isLoading);
-  const data$ = ref(item.data);
+export function useAegisItem<T>(item: AegisUnknownItem<T> | Ref<AegisUnknownItem<T>>): AegisItemState<T> {
+  const item$ = shallowRef(item);
 
+  // Initiate refs
+  const isLoading$ = computed(() => item$.value.isLoading);
+  const data$ = computed({
+    get: () => item$.value.data,
+    set(val) {
+      item$.value.data = val;
+    }
+  });
+
+  // Watch on effects
   watchEffect((cleanUp) => {
-    cleanUp(item.subscribe('update', (update) => {
-      data$.value = update.new as UnwrapRef<T>;
+    cleanUp(item$.value.subscribe('status', () => {
+      triggerRef(isLoading$);
     }));
   });
 
   watchEffect((cleanUp) => {
-    cleanUp(item.subscribe('status', (update) => {
-      isLoading$.value = update.status === 'pending';
+    cleanUp(item$.value.subscribe('update', () => {
+      triggerRef(data$);
     }));
   });
 
