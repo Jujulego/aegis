@@ -1,31 +1,25 @@
-import { AegisItem, EventUnsubscribe } from '@jujulego/aegis-core';
-import { onUnmounted, ref, UnwrapRef, watch } from '@vue/composition-api';
+import { AegisUnknownItem } from '@jujulego/aegis';
+import { ref, UnwrapRef, watchEffect } from '@vue/composition-api';
 
 // Composables
-export function useAegisItem<T>(item: AegisItem<T>) {
-  const status$ = ref(item.status);
+export function useAegisItem<T, I extends AegisUnknownItem<T>>(item: I) {
+  const isLoading$ = ref(item.isLoading);
   const data$ = ref(item.data);
 
-  let unsub: EventUnsubscribe;
-
-  watch(item, () => {
-    if (unsub) unsub();
-
-    unsub = item.subscribe('update', (update) => {
+  watchEffect((cleanUp) => {
+    cleanUp(item.subscribe('update', (update) => {
       data$.value = update.new as UnwrapRef<T>;
-    });
+    }));
   });
 
-  onUnmounted(() => {
-    unsub();
-  });
-
-  item.subscribe('query', (update) => {
-    status$.value = update.new.status;
+  watchEffect((cleanUp) => {
+    cleanUp(item.subscribe('status', (update) => {
+      isLoading$.value = update.status === 'pending';
+    }));
   });
 
   return {
-    status$,
+    isLoading$,
     data$,
   };
 }

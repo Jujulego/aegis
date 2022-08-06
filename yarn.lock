@@ -3031,7 +3031,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-vue@workspace:packages/vue"
   dependencies:
-    "@jujulego/aegis-core": ^1.0.0-rc.2
+    "@jujulego/aegis": ^1.0.0-rc.3
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.2.223
@@ -3057,6 +3057,7 @@ __metadata:
     typescript: 4.7.4
     vue: ^2.6.14
   peerDependencies:
+    "@jujulego/aegis": ^1.0.0-rc.3
     "@vue/composition-api": ^0.6.7
     regenerator-runtime: ^0.13.0
     vue: ^2.6.14
