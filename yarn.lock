@@ -3057,6 +3057,7 @@ __metadata:
     ts-node: 10.9.1
     typescript: 4.7.4
     vue: ^2.6.14
+    vue-template-compiler: 2.7.8
   peerDependencies:
     "@jujulego/aegis": ^1.0.0-rc.3
     "@vue/composition-api": ^0.6.7
@@ -7563,6 +7564,13 @@ __metadata:
     whatwg-mimetype: ^3.0.0
     whatwg-url: ^11.0.0
   checksum: 033fc3dd0fba6d24bc9a024ddcf9923691dd24f90a3d26f6545d6a2f71ec6956f93462f2cdf2183cc46f10dc01ed3bcb36731a8208456eb1a08147e571fe2a76
+  languageName: node
+  linkType: hard
+
+"de-indent@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "de-indent@npm:1.0.2"
+  checksum: 8deacc0f4a397a4414a0fc4d0034d2b7782e7cb4eaf34943ea47754e08eccf309a0e71fa6f56cc48de429ede999a42d6b4bca761bf91683be0095422dbf24611
   languageName: node
   linkType: hard
 
@@ -17841,6 +17849,16 @@ __metadata:
   version: 5.2.0
   resolution: "vscode-textmate@npm:5.2.0"
   checksum: 5449b42d451080f6f3649b66948f4b5ee4643c4e88cfe3558a3b31c84c78060cfdd288c4958c1690eaa5cd65d09992fa6b7c3bef9d4aa72b3651054a04624d20
+  languageName: node
+  linkType: hard
+
+"vue-template-compiler@npm:2.7.8":
+  version: 2.7.8
+  resolution: "vue-template-compiler@npm:2.7.8"
+  dependencies:
+    de-indent: ^1.0.2
+    he: ^1.2.0
+  checksum: e0886488f46055c6e8f59c57fdcc624d1b241aaa0995977482381124a4bf602142743bb6127cf13fa8b04e4c1070253c7aa9b77abc158cf7ab988b223cddbf24
   languageName: node
   linkType: hard
 
