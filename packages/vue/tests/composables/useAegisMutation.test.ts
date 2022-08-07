@@ -29,8 +29,8 @@ describe('useAegisMutation', () => {
     const isLoading$ = computed(() => list$.value.isLoading);
     const result$ = computed(() => list$.value.result);
 
-    expect(isLoading$.value).toBe(false);
-    expect(result$.value).toEqual([]);
+    expect(isLoading$.value).toBe(true);
+    expect(result$.value).toBeUndefined();
 
     // Complete query
     query.complete({ id: 'test', success: true });
