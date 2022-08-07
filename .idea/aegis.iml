@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/packages/react/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/packages/api/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/packages/aegis/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/packages/vue/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
@@ -16,6 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/website/.docusaurus" />
       <excludeFolder url="file://$MODULE_DIR$/website/.yarn" />
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/vue/coverage" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

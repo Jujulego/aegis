@@ -95,6 +95,16 @@ const config = {
         categoryLabel: '@jujulego/aegis-react'
       }
     }],
+    ['docusaurus-plugin-typedoc', {
+      id: 'aegis-vue',
+      entryPoints: ['../packages/vue/src'],
+      tsconfig: '../packages/vue/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis-vue',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis-vue'
+      }
+    }],
   ],
 
   themeConfig:

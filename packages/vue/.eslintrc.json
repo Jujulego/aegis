@@ -1,0 +1,18 @@
+{
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**"
+  ],
+  "overrides": [
+    {
+      "files": "tests/**/*.{js,jsx,ts,tsx}",
+      "globals": {
+        "jest/globals": true
+      },
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest/style"
+      ]
+    }
+  ]
+}
