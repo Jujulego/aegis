@@ -23,7 +23,7 @@ beforeEach(() => {
 
 // Tests
 describe('useAegisList', () => {
-  it('should return current item status', () => {
+  it('should return current list status', () => {
     const list$ = useAegisList(entity.$list('test'));
     const isLoading$ = computed(() => list$.value.isLoading);
     const data$ = computed(() => list$.value.data);
@@ -38,17 +38,17 @@ describe('useAegisList', () => {
     expect(isLoading$.value).toBe(true);
     expect(data$.value).toEqual([]);
 
-    // Update item
+    // Complete query
     query.complete([{ id: 'test-1', success: true }]);
 
     expect(isLoading$.value).toBe(false);
     expect(data$.value).toEqual( [{ id: 'test-1', success: true }]);
   });
 
-  it('should register new listeners if item changes', () => {
+  it('should register new listeners if list changes', () => {
     entity.$list('test-2').data = [{ id: 'test', success: true }];
 
-    // First item
+    // First list
     const key$ = ref('test-1');
     const item$ = useAegisList(computed(() => entity.$list(key$.value)));
     const data$ = computed(() => item$.value.data);
@@ -56,13 +56,13 @@ describe('useAegisList', () => {
     expect(item$.value.$key).toBe('test-1');
     expect(data$.value).toEqual([]);
 
-    // Change item
+    // Change of list
     key$.value = 'test-2';
 
     expect(item$.value.$key).toBe('test-2');
     expect(data$.value).toEqual([{ id: 'test', success: true }]);
 
-    // Update item
+    // Update list
     entity.$list('test-2').data = [{ id: 'test', success: false }];
 
     expect(data$.value).toEqual([{ id: 'test', success: false }]);

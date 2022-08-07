@@ -38,7 +38,7 @@ describe('useAegisItem', () => {
     expect(isLoading$.value).toBe(true);
     expect(data$.value).toBeUndefined();
 
-    // Update item
+    // Complete query
     query.complete({ id: 'test', success: true });
 
     expect(isLoading$.value).toBe(false);
@@ -56,7 +56,7 @@ describe('useAegisItem', () => {
     expect(item$.value.$id).toBe('test-1');
     expect(data$.value).toBeUndefined();
 
-    // Change item
+    // Change of item
     id$.value = 'test-2';
 
     expect(item$.value.$id).toBe('test-2');

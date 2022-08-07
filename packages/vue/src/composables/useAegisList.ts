@@ -6,7 +6,7 @@ export function useAegisList<L extends AegisList<any>>(list: L | Ref<L>): Ref<L>
   const list$ = shallowRef(list);
   const trigger$ = ref(1);
 
-  // Watch on effects
+  // Watch on events
   watchEffect((cleanUp) => {
     cleanUp(list$.value.subscribe('status', () => {
       trigger$.value++;
