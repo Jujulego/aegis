@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="build (aegis-vue)" type="js.build_tools.npm" folderName="build">
+  <configuration default="false" name="build (aegis-vue)" type="js.build_tools.npm" folderName="aegis-vue">
     <package-json value="$PROJECT_DIR$/packages/vue/package.json" />
     <command value="run" />
     <scripts>

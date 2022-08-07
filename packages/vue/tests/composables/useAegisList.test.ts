@@ -1,4 +1,4 @@
-import { $entity, $store, AegisEntity } from '@jujulego/aegis';
+import { $entity, $store, AegisEntity, Query } from '@jujulego/aegis';
 import VueCompositionAPI, { computed, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
@@ -31,8 +31,15 @@ describe('useAegisList', () => {
     expect(isLoading$.value).toBe(false);
     expect(data$.value).toEqual([]);
 
+    // Start query
+    const query = new Query<Test[]>();
+    entity.$list.query(() => query, 'replace')('test');
+
+    expect(isLoading$.value).toBe(true);
+    expect(data$.value).toEqual([]);
+
     // Update item
-    entity.$list('test').data = [{ id: 'test-1', success: true }];
+    query.complete([{ id: 'test-1', success: true }]);
 
     expect(isLoading$.value).toBe(false);
     expect(data$.value).toEqual( [{ id: 'test-1', success: true }]);
