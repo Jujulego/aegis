@@ -18,6 +18,8 @@
       <excludeFolder url="file://$MODULE_DIR$/website/.yarn" />
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages/vue/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/rxjs/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/rxjs/dist" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
