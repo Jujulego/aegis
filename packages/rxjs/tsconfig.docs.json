@@ -8,6 +8,7 @@
       "@jujulego/aegis-api": ["./packages/api/src/index.ts"],
       "@jujulego/aegis-core": ["./packages/core/src/index.ts"],
       "@jujulego/aegis-react": ["./packages/react/src/index.ts"],
+      "@jujulego/aegis-rxjs": ["./packages/rxjs/src/index.ts"],
       "@jujulego/aegis-vue": ["./packages/vue/src/index.ts"],
     }
   },
