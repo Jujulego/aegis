@@ -3,8 +3,14 @@ import { Observable } from 'rxjs';
 
 // Observable
 export const $observable = {
-  item<T, I extends AegisUnknownItem<T>>(item: I): Observable<T> {
+  item<T>(item: AegisUnknownItem<T>): Observable<T> {
     return new Observable((subscriber) => {
+      // Emit initial state
+      if (item.data !== undefined) {
+        subscriber.next(item.data);
+      }
+
+      // Subscribe to events
       const unsub = item.subscribe('update', (event) => {
         subscriber.next(event.new);
       });
@@ -12,8 +18,12 @@ export const $observable = {
       subscriber.add(unsub);
     });
   },
-  list<T, L extends AegisList<T>>(list: L): Observable<T[]> {
+  list<T>(list: AegisList<T>): Observable<T[]> {
     return new Observable((subscriber) => {
+      // Emit initial state
+      subscriber.next(list.data);
+
+      // Subscribe to events
       const unsub = list.subscribe('update', (event) => {
         subscriber.next(event);
       });
