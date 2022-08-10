@@ -3,7 +3,9 @@
   "compilerOptions": {
     "incremental": true,
     "rootDir": ".",
-    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "ts-node": {
     "swc": true
