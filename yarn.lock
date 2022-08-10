@@ -2778,7 +2778,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.21.0
-    eslint-plugin-jest: 26.8.0
+    eslint-plugin-jest: 26.8.2
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -7834,23 +7834,6 @@ __metadata:
     escodegen: bin/escodegen.js
     esgenerate: bin/esgenerate.js
   checksum: 5aa6b2966fafe0545e4e77936300cc94ad57cfe4dc4ebff9950492eaba83eef634503f12d7e3cbd644ecc1bab388ad0e92b06fd32222c9281a75d1cf02ec6cef
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-jest@npm:26.8.0":
-  version: 26.8.0
-  resolution: "eslint-plugin-jest@npm:26.8.0"
-  dependencies:
-    "@typescript-eslint/utils": ^5.10.0
-  peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^5.0.0
-    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
-  peerDependenciesMeta:
-    "@typescript-eslint/eslint-plugin":
-      optional: true
-    jest:
-      optional: true
-  checksum: 5dceef6c58422d912e29346be86940ad24602026517a92ce61ddb29814c2185609887a1ea0b6061080ca19d9ee6749549d3424102b28620088e53ec45aefa915
   languageName: node
   linkType: hard
 
