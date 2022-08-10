@@ -14,6 +14,9 @@
     "tools",
     "website"
   ],
+  "scripts": {
+    "build": "jill each build --no-private"
+  },
   "devDependencies": {
     "@jujulego/jill": "1.2.1",
     "@typescript-eslint/eslint-plugin": "5.33.0",

@@ -49,4 +49,5 @@ Like that even if both authors at the end has the same id, aegis will only send 
 - [@jujulego/aegis-api](https://github.com/Jujulego/aegis/tree/master/packages/api)
 - [@jujulego/aegis-core](https://github.com/Jujulego/aegis/tree/master/packages/core)
 - [@jujulego/aegis-react](https://github.com/Jujulego/aegis/tree/master/packages/react)
+- [@jujulego/aegis-rxjs](https://github.com/Jujulego/aegis/tree/master/packages/rxjs)
 - [@jujulego/aegis-vue](https://github.com/Jujulego/aegis/tree/master/packages/vue)

@@ -96,6 +96,16 @@ const config = {
       }
     }],
     ['docusaurus-plugin-typedoc', {
+      id: 'aegis-rxjs',
+      entryPoints: ['../packages/rxjs/src'],
+      tsconfig: '../packages/rxjs/tsconfig.docs.json',
+      watch: process.env.TYPEDOC_WATCH,
+      out: 'refs/aegis-rxjs',
+      sidebar: {
+        categoryLabel: '@jujulego/aegis-rxjs'
+      }
+    }],
+    ['docusaurus-plugin-typedoc', {
       id: 'aegis-vue',
       entryPoints: ['../packages/vue/src'],
       tsconfig: '../packages/vue/tsconfig.docs.json',
