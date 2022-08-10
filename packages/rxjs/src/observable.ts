@@ -31,7 +31,7 @@ export const $observable = {
       subscriber.add(unsub);
     });
   },
-  mutation<T, M extends AegisUnknownMutation<T>>(mutation: M): Observable<T> {
+  mutation<T>(mutation: AegisUnknownMutation<T>): Observable<T> {
     return new Observable((subscriber) => {
       const unsub = mutation.subscribe('status', (event) => {
         if (event.status === 'completed') {

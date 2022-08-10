@@ -12,7 +12,15 @@
       "extends": [
         "plugin:jest/recommended",
         "plugin:jest/style"
-      ]
+      ],
+      "rules": {
+        "jest/expect-expect": [
+          "warn",
+          {
+            "assertFunctionNames": ["expect", "expectObservable"]
+          }
+        ]
+      }
     }
   ]
 }
