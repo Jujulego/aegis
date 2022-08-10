@@ -1,8 +1,14 @@
 import { Entity, EntityMerge, Query, RefreshStrategy, Store } from '@jujulego/aegis-core';
 
-import { $item, AegisItem, AegisUnknownItem } from './item';
-import { $list, AegisList } from './list';
-import { $mutation, AegisMutation, AegisUnknownMutation } from './mutation';
+import {
+  $item, $list,
+  $mutation,
+  AegisItem,
+  AegisList,
+  AegisMutation,
+  AegisUnknownItem,
+  AegisUnknownMutation
+} from './wrappers';
 import { $queryfy, AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types

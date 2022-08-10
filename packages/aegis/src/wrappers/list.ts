@@ -6,7 +6,7 @@ import {
   PartialKey, Query, QueryManagerEventMap, RefreshStrategy
 } from '@jujulego/aegis-core';
 
-import { Refreshable } from './utils';
+import { Refreshable } from '../utils';
 
 // Types
 export interface AegisList<D> extends PromiseLike<D[]> {

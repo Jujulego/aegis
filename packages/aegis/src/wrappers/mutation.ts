@@ -7,7 +7,7 @@ import {
 } from '@jujulego/aegis-core';
 
 import { $item, AegisItem, AegisUnknownItem } from './item';
-import { AegisId } from './utils';
+import { AegisId } from '../utils';
 
 // Types
 export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> extends PromiseLike<R> {
