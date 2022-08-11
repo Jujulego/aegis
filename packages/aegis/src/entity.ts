@@ -12,7 +12,7 @@ import {
 import { $queryfy, AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types
-interface AegisEntityItem<D, I extends AegisId> {
+export interface AegisEntityItem<D, I extends AegisId> {
   /**
    * Returns an AegisItem by item's id
    *
@@ -71,7 +71,7 @@ interface AegisEntityItem<D, I extends AegisId> {
   delete<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<unknown>>, id: AegisIdExtractor<A, I>): Fetcher<A, AegisMutation<D, D | unknown, I>>;
 }
 
-interface AegisEntityList<D> {
+export interface AegisEntityList<D> {
   (key: string): AegisList<D>;
 
   /**
