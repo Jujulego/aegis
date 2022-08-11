@@ -19,18 +19,10 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js"
-    },
-    "./decorators": {
-      "types": "./dist/types/decorators/index.d.ts",
-      "import": "./dist/esm/decorators/index.js",
-      "require": "./dist/cjs/decorators/index.js",
-      "default": "./dist/esm/decorators/index.js"
-    }
+    "types": "./dist/types/index.d.ts",
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js",
+    "default": "./dist/esm/index.js"
   },
   "scripts": {
     "lint": "eslint .",
