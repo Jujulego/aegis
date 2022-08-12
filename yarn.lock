@@ -2658,7 +2658,7 @@ __metadata:
     "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@typescript-eslint/eslint-plugin": 5.33.0
     "@typescript-eslint/parser": 5.33.0
     aegis-tools: "workspace:*"
@@ -2692,7 +2692,7 @@ __metadata:
     "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@typescript-eslint/eslint-plugin": 5.33.0
     "@typescript-eslint/parser": 5.33.0
     aegis-tools: "workspace:*"
@@ -2725,7 +2725,7 @@ __metadata:
     "@testing-library/react": 13.3.0
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@types/react": 18.0.15
     "@types/testing-library__react": 10.2.0
     "@types/use-sync-external-store": 0.0.3
@@ -2769,7 +2769,7 @@ __metadata:
     "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@typescript-eslint/eslint-plugin": 5.32.0
     "@typescript-eslint/parser": 5.32.0
     "@vue/composition-api": 0.6.7
@@ -2806,7 +2806,7 @@ __metadata:
     "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@typescript-eslint/eslint-plugin": 5.33.0
     "@typescript-eslint/parser": 5.33.0
     "@vue/composition-api": 0.6.7
@@ -2845,7 +2845,7 @@ __metadata:
     "@swc/jest": 0.2.22
     "@types/gulp": 4.0.9
     "@types/jest": 28.1.6
-    "@types/node": 16.11.47
+    "@types/node": 16.11.48
     "@typescript-eslint/eslint-plugin": 5.33.0
     "@typescript-eslint/parser": 5.33.0
     aegis-tools: "workspace:*"
@@ -3877,10 +3877,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.47":
-  version: 16.11.47
-  resolution: "@types/node@npm:16.11.47"
-  checksum: 26811000753fd1bb9a90a563fc72942ac3ad5d5b6c97609a090c1e24210e040597ba060e55a7a46cb22cc84dafee112d741f45652139c6166e8ce0c970b4f05a
+"@types/node@npm:16.11.48":
+  version: 16.11.48
+  resolution: "@types/node@npm:16.11.48"
+  checksum: 10cd539cb2cf5a8f51f3c2bd761c093b752e534b1f2dc0d7193debd7986145b68db2a5fd48498af641e8641fb8d24b7c4851ea3e30fb8f56cc13ac719cad1e1f
   languageName: node
   linkType: hard
 
