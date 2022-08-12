@@ -1,6 +1,6 @@
 import { Entity, Item, MemoryStore, Query } from '@jujulego/aegis-core';
 
-import { $item } from '../src';
+import { $item } from '../../src';
 
 // Types
 interface Test {

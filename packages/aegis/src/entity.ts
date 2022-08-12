@@ -1,12 +1,18 @@
 import { Entity, EntityMerge, Query, RefreshStrategy, Store } from '@jujulego/aegis-core';
 
-import { $item, AegisItem, AegisUnknownItem } from './item';
-import { $list, AegisList } from './list';
-import { $mutation, AegisMutation, AegisUnknownMutation } from './mutation';
+import {
+  $item, $list,
+  $mutation,
+  AegisItem,
+  AegisList,
+  AegisMutation,
+  AegisUnknownItem,
+  AegisUnknownMutation
+} from './wrappers';
 import { $queryfy, AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types
-interface AegisEntityItem<D, I extends AegisId> {
+export interface AegisEntityItem<D, I extends AegisId> {
   /**
    * Returns an AegisItem by item's id
    *
@@ -65,7 +71,7 @@ interface AegisEntityItem<D, I extends AegisId> {
   delete<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<unknown>>, id: AegisIdExtractor<A, I>): Fetcher<A, AegisMutation<D, D | unknown, I>>;
 }
 
-interface AegisEntityList<D> {
+export interface AegisEntityList<D> {
   (key: string): AegisList<D>;
 
   /**

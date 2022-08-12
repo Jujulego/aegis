@@ -7,7 +7,7 @@ import {
   StoreEventMap
 } from '@jujulego/aegis-core';
 
-import { AegisId, Refreshable } from './utils';
+import { AegisId, Refreshable } from '../utils';
 
 // Types
 export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends PromiseLike<D> {
