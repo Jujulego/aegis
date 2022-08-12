@@ -1,4 +1,4 @@
-import { Entity, MemoryStore, Query } from '@jujulego/aegis-core';
+import { Entity, MemoryStore } from '@jujulego/aegis-core';
 
 import { $mixin } from '../src';
 
