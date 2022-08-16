@@ -11,6 +11,6 @@ export interface Refreshable<T> {
 }
 
 // Utils
-export function $queryfy<D>(prom: PromiseLike<D>): Query<D> {
-  return prom instanceof Query ? prom : Query.fromPromise(prom);
+export function $queryfy<D>(promise: PromiseLike<D>, controller?: AbortController): Query<D> {
+  return promise instanceof Query ? promise : Query.fromPromise(promise, controller);
 }

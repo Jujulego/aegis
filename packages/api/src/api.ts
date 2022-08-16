@@ -51,8 +51,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'get', url: builder(arg) }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'get', url: builder(arg) }, controller.signal, opts),
+        controller
+      );
     };
   }
 
@@ -69,8 +73,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'head', url: builder(arg) }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'head', url: builder(arg) }, controller.signal, opts),
+        controller
+      );
     };
   }
 
@@ -87,8 +95,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'options', url: builder(arg) }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'options', url: builder(arg) }, controller.signal, opts),
+        controller
+      );
     };
   }
 
@@ -105,8 +117,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'delete', url: builder(arg) }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'delete', url: builder(arg) }, controller.signal, opts),
+        controller
+      );
     };
   }
 
@@ -125,8 +141,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper((arg, body, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'post', url: builder(arg), body }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'post', url: builder(arg), body }, controller.signal, opts),
+        controller
+      );
     });
   }
 
@@ -145,8 +165,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper((arg, body, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'put', url: builder(arg), body }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'put', url: builder(arg), body }, controller.signal, opts),
+        controller
+      );
     });
   }
 
@@ -165,8 +189,12 @@ export class AegisApi<O> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper(((arg, body, opts) => {
-      const ctrl = new AbortController();
-      return $queryfy<D>(this.fetcher({ method: 'patch', url: builder(arg), body }, ctrl.signal, opts));
+      const controller = new AbortController();
+
+      return $queryfy<D>(
+        this.fetcher({ method: 'patch', url: builder(arg), body }, controller.signal, opts),
+        controller
+      );
     }));
   }
 }

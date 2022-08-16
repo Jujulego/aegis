@@ -30,7 +30,7 @@ export interface ApiFetcherWithBody<A, B, O, D> {
   /**
    * Changes body type
    */
-  body<NB>(): ApiRequestWithBody<NB>;
+  body<NB>(): ApiFetcherWithBody<A, NB, O, D>;
 }
 
 // - url utils
