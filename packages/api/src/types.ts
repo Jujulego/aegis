@@ -1,4 +1,37 @@
+import { Query } from '@jujulego/aegis-core';
+
 // Types
+// - requests
+export interface ApiRequestNoBody {
+  method: 'get' | 'head' | 'options' | 'delete';
+  url: string;
+  body?: undefined;
+}
+
+export interface ApiRequestWithBody<B> {
+  method: 'post' | 'put' | 'patch';
+  url: string;
+  body: B;
+}
+
+export type ApiRequest<B> = ApiRequestNoBody | ApiRequestWithBody<B>;
+
+// - fetcher
+export interface ApiFetcherNoBody<A, D> {
+  (arg: A): Query<D>;
+}
+
+export interface ApiFetcherWithBody<A, B, D> {
+  (arg: A, body: B): Query<D>;
+
+  // Methods
+  /**
+   * Changes body type
+   */
+  body<NB>(): ApiRequestWithBody<NB>;
+}
+
+// - url utils
 export type ApiUrlArgType = string | number;
 
 /**

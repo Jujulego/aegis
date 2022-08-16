@@ -1,2 +1,3 @@
-export * from './api.builder';
+export * from './api';
+export * from './types';
 export * from './url';
