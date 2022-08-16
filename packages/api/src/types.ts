@@ -1,4 +1,4 @@
-import { Query } from '@jujulego/aegis-core';
+import { Query } from '@jujulego/aegis';
 
 // Types
 // - requests
@@ -17,9 +17,7 @@ export interface ApiRequestWithBody<B> {
 export type ApiRequest<B> = ApiRequestNoBody | ApiRequestWithBody<B>;
 
 // - fetcher
-export interface ApiFetcher<A, D> {
-  (arg: A): Query<D>;
-}
+export type ApiFetcher<A, D> = (arg: A) => Query<D>;
 
 export interface ApiFetcherWithBody<A, B, D> {
   (arg: A, body: B): Query<D>;

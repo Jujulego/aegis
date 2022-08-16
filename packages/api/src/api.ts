@@ -1,4 +1,4 @@
-import { Query } from '@jujulego/aegis-core';
+import { $queryfy, Query } from '@jujulego/aegis';
 import axios from 'axios';
 
 import { ApiFetcher, ApiFetcherWithBody, ApiRequest, ApiUrlArg } from './types';
@@ -26,7 +26,7 @@ export class AegisApi {
       const ctrl = new AbortController();
       const req = builder(...args);
 
-      return Query.fromPromise(
+      return $queryfy(
         axios.request({ method: req.method, url: req.url, data: req.body, signal: ctrl.signal })
           .then((res) => res.data)
       );
