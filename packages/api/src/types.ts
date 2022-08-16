@@ -17,7 +17,7 @@ export interface ApiRequestWithBody<B> {
 export type ApiRequest<B> = ApiRequestNoBody | ApiRequestWithBody<B>;
 
 // - fetcher
-export interface ApiFetcherNoBody<A, D> {
+export interface ApiFetcher<A, D> {
   (arg: A): Query<D>;
 }
 
