@@ -16,11 +16,15 @@ export interface ApiRequestWithBody<B> {
 
 export type ApiRequest<B> = ApiRequestNoBody | ApiRequestWithBody<B>;
 
-// - fetcher
-export type ApiFetcher<A, D> = (arg: A) => Query<D>;
+export type ApiRequestBuilder<A extends unknown[], B, O> = (...args: A) => ApiRequest<B> | [ApiRequest<B>, O];
 
-export interface ApiFetcherWithBody<A, B, D> {
-  (arg: A, body: B): Query<D>;
+// - fetcher
+export type ApiFetcher<O> = (request: ApiRequest<unknown>, signal: AbortSignal, opts?: O) => PromiseLike<any>;
+
+export type ApiFetcherNoBody<A, O, D> = (arg: A, opts?: O) => Query<D>;
+
+export interface ApiFetcherWithBody<A, B, O, D> {
+  (arg: A, body: B, opts?: O): Query<D>;
 
   // Methods
   /**

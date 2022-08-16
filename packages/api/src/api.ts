@@ -1,11 +1,14 @@
 import { $queryfy, Query } from '@jujulego/aegis';
-import axios from 'axios';
 
-import { ApiFetcher, ApiFetcherWithBody, ApiRequest, ApiUrlArg } from './types';
+import { ApiFetcher, ApiFetcherNoBody, ApiFetcherWithBody, ApiRequest, ApiRequestBuilder, ApiUrlArg } from './types';
 import { $url } from './url';
 
 // Utils
-function addBodyHelper<B, D, A>(fetcher: (arg: A, body: B) => Query<D>) {
+function wrapRequestBuilder<B, O>(ret: ApiRequest<B> | [ApiRequest<B>, O]): [ApiRequest<B>, O | undefined] {
+  return Array.isArray(ret) ? ret : [ret, undefined];
+}
+
+function addBodyHelper<A, B, O, D>(fetcher: (arg: A, body: B, opts?: O) => Query<D>) {
   return Object.assign(fetcher, {
     body() {
       return this;
@@ -14,22 +17,24 @@ function addBodyHelper<B, D, A>(fetcher: (arg: A, body: B) => Query<D>) {
 }
 
 // Class
-export class AegisApi {
+export class AegisApi<O> {
+  // Constructor
+  constructor(
+    private readonly fetcher: ApiFetcher<O>,
+  ) {}
+
   // Methods
   /**
    * Builds a http fetcher, sending the http request returned by the given builder.
    *
    * @param builder
    */
-  request<B, D, A extends unknown[] = []>(builder: (...args: A) => ApiRequest<B>): (...args: A) => Query<D> {
+  request<B, D, A extends unknown[] = []>(builder: ApiRequestBuilder<A, B, O>): (...args: A) => Query<D> {
     return (...args: A) => {
       const ctrl = new AbortController();
-      const req = builder(...args);
+      const [req, opts] = wrapRequestBuilder(builder(...args));
 
-      return $queryfy(
-        axios.request({ method: req.method, url: req.url, data: req.body, signal: ctrl.signal })
-          .then((res) => res.data)
-      );
+      return $queryfy<D>(this.fetcher(req, ctrl.signal, opts));
     };
   }
 
@@ -42,10 +47,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  get<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<ApiUrlArg<P>, D> {
+  get<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return this.request((arg) => ({ method: 'get', url: builder(arg) }));
+    return (arg, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'get', url: builder(arg) }, ctrl.signal, opts));
+    };
   }
 
   /**
@@ -57,10 +65,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  head<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<ApiUrlArg<P>, D> {
+  head<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return this.request((arg) => ({ method: 'head', url: builder(arg) }));
+    return (arg, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'head', url: builder(arg) }, ctrl.signal, opts));
+    };
   }
 
   /**
@@ -72,10 +83,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  options<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<ApiUrlArg<P>, D> {
+  options<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return this.request((arg) => ({ method: 'options', url: builder(arg) }));
+    return (arg, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'options', url: builder(arg) }, ctrl.signal, opts));
+    };
   }
 
   /**
@@ -87,10 +101,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  delete<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcher<ApiUrlArg<P>, D> {
+  delete<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return this.request((arg) => ({ method: 'delete', url: builder(arg) }));
+    return (arg, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'delete', url: builder(arg) }, ctrl.signal, opts));
+    };
   }
 
   /**
@@ -104,12 +121,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  post<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, D> {
+  post<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper(
-      this.request((arg, body) => ({ method: 'post', url: builder(arg), body }))
-    );
+    return addBodyHelper((arg, body, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'post', url: builder(arg), body }, ctrl.signal, opts));
+    });
   }
 
   /**
@@ -123,12 +141,13 @@ export class AegisApi {
    *
    * @see $url
    */
-  put<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, D> {
+  put<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper(
-      this.request((arg, body) => ({ method: 'put', url: builder(arg), body }))
-    );
+    return addBodyHelper((arg, body, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'put', url: builder(arg), body }, ctrl.signal, opts));
+    });
   }
 
   /**
@@ -142,13 +161,35 @@ export class AegisApi {
    *
    * @see $url
    */
-  patch<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, D> {
+  patch<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper(
-      this.request((arg, body) => ({ method: 'patch', url: builder(arg), body }))
-    );
+    return addBodyHelper(((arg, body, opts) => {
+      const ctrl = new AbortController();
+      return $queryfy<D>(this.fetcher({ method: 'patch', url: builder(arg), body }, ctrl.signal, opts));
+    }));
   }
 }
 
-export const $api = new AegisApi();
+// Constants
+/**
+ * AegisApi instance using fetch API
+ */
+export const $api = new AegisApi(
+  async (req, signal, opts?: Omit<RequestInit, 'method' | 'url' | 'body' | 'signal'>) => {
+    // Headers
+    const headers = new Headers(opts?.headers);
+    headers.set('Content-Type', 'application/json; charset=utf-8');
+
+    // Send request
+    const res = await fetch(req.url, {
+      ...opts,
+      method: req.method,
+      headers,
+      body: JSON.stringify(req.body),
+      signal
+    });
+
+    return res.json();
+  }
+);
