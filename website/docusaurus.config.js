@@ -154,6 +154,14 @@ const config = {
                 label: '@jujulego/aegis-react',
                 to: '/docs/refs/aegis-react'
               },
+              {
+                label: '@jujulego/aegis-rxjs',
+                to: '/docs/refs/aegis-rxjs'
+              },
+              {
+                label: '@jujulego/aegis-vue',
+                to: '/docs/refs/aegis-vue'
+              },
             ]
           },
           // {to: '/blog', label: 'Blog', position: 'left'},
