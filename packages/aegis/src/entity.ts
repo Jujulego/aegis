@@ -1,5 +1,6 @@
 import { Entity, EntityMerge, Query, RefreshStrategy, Store } from '@jujulego/aegis-core';
 
+import { $queryfy, AegisId, AegisIdExtractor, AegisProtocol, Refreshable } from './utils';
 import {
   $item, $list,
   $mutation,
@@ -9,7 +10,6 @@ import {
   AegisUnknownItem,
   AegisUnknownMutation
 } from './wrappers';
-import { $queryfy, AegisId, AegisIdExtractor, AegisProtocol, Fetcher, Refreshable } from './utils';
 
 // Types
 export interface AegisEntityItem<D, I extends AegisId> {
@@ -25,7 +25,7 @@ export interface AegisEntityItem<D, I extends AegisId> {
    *
    * @param fetcher
    */
-  query<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>): Fetcher<A, AegisUnknownItem<D, I>>;
+  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>): (...args: A) => AegisUnknownItem<D, I>;
 
   /**
    * Query a known item (an item we already know the id)
@@ -35,14 +35,14 @@ export interface AegisEntityItem<D, I extends AegisId> {
    * @param id Function extracting id from fetcher arguments
    * @param strategy Refresh strategy to use on first load
    */
-  query<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): Fetcher<A, AegisItem<D, I> & Refreshable<D>>;
+  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): (...args: A) => AegisItem<D, I> & Refreshable<D>;
 
   /**
    * Mutates (or creates) an unknown item (an item we don't know the id)
    *
    * @param fetcher
    */
-  mutate<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>): Fetcher<A, AegisUnknownMutation<D, D, I>>;
+  mutate<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>): (...args: A) => AegisUnknownMutation<D, D, I>;
 
   /**
    * Mutates a known item (an item we already know the id)
@@ -50,7 +50,7 @@ export interface AegisEntityItem<D, I extends AegisId> {
    * @param fetcher
    * @param id Function extracting id from fetcher arguments
    */
-  mutate<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>, id: AegisIdExtractor<A, I>): Fetcher<A, AegisMutation<D, D, I>>;
+  mutate<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>): (...args: A) => AegisMutation<D, D, I>;
 
   /**
    * Mutates a known item (an item we already know the id)
@@ -60,7 +60,7 @@ export interface AegisEntityItem<D, I extends AegisId> {
    * @param id Function extracting id from fetcher arguments
    * @param merge Function merging query result with stored data
    */
-  mutate<A extends unknown[], R>(fetcher: Fetcher<A, PromiseLike<R>>, id: AegisIdExtractor<A, I>, merge: EntityMerge<D, R>): Fetcher<A, AegisMutation<D, D, I>>;
+  mutate<A extends unknown[], R>(fetcher: (...args: A) => PromiseLike<R>, id: AegisIdExtractor<A, I>, merge: EntityMerge<D, R>): (...args: A) => AegisMutation<D, D, I>;
 
   /**
    * Deletes a known item (an item we already know the id)
@@ -68,7 +68,7 @@ export interface AegisEntityItem<D, I extends AegisId> {
    * @param fetcher
    * @param id Function extracting id from fetcher arguments
    */
-  delete<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<unknown>>, id: AegisIdExtractor<A, I>): Fetcher<A, AegisMutation<D, D | unknown, I>>;
+  delete<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<unknown>, id: AegisIdExtractor<A, I>): (...args: A) => AegisMutation<D, D | unknown, I>;
 }
 
 export interface AegisEntityList<D> {
@@ -81,7 +81,7 @@ export interface AegisEntityList<D> {
    * @param fetcher
    * @param strategy Refresh strategy to use on first load
    */
-  query<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D[]>>, strategy?: RefreshStrategy): Fetcher<[string, ...A], AegisList<D> & Refreshable<D[]>>;
+  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, strategy?: RefreshStrategy): (key: string, ...args: A) => AegisList<D> & Refreshable<D[]>;
 }
 
 export interface AegisEntity<D, I extends AegisId> {
@@ -101,9 +101,9 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
   const entity = new Entity<D>(name, store, (itm: D) => JSON.stringify(extractor(itm)));
 
   // Item methods
-  function queryItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>): Fetcher<A, AegisUnknownItem<D, I>>;
-  function queryItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): Fetcher<A, AegisItem<D, I> & Refreshable<D>>;
-  function queryItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>, id?: AegisIdExtractor<A, I>, strategy: RefreshStrategy = 'keep') {
+  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>): (...args: A) => AegisUnknownItem<D, I>;
+  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): (...args: A) => AegisItem<D, I> & Refreshable<D>;
+  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id?: AegisIdExtractor<A, I>, strategy: RefreshStrategy = 'keep') {
     return (...args: A) => {
       if (!id) {
         return $item<D, I>(entity, $queryfy(fetcher(...args)));
@@ -116,10 +116,10 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
     };
   }
 
-  function mutateItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>): Fetcher<A, AegisUnknownMutation<D, D, I>>;
-  function mutateItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D>>, id: AegisIdExtractor<A, I>): Fetcher<A, AegisMutation<D, D, I>>;
-  function mutateItem<A extends unknown[], R>(fetcher: Fetcher<A, PromiseLike<R>>, id: AegisIdExtractor<A, I>, merge: EntityMerge<D, R>): Fetcher<A, AegisMutation<D, D, I>>;
-  function mutateItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<unknown>>, id?: AegisIdExtractor<A, I>, merge?: EntityMerge<D, unknown>) {
+  function mutateItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>): (...args: A) => AegisUnknownMutation<D, D, I>;
+  function mutateItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>): (...args: A) => AegisMutation<D, D, I>;
+  function mutateItem<A extends unknown[], R>(fetcher: (...args: A) => PromiseLike<R>, id: AegisIdExtractor<A, I>, merge: EntityMerge<D, R>): (...args: A) => AegisMutation<D, D, I>;
+  function mutateItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<unknown>, id?: AegisIdExtractor<A, I>, merge?: EntityMerge<D, unknown>) {
     return (...args: A) => {
       const query = $queryfy(fetcher(...args));
 
@@ -137,7 +137,7 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
     };
   }
 
-  function deleteItem<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<unknown>>, id: AegisIdExtractor<A, I>) {
+  function deleteItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<unknown>, id: AegisIdExtractor<A, I>) {
     return (...args: A) => {
       const _id = id(...args);
 
@@ -146,7 +146,7 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
   }
 
   // List methods
-  function queryList<A extends unknown[]>(fetcher: Fetcher<A, PromiseLike<D[]>>, strategy: RefreshStrategy = 'keep') {
+  function queryList<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, strategy: RefreshStrategy = 'keep') {
     return (key: string, ...args: A) => {
       const list = $list(entity, key, () => $queryfy(fetcher(...args)));
       list.$list.refresh(() => $queryfy(fetcher(...args)), strategy);

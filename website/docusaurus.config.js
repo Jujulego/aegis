@@ -59,7 +59,6 @@ const config = {
       id: 'aegis',
       entryPoints: ['../packages/aegis/src'],
       tsconfig: '../packages/aegis/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis',
       sidebar: {
         categoryLabel: '@jujulego/aegis'
@@ -69,7 +68,6 @@ const config = {
       id: 'aegis-api',
       entryPoints: ['../packages/api/src'],
       tsconfig: '../packages/api/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis-api',
       sidebar: {
         categoryLabel: '@jujulego/aegis-api'
@@ -79,7 +77,6 @@ const config = {
       id: 'aegis-core',
       entryPoints: ['../packages/core/src'],
       tsconfig: '../packages/core/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis-core',
       sidebar: {
         categoryLabel: '@jujulego/aegis-core'
@@ -89,7 +86,6 @@ const config = {
       id: 'aegis-react',
       entryPoints: ['../packages/react/src'],
       tsconfig: '../packages/react/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis-react',
       sidebar: {
         categoryLabel: '@jujulego/aegis-react'
@@ -99,7 +95,6 @@ const config = {
       id: 'aegis-rxjs',
       entryPoints: ['../packages/rxjs/src'],
       tsconfig: '../packages/rxjs/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis-rxjs',
       sidebar: {
         categoryLabel: '@jujulego/aegis-rxjs'
@@ -109,7 +104,6 @@ const config = {
       id: 'aegis-vue',
       entryPoints: ['../packages/vue/src'],
       tsconfig: '../packages/vue/tsconfig.docs.json',
-      watch: process.env.TYPEDOC_WATCH,
       out: 'refs/aegis-vue',
       sidebar: {
         categoryLabel: '@jujulego/aegis-vue'

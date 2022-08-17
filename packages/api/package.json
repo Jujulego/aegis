@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis-api",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -32,12 +32,11 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "@jujulego/aegis-core": "^1.0.0-rc.2",
-    "axios": "^0.27.0",
+    "@jujulego/aegis": "1.0.0-rc.4",
     "regenerator-runtime": "^0.13.0"
   },
   "devDependencies": {
-    "@jujulego/aegis-core": "1.0.0-rc.2",
+    "@jujulego/aegis": "1.0.0-rc.4",
     "@jujulego/flow": "1.1.0",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.237",

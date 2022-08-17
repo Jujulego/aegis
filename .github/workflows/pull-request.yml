@@ -74,7 +74,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Build
-        run: yarn jill each build
+        run: yarn build
 
       - uses: actions/upload-artifact@v3
         with:

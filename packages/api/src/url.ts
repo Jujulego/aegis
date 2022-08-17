@@ -1,15 +1,4 @@
-// Types
-export type ApiUrlArgType = string | number;
-export type ApiUrlArg<P extends string[]> =
-  P extends []
-    ? Record<string, never> | void
-    : P extends [infer N extends string]
-      ? { readonly [K in N]: ApiUrlArgType }
-      : P extends [infer N extends string, ...(infer R extends string[])]
-        ? { readonly [K in N]: string } & ApiUrlArg<R>
-        : Record<string, ApiUrlArgType>;
-
-export type ApiUrlBuilder<P extends string[]> = (arg: ApiUrlArg<P>) => string;
+import { ApiUrlArg, ApiUrlBuilder } from './types';
 
 // Template tag
 /**
@@ -19,9 +8,6 @@ export type ApiUrlBuilder<P extends string[]> = (arg: ApiUrlArg<P>) => string;
  * @example
  * const builder = url`/example/${'id'}`;
  * builder({ id: '8' }) === '/example/8';
- *
- * @see useApi
- * @see useApiUrl
  */
 export function $url<P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiUrlBuilder<P> {
   // No parameters => just a string
@@ -31,7 +17,7 @@ export function $url<P extends string[] = []>(strings: TemplateStringsArray, ...
 
   // Create the builder
   return (arg: ApiUrlArg<P>) => param.reduce(
-    (r, p, i) => r + arg[p as keyof ApiUrlArg<P>] + strings[i+1],
+    (r, p, i) => r + arg[p] + strings[i+1],
     strings[0]
   );
 }
