@@ -41,9 +41,10 @@ export class AegisApi<O> {
   /**
    * Sends a GET http request, to the given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.get`/test/${'id'}`;
    * fetcher({ id: 8 }); // <= this will send a GET request to '/test/8' url
+   * ```
    *
    * @see $url
    */
@@ -63,9 +64,10 @@ export class AegisApi<O> {
   /**
    * Sends a HEAD http request, to the given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.head`/test/${'id'}`;
    * fetcher({ id: 8 }); // <= this will send a HEAD request to '/test/8' url
+   * ```
    *
    * @see $url
    */
@@ -85,9 +87,10 @@ export class AegisApi<O> {
   /**
    * Sends a OPTIONS http request, to the given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.options`/test/${'id'}`;
    * fetcher({ id: 8 }); // <= this will send a OPTIONS request to '/test/8' url
+   * ```
    *
    * @see $url
    */
@@ -107,9 +110,10 @@ export class AegisApi<O> {
   /**
    * Sends a DELETE http request, to the given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.delete`/test/${'id'}`;
    * fetcher({ id: 8 }); // <= this will send a DELETE request to '/test/8' url
+   * ```
    *
    * @see $url
    */
@@ -129,11 +133,12 @@ export class AegisApi<O> {
   /**
    * Sends a POST http request, with to given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.post`/test/${'id'}`
    *                     .body<string>(); // <= Allows to define body type, defaults to unknown
    *
    * fetcher({ id: 8 }, 'example'); // <= this will send a POST request to '/test/8' url, with 'example' as body
+   * ```
    *
    * @see $url
    */
@@ -153,11 +158,12 @@ export class AegisApi<O> {
   /**
    * Sends a PU http request, with to given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.put`/test/${'id'}`
    *                     .body<string>(); // <= Allows to define body type, defaults to unknown
    *
    * fetcher({ id: 8 }, 'example'); // <= this will send a PU request to '/test/8' url, with 'example' as body
+   * ```
    *
    * @see $url
    */
@@ -177,11 +183,12 @@ export class AegisApi<O> {
   /**
    * Sends a PATCH http request, with to given buildable url
    *
-   * @example
+   * @example ```typescript
    * const fetcher = $api.patch`/test/${'id'}`
    *                     .body<string>(); // <= Allows to define body type, defaults to unknown
    *
    * fetcher({ id: 8 }, 'example'); // <= this will send a PATCH request to '/test/8' url, with 'example' as body
+   * ```
    *
    * @see $url
    */
