@@ -2666,7 +2666,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -2698,7 +2698,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -2735,7 +2735,7 @@ __metadata:
     del: 6.1.1
     dequal: ^2.0.2
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-react: 7.30.1
     eslint-plugin-react-hooks: 4.6.0
     eslint-plugin-testing-library: 5.6.0
@@ -2775,7 +2775,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -2812,7 +2812,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -2849,7 +2849,7 @@ __metadata:
     browserslist: 4.21.3
     del: 6.1.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-cli: 2.3.0
@@ -4650,7 +4650,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.33.1
     "@typescript-eslint/parser": 5.33.1
     eslint: 8.22.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-workspaces: 0.7.0
     gulp: 4.0.2
     gulp-sourcemaps: 3.0.0
@@ -7778,9 +7778,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.8.3":
-  version: 26.8.3
-  resolution: "eslint-plugin-jest@npm:26.8.3"
+"eslint-plugin-jest@npm:26.9.0":
+  version: 26.9.0
+  resolution: "eslint-plugin-jest@npm:26.9.0"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -7791,7 +7791,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 3fd8dd06e4b293caf9a06a8767731e7f9fd0e74cae2f5f820484ab01a7435cab340bdcc41295bff71c0448fc92345830a399848acb4aec481e3abbfeebe14e2d
+  checksum: 6d5fd5c95368f1ca2640389aeb7ce703d6202493c3ec6bdedb4eaca37233710508b0c75829e727765a16fd27029a466d34202bc7f2811c752038ccbbce224400
   languageName: node
   linkType: hard
 
