@@ -50,7 +50,7 @@
     "@types/gulp": "4.0.9",
     "@types/jest": "28.1.8",
     "@types/node": "16.11.56",
-    "@types/react": "18.0.15",
+    "@types/react": "18.0.18",
     "@types/testing-library__react": "10.2.0",
     "@types/use-sync-external-store": "0.0.3",
     "@typescript-eslint/eslint-plugin": "5.36.1",
