@@ -7,6 +7,10 @@ on:
     paths-ignore:
       - 'website/**'
 
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
 jobs:
   setup:
     runs-on: ubuntu-latest
