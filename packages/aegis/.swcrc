@@ -1,11 +1,9 @@
 {
   "jsc": {
     "parser": {
-      "syntax": "typescript",
-      "decorators": true
+      "syntax": "typescript"
     },
-    "target": "es2022",
-    "loose": true
+    "target": "es2022"
   },
   "module": {
     "type": "es6"
