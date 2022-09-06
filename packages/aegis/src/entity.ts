@@ -12,6 +12,33 @@ import {
 } from './wrappers';
 
 // Types
+export type AegisRefresh = 'always' | 'if-unknown' | 'never';
+
+export interface AegisOptions {
+  /**
+   * Indicates if aegis should refresh function call.
+   * Accepted values:
+   * - 'never': never refresh
+   * - 'if-unknown': refresh only if data is unknown (=> not in store)
+   * - 'always': always refresh
+   *
+   * This only affects method call, not further .refresh() calls
+   *
+   * @default if-unknown
+   */
+  refresh?: AegisRefresh;
+
+  /**
+   * Strategy to use when refreshing while a request is already running
+   * Accepted values:
+   * - 'keep': keeps running query, and do not start a new one
+   * - 'replace': cancel running query, and start a new one
+   *
+   * @default keep
+   */
+  strategy?: RefreshStrategy;
+}
+
 export interface AegisEntityItem<D, I extends AegisId> {
   /**
    * Returns an AegisItem by item's id
@@ -33,9 +60,9 @@ export interface AegisEntityItem<D, I extends AegisId> {
    *
    * @param fetcher
    * @param id Function extracting id from fetcher arguments
-   * @param strategy Refresh strategy to use on first load
+   * @param options
    */
-  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): (...args: A) => AegisItem<D, I> & Refreshable<D>;
+  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, options?: AegisOptions): (...args: A) => AegisItem<D, I> & Refreshable<D>;
 
   /**
    * Mutates (or creates) an unknown item (an item we don't know the id)
@@ -79,9 +106,9 @@ export interface AegisEntityList<D> {
    * Fetcher arguments will be prepended by list's key
    *
    * @param fetcher
-   * @param strategy Refresh strategy to use on first load
+   * @param options
    */
-  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, strategy?: RefreshStrategy): (key: string, ...args: A) => AegisList<D> & Refreshable<D[]>;
+  query<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, options?: AegisOptions): (key: string, ...args: A) => AegisList<D> & Refreshable<D[]>;
 }
 
 export interface AegisEntity<D, I extends AegisId> {
@@ -102,14 +129,19 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
 
   // Item methods
   function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>): (...args: A) => AegisUnknownItem<D, I>;
-  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, strategy?: RefreshStrategy): (...args: A) => AegisItem<D, I> & Refreshable<D>;
-  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id?: AegisIdExtractor<A, I>, strategy: RefreshStrategy = 'keep') {
+  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id: AegisIdExtractor<A, I>, options?: AegisOptions): (...args: A) => AegisItem<D, I> & Refreshable<D>;
+  function queryItem<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D>, id?: AegisIdExtractor<A, I>, options: AegisOptions = {}) {
+    const { refresh = 'if-unknown', strategy = 'keep' } = options;
+
     return (...args: A) => {
       if (!id) {
         return $item<D, I>(entity, $queryfy(fetcher(...args)));
       } else {
         const item = $item(entity, id(...args), () => $queryfy(fetcher(...args)));
-        item.refresh(strategy);
+
+        if (refresh === 'always' || (refresh === 'if-unknown' && item.data === undefined)) {
+          item.refresh(strategy);
+        }
 
         return item;
       }
@@ -146,7 +178,9 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
   }
 
   // List methods
-  function queryList<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, strategy: RefreshStrategy = 'keep') {
+  function queryList<A extends unknown[]>(fetcher: (...args: A) => PromiseLike<D[]>, options: AegisOptions = {}) {
+    const { refresh = 'if-unknown', strategy = 'keep' } = options;
+
     return (key: string, ...args: A) => {
       const list = $list(entity, key, () => $queryfy(fetcher(...args)));
       list.$list.refresh(() => $queryfy(fetcher(...args)), strategy);
