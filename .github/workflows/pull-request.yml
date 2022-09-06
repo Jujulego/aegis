@@ -84,7 +84,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: [setup, build]
-    if: ${{ fromJson(needs.setup.outputs.matrix-lint)[0] }}
+    if: ${{ fromJson(needs.setup.outputs.matrix-test)[0] }}
 
     strategy:
       matrix:
@@ -119,7 +119,7 @@ jobs:
   sonarcloud:
     runs-on: ubuntu-latest
     needs: [setup, test]
-    if: ${{ fromJson(needs.setup.outputs.matrix-lint)[0] }}
+    if: ${{ fromJson(needs.setup.outputs.matrix-test)[0] }}
 
     strategy:
       matrix:
