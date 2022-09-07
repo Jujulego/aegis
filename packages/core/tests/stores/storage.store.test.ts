@@ -1,15 +1,18 @@
-import { StorageStore, StoreUpdateEvent } from '../../src';
+import { StorageStore, StoreDeleteEvent, StoreUpdateEvent } from '../../src';
 
 // Setup
 let store: StorageStore;
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
+const deleteEventSpy = jest.fn<void, [StoreDeleteEvent]>();
 
 beforeEach(() => {
   localStorage.clear();
   store = new StorageStore(localStorage);
 
   updateEventSpy.mockReset();
+  deleteEventSpy.mockReset();
   store.subscribe('update', updateEventSpy);
+  store.subscribe('delete', deleteEventSpy);
 });
 
 // Tests
@@ -35,6 +38,7 @@ describe('new StorageStore', () => {
         source: store,
       }
     );
+    expect(deleteEventSpy).not.toHaveBeenCalled();
   });
 
   it('should emit update event when StorageEvent is received (no old value)', () => {
@@ -43,7 +47,8 @@ describe('new StorageStore', () => {
     window.dispatchEvent(new StorageEvent('storage', {
       storageArea: localStorage,
       key: 'aegis:test:event',
-      newValue: JSON.stringify(3)
+      newValue: JSON.stringify(3),
+      oldValue: null
     }));
 
     expect(updateEventSpy).toHaveBeenLastCalledWith(
@@ -53,6 +58,30 @@ describe('new StorageStore', () => {
       },
       {
         type: 'update.test.event',
+        source: store,
+      }
+    );
+    expect(deleteEventSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit delete event when StorageEvent is received (no new value)', () => {
+    localStorage.setItem('aegis:test:event', JSON.stringify(3));
+
+    window.dispatchEvent(new StorageEvent('storage', {
+      storageArea: localStorage,
+      key: 'aegis:test:event',
+      newValue: null,
+      oldValue: JSON.stringify(2)
+    }));
+
+    expect(updateEventSpy).not.toHaveBeenCalled();
+    expect(deleteEventSpy).toHaveBeenLastCalledWith(
+      {
+        id: 'event',
+        item: 2,
+      },
+      {
+        type: 'delete.test.event',
         source: store,
       }
     );
@@ -140,5 +169,17 @@ describe('StorageStore.delete', () => {
     expect(store.delete<number>('test', 'delete')).toBe(1);
     expect(store.get<number>('test', 'delete')).toBeUndefined();
     expect(localStorage.getItem('aegis:test:delete')).toBeNull();
+
+    expect(deleteEventSpy).toHaveBeenCalledTimes(1);
+    expect(deleteEventSpy).toHaveBeenCalledWith(
+      {
+        id: 'delete',
+        item: 1,
+      },
+      {
+        type: 'delete.test.delete',
+        source: store,
+      }
+    );
   });
 });
