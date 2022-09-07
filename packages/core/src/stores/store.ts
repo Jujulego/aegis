@@ -3,8 +3,8 @@ import { EventSource } from '../events';
 // Types
 export interface StoreUpdateEvent<D = any> {
   id: string;
-  old?: Readonly<D>;
-  new: Readonly<D>;
+  old?: D;
+  new: D;
 }
 
 export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
@@ -28,7 +28,7 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param entity
    * @param id
    */
-  abstract get<T>(entity: string, id: string): T | undefined;
+  abstract get<D>(entity: string, id: string): D | undefined;
 
   /**
    * Updates an entity's item, if stored or adds it to the store.
@@ -38,7 +38,7 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param id
    * @param data new items content
    */
-  abstract set<T>(entity: string, id: string, data: T): T | undefined;
+  abstract set<D>(entity: string, id: string, data: D): D | undefined;
 
   /**
    * Deletes an entity's item. Next {@link Store.get} call should return `undefined`
@@ -47,5 +47,5 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param entity
    * @param id
    */
-  abstract delete<T>(entity: string, id: string): T | undefined;
+  abstract delete<D>(entity: string, id: string): D | undefined;
 }
