@@ -2684,7 +2684,7 @@ __metadata:
     jest-environment-jsdom: 29.0.2
     regenerator-runtime: 0.13.9
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
   peerDependencies:
     "@jujulego/aegis": 1.0.0-rc.4
     regenerator-runtime: ^0.13.0
@@ -2716,7 +2716,7 @@ __metadata:
     jest-environment-jsdom: 29.0.2
     regenerator-runtime: 0.13.9
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
   peerDependencies:
     regenerator-runtime: ^0.13.0
   languageName: unknown
@@ -2758,7 +2758,7 @@ __metadata:
     react-dom: 18.2.0
     regenerator-runtime: 0.13.9
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
     use-sync-external-store: ^1.1.0
   peerDependencies:
     "@jujulego/aegis": ^1.0.0-rc.4
@@ -2794,7 +2794,7 @@ __metadata:
     regenerator-runtime: 0.13.9
     rxjs: 7.5.6
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
   peerDependencies:
     "@jujulego/aegis": ^1.0.0-rc.4
     regenerator-runtime: ^0.13.0
@@ -2830,7 +2830,7 @@ __metadata:
     jest-environment-jsdom: 29.0.2
     regenerator-runtime: 0.13.9
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
     vue: 2.6.14
     vue-template-compiler: 2.6.14
   peerDependencies:
@@ -2867,7 +2867,7 @@ __metadata:
     jest-environment-jsdom: 29.0.2
     regenerator-runtime: 0.13.9
     ts-node: 10.9.1
-    typescript: 4.7.4
+    typescript: 4.8.2
   peerDependencies:
     regenerator-runtime: ^0.13.0
   languageName: unknown
@@ -4685,7 +4685,7 @@ __metadata:
     gulp-sourcemaps: 3.0.0
     gulp-swc: 1.2.3
     gulp-typescript: 6.0.0-alpha.1
-    typescript: 4.7.4
+    typescript: 4.8.2
   languageName: unknown
   linkType: soft
 
@@ -4712,7 +4712,7 @@ __metadata:
     react-dom: 17.0.2
     typedoc: 0.23.14
     typedoc-plugin-markdown: 3.13.6
-    typescript: 4.7.4
+    typescript: 4.8.2
   languageName: unknown
   linkType: soft
 
@@ -4725,7 +4725,7 @@ __metadata:
     "@typescript-eslint/parser": 5.36.2
     eslint: 8.22.0
     eslint-plugin-workspaces: 0.7.0
-    typescript: 4.7.4
+    typescript: 4.8.2
   languageName: unknown
   linkType: soft
 
@@ -16479,23 +16479,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.7.4":
-  version: 4.7.4
-  resolution: "typescript@npm:4.7.4"
+"typescript@npm:4.8.2":
+  version: 4.8.2
+  resolution: "typescript@npm:4.8.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
+  checksum: 7f5b81d0d558c9067f952c7af52ab7f19c2e70a916817929e4a5b256c93990bf3178eccb1ac8a850bc75df35f6781b6f4cb3370ce20d8b1ded92ed462348f628
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.7.4#~builtin<compat/typescript>":
-  version: 4.7.4
-  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=a1c5e5"
+"typescript@patch:typescript@4.8.2#~builtin<compat/typescript>":
+  version: 4.8.2
+  resolution: "typescript@patch:typescript@npm%3A4.8.2#~builtin<compat/typescript>::version=4.8.2&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
+  checksum: 5cb0f02f414f5405f4b0e7ee1fd7fa9177b6a8783c9017b6cad85f56ce4c4f93e0e6f2ce37e863cb597d44227cd009474c9fbd85bf7a50004e5557426cb58079
   languageName: node
   linkType: hard
 

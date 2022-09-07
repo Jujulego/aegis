@@ -14,12 +14,12 @@ export class MemoryStore extends Store {
     return entity + ':' + id;
   }
 
-  get<T>(entity: string, id: string): T | undefined {
-    return this._map.get(this._key(entity, id)) as T | undefined;
+  get<D>(entity: string, id: string): D | undefined {
+    return this._map.get(this._key(entity, id)) as D | undefined;
   }
 
-  set<T>(entity: string, id: string, data: T): T | undefined {
-    const old = this.get<T>(entity, id);
+  set<D>(entity: string, id: string, data: D): D | undefined {
+    const old = this.get<D>(entity, id);
 
     this._map.set(this._key(entity, id), data);
     this.emit(`update.${entity}.${id}`, { id, old, new: data });
@@ -27,8 +27,8 @@ export class MemoryStore extends Store {
     return old;
   }
 
-  delete<T>(entity: string, id: string): T | undefined {
-    const old = this.get<T>(entity, id);
+  delete<D>(entity: string, id: string): D | undefined {
+    const old = this.get<D>(entity, id);
 
     this._map.delete(this._key(entity, id));
 

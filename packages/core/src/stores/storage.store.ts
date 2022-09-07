@@ -40,11 +40,11 @@ export class StorageStore extends Store {
     });
   }
 
-  get<T>(entity: string, id: string): T | undefined {
+  get<D>(entity: string, id: string): D | undefined {
     const key = this._key(entity, id);
 
     // Use cache first
-    const cached = this._cache.get(key)?.deref() as T | undefined;
+    const cached = this._cache.get(key)?.deref() as D | undefined;
 
     if (cached !== undefined) {
       return cached;
@@ -52,7 +52,7 @@ export class StorageStore extends Store {
 
     // Read from storage
     const data = this.storage.getItem(key) ?? undefined;
-    const parsed = data === undefined ? data : JSON.parse(data) as T;
+    const parsed = data === undefined ? data : JSON.parse(data) as D;
 
     if (typeof parsed === 'object') {
       this._cache.set(key, new WeakRef(parsed as unknown as object));
@@ -61,8 +61,8 @@ export class StorageStore extends Store {
     return parsed;
   }
 
-  set<T>(entity: string, id: string, data: T): T | undefined {
-    const old = this.get<T>(entity, id);
+  set<D>(entity: string, id: string, data: D): D | undefined {
+    const old = this.get<D>(entity, id);
 
     this.storage.setItem(this._key(entity, id), JSON.stringify(data));
     this._cache.delete(this._key(entity, id));
@@ -71,8 +71,8 @@ export class StorageStore extends Store {
     return old;
   }
 
-  delete<T>(entity: string, id: string): T | undefined {
-    const old = this.get<T>(entity, id);
+  delete<D>(entity: string, id: string): D | undefined {
+    const old = this.get<D>(entity, id);
 
     this.storage.removeItem(this._key(entity, id));
     this._cache.delete(this._key(entity, id));
