@@ -52,6 +52,23 @@ describe('new List', () => {
     );
   });
 
+  it('should transmit store delete event for items within result list', async () => {
+    list.data = [{ id: 'item-1', value: 0 }];
+    updateEventSpy.mockReset();
+
+    entity.deleteItem('item-1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [],
+      {
+        type: 'update',
+        source: list,
+      }
+    );
+  });
+
   it('should ignore store update event for unknown item', () => {
     entity.setItem('unknown', { id: 'unknown', value: 1 });
 

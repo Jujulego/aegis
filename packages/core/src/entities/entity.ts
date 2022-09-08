@@ -17,6 +17,7 @@ export type EntityMerge<D, R> = (stored: D, result: R) => D;
  *
  * Events emitted:
  * - 'update.\{id\}' emitted when an item's contents changes
+ * - 'delete.\{id\}' emitted when an item's contents are deleted
  */
 export class Entity<D> {
   // Attributes
@@ -36,12 +37,22 @@ export class Entity<D> {
     key: PartialKey<`update.${string}`>,
     listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
     opts?: EventListenerOptions
+  ): EventUnsubscribe;
+  subscribe(
+    key: PartialKey<`delete.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe;
+  subscribe(
+    key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+    opts?: EventListenerOptions
   ): EventUnsubscribe {
     const [type, ...filters] = key.split('.');
 
     return this.store.subscribe(
-      [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}`>,
-      listener,
+      [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
+      listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
       opts
     );
   }

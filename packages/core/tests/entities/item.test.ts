@@ -3,7 +3,7 @@ import {
   Item,
   MemoryStore,
   Query, EventListener, QueryState, StoreEventMap,
-  StoreUpdateEvent,
+  StoreUpdateEvent, StoreDeleteEvent,
 } from '../../src';
 
 // Types
@@ -19,6 +19,7 @@ let item: Item<TestEntity>;
 
 const statusEventSpy = jest.fn<void, [Readonly<QueryState<TestEntity>>]>();
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent<TestEntity>]>();
+const deleteEventSpy = jest.fn<void, [StoreDeleteEvent<TestEntity>]>();
 
 beforeEach(() => {
   store = new MemoryStore();
@@ -27,14 +28,16 @@ beforeEach(() => {
 
   statusEventSpy.mockReset();
   updateEventSpy.mockReset();
+  deleteEventSpy.mockReset();
 
   item.subscribe('status', statusEventSpy);
   item.subscribe('update', updateEventSpy);
+  item.subscribe('delete', deleteEventSpy);
 });
 
 // Tests
 describe('Item.subscribe', () => {
-  it('should subscribe to entity with key set if type is \'updated\'', () => {
+  it('should subscribe to entity updates with key set', () => {
     const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
@@ -43,6 +46,17 @@ describe('Item.subscribe', () => {
     expect(item.subscribe('update', listener)).toBe(unsub);
 
     expect(entity.subscribe).toHaveBeenCalledWith(`update.${item.id}`, listener, undefined);
+  });
+
+  it('should subscribe to entity deletes with key set', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);
+
+    expect(item.subscribe('delete', listener)).toBe(unsub);
+
+    expect(entity.subscribe).toHaveBeenCalledWith(`delete.${item.id}`, listener, undefined);
   });
 });
 

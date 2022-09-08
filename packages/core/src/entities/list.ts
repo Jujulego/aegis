@@ -52,6 +52,14 @@ export class List<D> extends EventSource<ListEventMap<D>> {
         this._markDirty();
       }
     });
+
+    // Subscribe to entity delete events
+    this.entity.subscribe('delete', (data) => {
+      if (this._ids.includes(data.id)) {
+        this._cache = undefined;
+        this._markDirty();
+      }
+    });
   }
 
   // Methods
