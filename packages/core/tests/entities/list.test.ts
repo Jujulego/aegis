@@ -33,6 +33,23 @@ beforeEach(() => {
 
 // Tests
 describe('new List', () => {
+  it('should transmit store update event for list', async () => {
+    list.data = [{ id: 'item-1', value: 0 }];
+    updateEventSpy.mockReset();
+
+    entity.setList('list', []);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [],
+      {
+        type: 'update',
+        source: list,
+      }
+    );
+  });
+
   it('should transmit store update event for items within result list', async () => {
     list.data = [{ id: 'item-1', value: 0 }];
     updateEventSpy.mockReset();
@@ -158,6 +175,31 @@ describe('List.isLoading', () => {
       .mockReturnValue('failed');
 
     expect(list.isLoading).toBe(false);
+  });
+});
+
+describe('List.ids', () => {
+  it('should update and store list', () => {
+    list.data = [
+      { id: 'item-1', value: 1 },
+      { id: 'item-2', value: 2 },
+      { id: 'item-3', value: 3 },
+    ];
+
+    expect(list.ids).toEqual(['item-1', 'item-2', 'item-3']);
+
+    expect(updateEventSpy).toHaveBeenCalledTimes(1);
+    expect(updateEventSpy).toHaveBeenCalledWith(
+      [
+        { id: 'item-1', value: 1 },
+        { id: 'item-2', value: 2 },
+        { id: 'item-3', value: 3 },
+      ],
+      {
+        type: 'update',
+        source: list,
+      }
+    );
   });
 });
 

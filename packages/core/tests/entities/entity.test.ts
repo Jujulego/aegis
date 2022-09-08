@@ -75,6 +75,52 @@ describe('Entity.subscribe', () => {
   });
 });
 
+describe('Entity.subscribeList', () => {
+  it('should subscribe to store updates with key set', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribeList('update', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}-list`, listener, undefined);
+  });
+
+  it('should subscribe to store updates with key prepended', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribeList('update.list', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}-list.list`, listener, undefined);
+  });
+
+  it('should subscribe to store deletes with key set', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribeList('delete', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}-list`, listener, undefined);
+  });
+
+  it('should subscribe to store deletes with key prepended', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribeList('delete.list', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}-list.list`, listener, undefined);
+  });
+});
+
 describe('Entity.item', () => {
   it('should return an Item instance', () => {
     const item = entity.item('item');
