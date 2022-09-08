@@ -30,7 +30,7 @@ beforeEach(() => {
 
 // Tests
 describe('Entity.subscribe', () => {
-  it('should subscribe to store with key set', () => {
+  it('should subscribe to store updates with key set', () => {
     const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
@@ -41,7 +41,7 @@ describe('Entity.subscribe', () => {
     expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}`, listener, undefined);
   });
 
-  it('should subscribe to store with key prepended', () => {
+  it('should subscribe to store updates with key prepended', () => {
     const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
     const unsub = () => undefined;
 
@@ -50,6 +50,28 @@ describe('Entity.subscribe', () => {
     expect(entity.subscribe('update.item', listener)).toBe(unsub);
 
     expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}.item`, listener, undefined);
+  });
+
+  it('should subscribe to store deletes with key set', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribe('delete', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}`, listener, undefined);
+  });
+
+  it('should subscribe to store deletes with key prepended', () => {
+    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const unsub = () => undefined;
+
+    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+
+    expect(entity.subscribe('delete.item', listener)).toBe(unsub);
+
+    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}.item`, listener, undefined);
   });
 });
 

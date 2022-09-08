@@ -1,14 +1,17 @@
-import { MemoryStore, StoreUpdateEvent } from '../../src';
+import { MemoryStore, StoreDeleteEvent, StoreUpdateEvent } from '../../src';
 
 // Setup
 let store: MemoryStore;
 const updateEventSpy = jest.fn<void, [StoreUpdateEvent]>();
+const deleteEventSpy = jest.fn<void, [StoreDeleteEvent]>();
 
 beforeEach(() => {
   store = new MemoryStore();
 
   updateEventSpy.mockReset();
+  deleteEventSpy.mockReset();
   store.subscribe('update', updateEventSpy);
+  store.subscribe('delete', deleteEventSpy);
 });
 
 // Tests
@@ -74,5 +77,17 @@ describe('MemoryStore.delete', () => {
     store.set('test', 'delete', 1);
     expect(store.delete<number>('test', 'delete')).toBe(1);
     expect(store.get<number>('test', 'delete')).toBeUndefined();
+
+    expect(deleteEventSpy).toHaveBeenCalledTimes(1);
+    expect(deleteEventSpy).toHaveBeenCalledWith(
+      {
+        id: 'delete',
+        item: 1,
+      },
+      {
+        type: 'delete.test.delete',
+        source: store,
+      }
+    );
   });
 });

@@ -7,7 +7,13 @@ export interface StoreUpdateEvent<D = any> {
   new: D;
 }
 
-export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>;
+export interface StoreDeleteEvent<D = any> {
+  id: string;
+  item: D;
+}
+
+export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>
+  & Record<`delete.${string}.${string}`, StoreDeleteEvent<D>>;
 
 // Store
 /**
@@ -19,6 +25,7 @@ export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreU
  *
  * Events emitted:
  * - 'update.\{entity\}.\{id\}' emitted when an item is updated
+ * - 'delete.\{entity\}.\{id\}' emitted when an item is deleted
  */
 export abstract class Store extends EventSource<StoreEventMap> {
   // Methods
