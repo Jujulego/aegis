@@ -23,6 +23,11 @@ export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends Promis
     listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
+  subscribe(
+    key: 'delete',
+    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe;
   subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
     type: T,
     listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
@@ -87,6 +92,10 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
       });
 
       $item.subscribe('update', (data, mtd) => {
+        events.emit(mtd.type, data, { source: mtd.source });
+      });
+
+      $item.subscribe('delete', (data, mtd) => {
         events.emit(mtd.type, data, { source: mtd.source });
       });
 

@@ -97,6 +97,32 @@ describe('$item', () => {
       expect(item.data).toEqual({ id: 'test', success: false });
     });
 
+    it('should emit store events (delete)', () => {
+      const item = $item(entity, query);
+
+      query.complete({ id: 'test', success: true });
+
+      // Register listener
+      const spy = jest.fn();
+      item.subscribe('delete', spy);
+
+      // Emit event
+      store.delete(entity.name, JSON.stringify('test'));
+
+      expect(spy).toHaveBeenCalledWith(
+        {
+          id: JSON.stringify('test'),
+          item: { id: 'test', success: true }
+        },
+        {
+          type: `delete.${entity.name}.${JSON.stringify('test')}`,
+          source: store,
+        }
+      );
+
+      expect(item.data).toBeUndefined();
+    });
+
     it('should emit query manager events (status.pending)', () => {
       const item = $item(entity, query);
 
@@ -321,6 +347,29 @@ describe('$item', () => {
       );
 
       expect(item.data).toEqual({ id: 'test', success: false });
+    });
+
+    it('should emit store events (delete)', () => {
+      const item = $item(entity, 'test');
+
+      // Register listener
+      const spy = jest.fn();
+      item.subscribe('delete', spy);
+
+      // Emit event
+      store.delete(entity.name, JSON.stringify('test'));
+
+      expect(spy).toHaveBeenCalledWith(
+        {
+          id: JSON.stringify('test'),
+        },
+        {
+          type: `delete.${entity.name}.${JSON.stringify('test')}`,
+          source: store,
+        }
+      );
+
+      expect(item.data).toBeUndefined();
     });
 
     it('should emit query manager events (status.pending)', () => {
