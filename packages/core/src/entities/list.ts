@@ -3,6 +3,7 @@ import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../p
 import { ExtractKey, PartialKey } from '../utils';
 
 import { Entity } from './entity';
+import { DataState } from './types';
 
 // Types
 export type ListEventMap<D> = {
@@ -129,6 +130,21 @@ export class List<D> extends EventSource<ListEventMap<D>> {
    */
   get query(): Query<D[]> | undefined {
     return this._manager.query;
+  }
+
+  /**
+   * Returns data state
+   */
+  get state(): DataState {
+    if (this.entity.getList(this.key) !== undefined) {
+      if (this.query?.status === 'completed') {
+        return 'loaded';
+      } else {
+        return 'cached';
+      }
+    }
+
+    return 'unknown';
   }
 
   /**
