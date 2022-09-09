@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -35,7 +35,7 @@
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {
-    "@jujulego/aegis-core": "^1.0.0-rc.2"
+    "@jujulego/aegis-core": "^1.0.0-rc.3"
   },
   "devDependencies": {
     "@jujulego/flow": "1.1.0",

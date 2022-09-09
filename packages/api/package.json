@@ -32,11 +32,11 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "@jujulego/aegis": "1.0.0-rc.4",
+    "@jujulego/aegis": "1.0.0-rc.5",
     "regenerator-runtime": "^0.13.0"
   },
   "devDependencies": {
-    "@jujulego/aegis": "1.0.0-rc.4",
+    "@jujulego/aegis": "1.0.0-rc.5",
     "@jujulego/flow": "1.1.0",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.239",
