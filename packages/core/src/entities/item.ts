@@ -4,6 +4,7 @@ import { StoreEventMap } from '../stores';
 import { ExtractKey, PartialKey } from '../utils';
 
 import { Entity } from './entity';
+import { DataState } from './types';
 
 // Class
 /**
@@ -34,12 +35,12 @@ export class Item<D> {
 
   // Methods
   subscribe(
-    key: 'update',
+    type: 'update',
     listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
   subscribe(
-    key: 'delete',
+    type: 'delete',
     listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
     opts?: EventListenerOptions
   ): EventUnsubscribe;
@@ -49,19 +50,19 @@ export class Item<D> {
     opts?: EventListenerOptions
   ): EventUnsubscribe;
   subscribe(
-    key: 'update' | 'delete' | PartialKey<EventType<QueryManagerEventMap<D>>>,
+    type: 'update' | 'delete' | PartialKey<EventType<QueryManagerEventMap<D>>>,
     listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>,
     opts?: EventListenerOptions
   ): EventUnsubscribe {
-    if (key === 'update') {
+    if (type === 'update') {
       return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, `update.${string}.${string}`>, opts);
     }
 
-    if (key === 'delete') {
+    if (type === 'delete') {
       return this.entity.subscribe(`delete.${this.id}`, listener as EventListener<StoreEventMap<D>, `delete.${string}.${string}`>, opts);
     }
 
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>, opts);
+    return this._manager.subscribe(type, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>, opts);
   }
 
   /**
@@ -89,6 +90,21 @@ export class Item<D> {
    */
   get query(): Query<D> | undefined {
     return this._manager.query;
+  }
+
+  /**
+   * Returns data state
+   */
+  get state(): DataState {
+    if (this.data !== undefined) {
+      if (this.query?.status === 'completed') {
+        return 'loaded';
+      } else {
+        return 'cached';
+      }
+    }
+
+    return 'unknown';
   }
 
   /**

@@ -150,6 +150,28 @@ describe('List.refresh', () => {
   });
 });
 
+describe('List.state', () => {
+  it('should return unknown if no data in store', () => {
+    expect(list.state).toBe('unknown');
+  });
+
+  it('should return cached if data is in store but there\'s no completed query', () => {
+    list.data = [{ id: 'item', value: 1 }];
+
+    expect(list.state).toBe('cached');
+  });
+
+  it('should return loaded if data is in store and there\'s completed query', () => {
+    const query = list.refresh(() => new Query(), 'replace');
+    list.data = [{ id: 'item', value: 1 }];
+
+    jest.spyOn(query, 'status', 'get')
+      .mockReturnValue('completed');
+
+    expect(list.state).toBe('loaded');
+  });
+});
+
 describe('List.isLoading', () => {
   it('should return pending if no query is running', () => {
     expect(list.isLoading).toBe(false);
