@@ -30,8 +30,10 @@ export class MemoryStore extends Store {
   delete<D>(entity: string, id: string): D | undefined {
     const old = this.get<D>(entity, id);
 
-    this._map.delete(this._key(entity, id));
-    this.emit(`delete.${entity}.${id}`, { id, item: old });
+    if (old !== undefined) {
+      this._map.delete(this._key(entity, id));
+      this.emit(`delete.${entity}.${id}`, { id, item: old });
+    }
 
     return old;
   }

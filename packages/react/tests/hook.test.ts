@@ -134,6 +134,7 @@ describe('$hook().list', () => {
       $entity: ent.$entity,
 
       isLoading: true,
+      ids: [],
       data: [],
       then: expect.any(Function),
       refresh: expect.any(Function),

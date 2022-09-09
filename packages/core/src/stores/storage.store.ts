@@ -85,9 +85,11 @@ export class StorageStore extends Store {
   delete<D>(entity: string, id: string): D | undefined {
     const old = this.get<D>(entity, id);
 
-    this.storage.removeItem(this._key(entity, id));
-    this._cache.delete(this._key(entity, id));
-    this.emit(`delete.${entity}.${id}`, { id, item: old });
+    if (old !== undefined) {
+      this.storage.removeItem(this._key(entity, id));
+      this._cache.delete(this._key(entity, id));
+      this.emit(`delete.${entity}.${id}`, { id, item: old });
+    }
 
     return old;
   }

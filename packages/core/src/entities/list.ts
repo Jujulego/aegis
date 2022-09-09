@@ -25,7 +25,6 @@ export type ListEventMap<D> = {
  */
 export class List<D> extends EventSource<ListEventMap<D>> {
   // Attributes
-  private _ids: string[] = [];
   private _cache?: WeakRef<D[]>;
   private _manager = new QueryManager<D[]>();
 
@@ -40,14 +39,20 @@ export class List<D> extends EventSource<ListEventMap<D>> {
 
     // Subscribe to manager events
     this._manager.subscribe('status.completed', (data) => {
-      this._ids = data.result.map(item => this.entity.storeItem(item));
+      this.ids = data.result.map(item => this.entity.storeItem(item));
       this._cache = new WeakRef(data.result);
+      this._markDirty();
+    });
+
+    // Subscribe to entity list update events
+    this.entity.subscribeList(`update.${this.key}`, () => {
+      this._cache = undefined;
       this._markDirty();
     });
 
     // Subscribe to entity update events
     this.entity.subscribe('update', (data) => {
-      if (this._ids.includes(data.id)) {
+      if (this.ids.includes(data.id)) {
         this._cache = undefined;
         this._markDirty();
       }
@@ -55,7 +60,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
 
     // Subscribe to entity delete events
     this.entity.subscribe('delete', (data) => {
-      if (this._ids.includes(data.id)) {
+      if (this.ids.includes(data.id)) {
         this._cache = undefined;
         this._markDirty();
       }
@@ -135,6 +140,17 @@ export class List<D> extends EventSource<ListEventMap<D>> {
   }
 
   /**
+   * Returns list item's ids
+   */
+  get ids(): string[] {
+    return this.entity.getList(this.key) ?? [];
+  }
+
+  protected set ids(ids: string[]) {
+    this.entity.setList(this.key, ids);
+  }
+
+  /**
    * Rebuilds list contents as array, using stored ids.
    * Result is cached so 2 consecutive access will return the same array.
    * @see Entity.getItem
@@ -150,7 +166,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     // Read from store
     const data: D[] = [];
 
-    for (const id of this._ids) {
+    for (const id of this.ids) {
       const ent = this.entity.getItem(id);
 
       if (ent) {
@@ -172,7 +188,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
    * @param data
    */
   set data(data: D[]) {
-    this._ids = data.map(item => this.entity.storeItem(item));
+    this.ids = data.map(item => this.entity.storeItem(item));
     this._cache = new WeakRef(data);
 
     this.emit('update', this.data);

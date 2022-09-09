@@ -351,6 +351,7 @@ describe('$item', () => {
 
     it('should emit store events (delete)', () => {
       const item = $item(entity, 'test');
+      item.data = { id: 'test', success: true };
 
       // Register listener
       const spy = jest.fn();
@@ -362,6 +363,7 @@ describe('$item', () => {
       expect(spy).toHaveBeenCalledWith(
         {
           id: JSON.stringify('test'),
+          item: { id: 'test', success: true }
         },
         {
           type: `delete.${entity.name}.${JSON.stringify('test')}`,

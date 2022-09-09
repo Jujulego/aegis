@@ -15,6 +15,7 @@ export interface AegisList<D> extends PromiseLike<D[]> {
   readonly $entity: Entity<D>;
 
   readonly isLoading: boolean;
+  readonly ids: string[];
   data: D[];
 
   subscribe(
@@ -58,8 +59,12 @@ export function $list<D>(entity: Entity<D>, key: string, refresh?: () => Query<D
       return this.$list.isLoading;
     },
 
+    get ids() {
+      return this.$list.ids;
+    },
+
     get data() {
-      return this.$list.data ?? [];
+      return this.$list.data;
     },
     set data(value: D[]) {
       this.$list.data = value;

@@ -57,6 +57,30 @@ export class Entity<D> {
     );
   }
 
+  subscribeList(
+    key: PartialKey<`update.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe;
+  subscribeList(
+    key: PartialKey<`delete.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe;
+  subscribeList(
+    key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
+    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+    opts?: EventListenerOptions
+  ): EventUnsubscribe {
+    const [type, ...filters] = key.split('.');
+
+    return this.store.subscribe(
+      [type, `${this.name}-list`, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
+      listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
+      opts
+    );
+  }
+
   // - query managers
   /**
    * Get an {@link Item} object for given id.
@@ -166,6 +190,16 @@ export class Entity<D> {
   }
 
   /**
+   * Direct access to stored list data, by key.
+   * @see Store.get
+   *
+   * @param key
+   */
+  getList(key: string): string[] | undefined {
+    return this.store.get(`${this.name}-list`, key);
+  }
+
+  /**
    * Update local item, by id.
    * @see Store.set
    *
@@ -174,6 +208,17 @@ export class Entity<D> {
    */
   setItem(id: string, value: D): void {
     this.store.set(this.name, id, value);
+  }
+
+  /**
+   * Update local list data, by key.
+   * @see Store.set
+   *
+   * @param key
+   * @param data
+   */
+  setList(key: string, data: string[]): void {
+    this.store.set(`${this.name}-list`, key, data);
   }
 
   /**
