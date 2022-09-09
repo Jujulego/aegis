@@ -139,7 +139,7 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
       } else {
         const item = $item(entity, id(...args), () => $queryfy(fetcher(...args)));
 
-        if (refresh === 'always' || (refresh === 'if-unknown' && item.data === undefined)) {
+        if (refresh === 'always' || (refresh === 'if-unknown' && item.$item.state === 'unknown')) {
           item.refresh(strategy);
         }
 
@@ -183,7 +183,10 @@ export function $entity<D, I extends AegisId>(name: string, store: Store, extrac
 
     return (key: string, ...args: A) => {
       const list = $list(entity, key, () => $queryfy(fetcher(...args)));
-      list.$list.refresh(() => $queryfy(fetcher(...args)), strategy);
+
+      if (refresh === 'always' || (refresh === 'if-unknown' && list.$list.state === 'unknown')) {
+        list.$list.refresh(() => $queryfy(fetcher(...args)), strategy);
+      }
 
       return list;
     };

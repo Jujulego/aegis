@@ -82,7 +82,7 @@ describe('$entity', () => {
         // Wrap fetcher
         const q2 = new Query<Test>();
         const querier = jest.fn((id: string) => q2);
-        const fetcher = entity.$item.query(querier, (id) => id, 'keep');
+        const fetcher = entity.$item.query(querier, (id) => id, { strategy: 'keep' });
 
         // Call
         const $item = fetcher('test');
@@ -91,6 +91,113 @@ describe('$entity', () => {
 
         expect($item.isLoading).toBe(true);
         expect($item.$item.manager.query).toBe(q1);
+      });
+
+      it('should wrap fetcher so it is not called if item is already cached or loaded [refresh: if-unknown] (only for known item)', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const q1 = new Query<Test>();
+        const querier = jest.fn((id: string) => q1);
+        const fetcher = entity.$item.query(querier, (id) => id, { refresh: 'if-unknown' });
+
+        // Call while unknown
+        let $item = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(true);
+        expect($item.$item.manager.query).toBe(q1);
+
+        // Complete first query
+        q1.complete({ id: 'test', success: true });
+
+        expect($item.isLoading).toBe(false);
+        expect($item.$item.state).toBe('loaded');
+
+        // Reset mock
+        const q2 = new Query<Test>();
+
+        querier.mockReset();
+        querier.mockReturnValue(q2);
+
+        // Call while loaded
+        $item = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(false);
+        expect($item.$item.manager.query).toBe(q1);
+      });
+
+      it('should wrap fetcher so it is always called [refresh: always] (only for known item)', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const q1 = new Query<Test>();
+        const querier = jest.fn((id: string) => q1);
+        const fetcher = entity.$item.query(querier, (id) => id, { refresh: 'always' });
+
+        // Call while unknown
+        let $item = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(true);
+        expect($item.$item.manager.query).toBe(q1);
+
+        // Complete first query
+        q1.complete({ id: 'test', success: true });
+
+        expect($item.isLoading).toBe(false);
+        expect($item.$item.state).toBe('loaded');
+
+        // Reset mock
+        const q2 = new Query<Test>();
+
+        querier.mockReset();
+        querier.mockReturnValue(q2);
+
+        // Call while loaded
+        $item = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(true);
+        expect($item.$item.manager.query).toBe(q2);
+      });
+
+      it('should wrap fetcher so it is never called [refresh: never] (only for known item)', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const query = new Query<Test>();
+        const querier = jest.fn((id: string) => query);
+        const fetcher = entity.$item.query(querier, (id) => id, { refresh: 'never' });
+
+        // Call while unknown
+        let $item = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(false);
+        expect($item.$item.manager.query).toBeUndefined();
+
+        // Fill store
+        $item.data = { id: 'test', success: true };
+
+        expect($item.$item.state).toBe('cached');
+
+        // Reset mock
+        querier.mockReset();
+
+        // Call while cached
+        $item = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($item.isLoading).toBe(false);
+        expect($item.$item.manager.query).toBeUndefined();
       });
     });
 
@@ -218,7 +325,7 @@ describe('$entity', () => {
         // Wrap fetcher
         const q2 = new Query<Test[]>();
         const querier = jest.fn((_a: number, _b: string) => q2);
-        const fetcher = entity.$list.query(querier, 'keep');
+        const fetcher = entity.$list.query(querier, { strategy: 'keep' });
 
         // Call
         const $list = fetcher('test', 1, 'successful');
@@ -228,6 +335,113 @@ describe('$entity', () => {
         expect($list.isLoading).toBe(true);
         expect($list.$list.manager.query).toBe(q1);
       });
+
+      it('should wrap fetcher so it is not called if item is already cached or loaded [refresh: if-unknown]', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const q1 = new Query<Test[]>();
+        const querier = jest.fn(() => q1);
+        const fetcher = entity.$list.query(querier, { refresh: 'if-unknown' });
+
+        // Call while unknown
+        let $list = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(true);
+        expect($list.$list.manager.query).toBe(q1);
+
+        // Complete first query
+        q1.complete([{ id: 'test', success: true }]);
+
+        expect($list.isLoading).toBe(false);
+        expect($list.$list.state).toBe('loaded');
+
+        // Reset mock
+        const q2 = new Query<Test[]>();
+
+        querier.mockReset();
+        querier.mockReturnValue(q2);
+
+        // Call while loaded
+        $list = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(false);
+        expect($list.$list.manager.query).toBe(q1);
+      });
+
+      it('should wrap fetcher so it is always called [refresh: always]', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const q1 = new Query<Test[]>();
+        const querier = jest.fn(() => q1);
+        const fetcher = entity.$list.query(querier, { refresh: 'always' });
+
+        // Call while unknown
+        let $list = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(true);
+        expect($list.$list.manager.query).toBe(q1);
+
+        // Complete first query
+        q1.complete([{ id: 'test', success: true }]);
+
+        expect($list.isLoading).toBe(false);
+        expect($list.$list.state).toBe('loaded');
+
+        // Reset mock
+        const q2 = new Query<Test[]>();
+
+        querier.mockReset();
+        querier.mockReturnValue(q2);
+
+        // Call while loaded
+        $list = fetcher('test');
+
+        expect(querier).toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(true);
+        expect($list.$list.manager.query).toBe(q2);
+      });
+
+      it('should wrap fetcher so it is never called [refresh: never]', () => {
+        const entity = $entity('Test', store, (test: Test) => test.id);
+
+        // Wrap fetcher
+        const query = new Query<Test[]>();
+        const querier = jest.fn(() => query);
+        const fetcher = entity.$list.query(querier, { refresh: 'never' });
+
+        // Call while unknown
+        let $list = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(false);
+        expect($list.$list.manager.query).toBeUndefined();
+
+        // Fill store
+        $list.data = [{ id: 'test', success: true }];
+
+        expect($list.$list.state).toBe('cached');
+
+        // Reset mock
+        querier.mockReset();
+
+        // Call while cached
+        $list = fetcher('test');
+
+        expect(querier).not.toHaveBeenCalled();
+
+        expect($list.isLoading).toBe(false);
+        expect($list.$list.manager.query).toBeUndefined();
+      });
     });
   });
 
@@ -236,8 +450,8 @@ describe('$entity', () => {
       const entity = $entity('Test', store, (test: Test) => test.id)
         .$protocol(({ $item, $list }) => ({
           create: $item.query(() => new Query()),
-          getById: $item.query((id: string) => new Query(), (id) => id, 'keep'),
-          findAll: $list.query(() => new Query(), 'replace'),
+          getById: $item.query((id: string) => new Query(), (id) => id, { strategy: 'keep' }),
+          findAll: $list.query(() => new Query(), { strategy: 'replace' }),
           updateById: $item.mutate((id: string, body: unknown) => new Query(), (id) => id),
           deleteById: $item.delete((id: string) => new Query(), (id) => id),
         }));
