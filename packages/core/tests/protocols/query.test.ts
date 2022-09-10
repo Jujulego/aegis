@@ -140,8 +140,8 @@ describe('Query.complete', () => {
         result: 'result'
       },
       {
-        type: 'status.completed',
-        source: query,
+        key: 'status.completed',
+        origin: query,
       }
     );
   });
@@ -169,8 +169,8 @@ describe('Query.fail', () => {
         error: new Error('fail')
       },
       {
-        type: 'status.failed',
-        source: query,
+        key: 'status.failed',
+        origin: query,
       }
     );
   });

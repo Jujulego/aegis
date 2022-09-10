@@ -1,4 +1,4 @@
-import { EventSource } from '../events';
+import { EventSource } from '@jujulego/event-tree';
 
 // Types
 export interface QueryStatePending {

@@ -146,7 +146,7 @@ export class Entity<D> {
    */
   mutation<R>(id: string, query: Query<R>, merge: EntityMerge<D, R>): Query<D>;
 
-  mutation(id: string, query: Query<unknown>, merge?: EntityMerge<D, unknown>): Query<D> {
+  mutation(id: string, query: Query<any>, merge?: EntityMerge<D, unknown>): Query<D> {
     return query.then((result) => {
       if (merge) {
         const item = this.getItem(id);
