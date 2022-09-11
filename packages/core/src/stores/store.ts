@@ -1,4 +1,4 @@
-import { EventSource } from '../events';
+import { EventSource } from '@jujulego/event-tree';
 
 // Types
 export interface StoreUpdateEvent<D = any> {
@@ -12,8 +12,9 @@ export interface StoreDeleteEvent<D = any> {
   item: D;
 }
 
-export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>
-  & Record<`delete.${string}.${string}`, StoreDeleteEvent<D>>;
+export type StoreEventMap<D = any> =
+  Record<`update.${string}.${string}`, StoreUpdateEvent<D>> &
+  Record<`delete.${string}.${string}`, StoreDeleteEvent<D>>;
 
 // Store
 /**
@@ -27,7 +28,7 @@ export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreU
  * - 'update.\{entity\}.\{id\}' emitted when an item is updated
  * - 'delete.\{entity\}.\{id\}' emitted when an item is deleted
  */
-export abstract class Store extends EventSource<StoreEventMap> {
+export abstract class Store<D> extends EventSource<StoreEventMap<D>> {
   // Methods
   /**
    * Returns an entity's item, if stored or `undefined` if item is unknown.
@@ -35,7 +36,7 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param entity
    * @param id
    */
-  abstract get<D>(entity: string, id: string): D | undefined;
+  abstract get(entity: string, id: string): D | undefined;
 
   /**
    * Updates an entity's item, if stored or adds it to the store.
@@ -45,7 +46,7 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param id
    * @param data new items content
    */
-  abstract set<D>(entity: string, id: string, data: D): D | undefined;
+  abstract set(entity: string, id: string, data: D): D | undefined;
 
   /**
    * Deletes an entity's item. Next {@link Store.get} call should return `undefined`
@@ -54,5 +55,5 @@ export abstract class Store extends EventSource<StoreEventMap> {
    * @param entity
    * @param id
    */
-  abstract delete<D>(entity: string, id: string): D | undefined;
+  abstract delete(entity: string, id: string): D | undefined;
 }

@@ -1,7 +1,14 @@
-import { EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
+import {
+  EventGroupKey,
+  EventGroupListener,
+  EventKey,
+  EventListener,
+  EventObservable,
+  EventUnsubscribe, joinKey, splitKey
+} from '@jujulego/event-tree';
+
 import { Query } from '../protocols';
-import { Store, StoreEventMap } from '../stores';
-import { PartialKey } from '../utils';
+import { Store, StoreDeleteEvent, StoreUpdateEvent } from '../stores';
 
 import { Item } from './item';
 import { List } from './list';
@@ -9,6 +16,10 @@ import { List } from './list';
 // Types
 export type EntityIdExtractor<D> = (entity: D) => string;
 export type EntityMerge<D, R> = (stored: D, result: R) => D;
+
+export type EntityEventMap<D> =
+  Record<`update.${string}`, StoreUpdateEvent<D>> &
+  Record<`delete.${string}`, StoreDeleteEvent<D>>;
 
 // Class
 /**
@@ -19,7 +30,7 @@ export type EntityMerge<D, R> = (stored: D, result: R) => D;
  * - 'update.\{id\}' emitted when an item's contents changes
  * - 'delete.\{id\}' emitted when an item's contents are deleted
  */
-export class Entity<D> {
+export class Entity<D> implements EventObservable<EntityEventMap<D>> {
   // Attributes
   private readonly _items = new Map<string, WeakRef<Item<D>>>();
   private readonly _lists = new Map<string, WeakRef<List<D>>>();
@@ -27,59 +38,71 @@ export class Entity<D> {
   // Constructor
   constructor(
     readonly name: string,
-    readonly store: Store,
+    readonly store: Store<D>,
     readonly extractor: EntityIdExtractor<D>
   ) {}
 
   // Methods
   // - events
-  subscribe(
-    key: PartialKey<`update.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    key: PartialKey<`delete.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
+  subscribe<GK extends EventGroupKey<EntityEventMap<D>>>(
+    key: GK,
+    listener: EventGroupListener<EntityEventMap<D>, GK>
   ): EventUnsubscribe {
-    const [type, ...filters] = key.split('.');
+    const [event, itemId] = splitKey(key);
 
     return this.store.subscribe(
-      [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
-      listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
-      opts
+      joinKey(event, this.name, itemId),
+      listener
     );
   }
 
-  subscribeList(
-    key: PartialKey<`update.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribeList(
-    key: PartialKey<`delete.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribeList(
-    key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe {
-    const [type, ...filters] = key.split('.');
+  // subscribe(
+  //   key: PartialKey<`update.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe;
+  // subscribe(
+  //   key: PartialKey<`delete.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe;
+  // subscribe(
+  //   key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe {
+  //   const [type, ...filters] = key.split('.');
+  //
+  //   return this.store.subscribe(
+  //     [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
+  //     listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
+  //     opts
+  //   );
+  // }
 
-    return this.store.subscribe(
-      [type, `${this.name}-list`, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
-      listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
-      opts
-    );
-  }
+  // subscribeList(
+  //   key: PartialKey<`update.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe;
+  // subscribeList(
+  //   key: PartialKey<`delete.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe;
+  // subscribeList(
+  //   key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
+  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
+  //   opts?: EventListenerOptions
+  // ): EventUnsubscribe {
+  //   const [type, ...filters] = key.split('.');
+  //
+  //   return this.store.subscribe(
+  //     [type, `${this.name}-list`, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
+  //     listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
+  //     opts
+  //   );
+  // }
 
   // - query managers
   /**
