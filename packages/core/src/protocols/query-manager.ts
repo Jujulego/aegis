@@ -1,4 +1,4 @@
-import { EventSource, EventUnsubscribe } from '../events';
+import { EventSource, EventUnsubscribe, waitForEvent } from '@jujulego/event-tree';
 
 import { Query, QueryStateCompleted, QueryStateFailed, QueryStatePending } from './query';
 
@@ -73,8 +73,8 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
    */
   nextResult(): Promise<D> {
     return Promise.race([
-      this.waitFor('status.completed').then(([data]) => data.result),
-      this.waitFor('status.failed').then(([data]) => { throw data.error; })
+      waitForEvent(this, 'status.completed').then((data) => data.result),
+      waitForEvent(this, 'status.failed').then((data) => { throw data.error; }),
     ]);
   }
 

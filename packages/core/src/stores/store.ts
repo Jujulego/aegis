@@ -28,7 +28,7 @@ export type StoreEventMap<D = any> =
  * - 'update.\{entity\}.\{id\}' emitted when an item is updated
  * - 'delete.\{entity\}.\{id\}' emitted when an item is deleted
  */
-export abstract class Store<D> extends EventSource<StoreEventMap<D>> {
+export abstract class Store extends EventSource<StoreEventMap> {
   // Methods
   /**
    * Returns an entity's item, if stored or `undefined` if item is unknown.
@@ -36,7 +36,7 @@ export abstract class Store<D> extends EventSource<StoreEventMap<D>> {
    * @param entity
    * @param id
    */
-  abstract get(entity: string, id: string): D | undefined;
+  abstract get<D>(entity: string, id: string): D | undefined;
 
   /**
    * Updates an entity's item, if stored or adds it to the store.
@@ -46,7 +46,7 @@ export abstract class Store<D> extends EventSource<StoreEventMap<D>> {
    * @param id
    * @param data new items content
    */
-  abstract set(entity: string, id: string, data: D): D | undefined;
+  abstract set<D>(entity: string, id: string, data: D): D | undefined;
 
   /**
    * Deletes an entity's item. Next {@link Store.get} call should return `undefined`
@@ -55,5 +55,5 @@ export abstract class Store<D> extends EventSource<StoreEventMap<D>> {
    * @param entity
    * @param id
    */
-  abstract delete(entity: string, id: string): D | undefined;
+  abstract delete<D>(entity: string, id: string): D | undefined;
 }

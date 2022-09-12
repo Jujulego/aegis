@@ -1,12 +1,11 @@
-import { EventType, EventListener, EventListenerOptions, EventSource, EventUnsubscribe } from '../events';
+import { EventGroupKey, EventGroupListener, EventSource, EventUnsubscribe } from '@jujulego/event-tree';
 import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
-import { ExtractKey, PartialKey } from '../utils';
 
 import { Entity } from './entity';
 import { DataState } from './types';
 
 // Types
-export type ListEventMap<D> = {
+export type ListEventMap<D> = QueryManagerEventMap<D[]> & {
   update: D[],
 }
 
@@ -46,7 +45,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     });
 
     // Subscribe to entity list update events
-    this.entity.subscribeList(`update.${this.key}`, () => {
+    this.entity.subscribe(`update.list.${this.key}`, () => {
       this._cache = undefined;
       this._markDirty();
     });
@@ -83,26 +82,15 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     }
   }
 
-  subscribe(
-    key: 'update',
-    listener: EventListener<ListEventMap<D>, 'update'>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
-    type: T,
-    listener: EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, T>>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    key: 'update' | PartialKey<EventType<QueryManagerEventMap<D[]>>>,
-    listener: EventListener<ListEventMap<D>, 'update'> | EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>,
-    opts?: EventListenerOptions
+  subscribe<GK extends EventGroupKey<ListEventMap<D>>>(
+    key: GK,
+    listener: EventGroupListener<ListEventMap<D>, GK>
   ): EventUnsubscribe {
     if (key === 'update') {
-      return super.subscribe('update', listener as EventListener<ListEventMap<D>, 'update'>, opts);
+      return super.subscribe(key, listener);
+    } else {
+      return this._manager.subscribe(key, listener as any);
     }
-
-    return this._manager.subscribe(key, listener as EventListener<QueryManagerEventMap<D[]>, ExtractKey<EventType<QueryManagerEventMap<D[]>>, 'status'>>, opts);
   }
 
   /**

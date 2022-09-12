@@ -1,10 +1,15 @@
-import { EventType, EventListener, EventListenerOptions, EventUnsubscribe } from '../events';
+import { EventGroupKey, EventGroupListener, EventObservable, EventUnsubscribe } from '@jujulego/event-tree';
 import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
-import { StoreEventMap } from '../stores';
-import { ExtractKey, PartialKey } from '../utils';
+import { StoreDeleteEvent, StoreUpdateEvent } from '../stores';
 
 import { Entity } from './entity';
 import { DataState } from './types';
+
+// Types
+export type ItemEventMap<D> = QueryManagerEventMap<D> & {
+  update: StoreUpdateEvent<D>;
+  delete: StoreDeleteEvent<D>;
+}
 
 // Class
 /**
@@ -18,7 +23,7 @@ import { DataState } from './types';
  * - 'query.completed' emitted when the running query completes
  * - 'query.failed' emitted when the running query fails
  */
-export class Item<D> {
+export class Item<D> implements EventObservable<ItemEventMap<D>> {
   // Attributes
   private _manager = new QueryManager<D>();
 
@@ -34,35 +39,15 @@ export class Item<D> {
   }
 
   // Methods
-  subscribe(
-    type: 'update',
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    type: 'delete',
-    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
-    type: T,
-    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    type: 'update' | 'delete' | PartialKey<EventType<QueryManagerEventMap<D>>>,
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'query'>>,
-    opts?: EventListenerOptions
+  subscribe<GK extends EventGroupKey<ItemEventMap<D>>>(
+    key: GK,
+    listener: EventGroupListener<ItemEventMap<D>, GK>
   ): EventUnsubscribe {
-    if (type === 'update') {
-      return this.entity.subscribe(`update.${this.id}`, listener as EventListener<StoreEventMap<D>, `update.${string}.${string}`>, opts);
+    if (key === 'update' || key === 'delete') {
+      return this.entity.subscribe(`${key as 'update' | 'delete'}.item.${this.id}`, listener as any);
+    } else {
+      return this._manager.subscribe(key, listener as any);
     }
-
-    if (type === 'delete') {
-      return this.entity.subscribe(`delete.${this.id}`, listener as EventListener<StoreEventMap<D>, `delete.${string}.${string}`>, opts);
-    }
-
-    return this._manager.subscribe(type, listener as EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, 'status'>>, opts);
   }
 
   /**

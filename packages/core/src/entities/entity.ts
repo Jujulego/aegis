@@ -1,8 +1,6 @@
 import {
   EventGroupKey,
   EventGroupListener,
-  EventKey,
-  EventListener,
   EventObservable,
   EventUnsubscribe, joinKey, splitKey
 } from '@jujulego/event-tree';
@@ -18,8 +16,10 @@ export type EntityIdExtractor<D> = (entity: D) => string;
 export type EntityMerge<D, R> = (stored: D, result: R) => D;
 
 export type EntityEventMap<D> =
-  Record<`update.${string}`, StoreUpdateEvent<D>> &
-  Record<`delete.${string}`, StoreDeleteEvent<D>>;
+  Record<`update.item.${string}`, StoreUpdateEvent<D>> &
+  Record<`delete.item.${string}`, StoreDeleteEvent<D>> &
+  Record<`update.list.${string}`, StoreUpdateEvent<string[]>> &
+  Record<`delete.list.${string}`, StoreDeleteEvent<string[]>>;
 
 // Class
 /**
@@ -38,7 +38,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
   // Constructor
   constructor(
     readonly name: string,
-    readonly store: Store<D>,
+    readonly store: Store,
     readonly extractor: EntityIdExtractor<D>
   ) {}
 
@@ -48,61 +48,20 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
     key: GK,
     listener: EventGroupListener<EntityEventMap<D>, GK>
   ): EventUnsubscribe {
-    const [event, itemId] = splitKey(key);
+    const [event, kind, itemId] = splitKey(key);
 
-    return this.store.subscribe(
-      joinKey(event, this.name, itemId),
-      listener
-    );
+    if (kind === 'item') {
+      return this.store.subscribe(
+        joinKey(event, this.name, itemId),
+        listener as any
+      );
+    } else {
+      return this.store.subscribe(
+        joinKey(event, `${this.name}-list`, itemId),
+        listener as any
+      );
+    }
   }
-
-  // subscribe(
-  //   key: PartialKey<`update.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe;
-  // subscribe(
-  //   key: PartialKey<`delete.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe;
-  // subscribe(
-  //   key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe {
-  //   const [type, ...filters] = key.split('.');
-  //
-  //   return this.store.subscribe(
-  //     [type, this.name, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
-  //     listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
-  //     opts
-  //   );
-  // }
-
-  // subscribeList(
-  //   key: PartialKey<`update.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe;
-  // subscribeList(
-  //   key: PartialKey<`delete.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe;
-  // subscribeList(
-  //   key: PartialKey<`update.${string}`> | PartialKey<`delete.${string}`>,
-  //   listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`> | EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-  //   opts?: EventListenerOptions
-  // ): EventUnsubscribe {
-  //   const [type, ...filters] = key.split('.');
-  //
-  //   return this.store.subscribe(
-  //     [type, `${this.name}-list`, ...filters].join('.') as PartialKey<`update.${string}.${string}` | `delete.${string}.${string}`>,
-  //     listener as EventListener<StoreEventMap<D>, `update.${string}.${string}` | `delete.${string}.${string}`>,
-  //     opts
-  //   );
-  // }
 
   // - query managers
   /**
@@ -209,7 +168,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
    * @param id
    */
   getItem(id: string): D | undefined {
-    return this.store.get(this.name, id);
+    return this.store.get<D>(this.name, id);
   }
 
   /**
@@ -219,7 +178,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
    * @param key
    */
   getList(key: string): string[] | undefined {
-    return this.store.get(`${this.name}-list`, key);
+    return this.store.get<string[]>(`${this.name}-list`, key);
   }
 
   /**
@@ -230,7 +189,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
    * @param value
    */
   setItem(id: string, value: D): void {
-    this.store.set(this.name, id, value);
+    this.store.set<D>(this.name, id, value);
   }
 
   /**
@@ -241,7 +200,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
    * @param data
    */
   setList(key: string, data: string[]): void {
-    this.store.set(`${this.name}-list`, key, data);
+    this.store.set<string[]>(`${this.name}-list`, key, data);
   }
 
   /**
@@ -251,7 +210,7 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
    * @param id
    */
   deleteItem(id: string): D | undefined {
-    return this.store.delete(this.name, id);
+    return this.store.delete<D>(this.name, id);
   }
 
   /**
