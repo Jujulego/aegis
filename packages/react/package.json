@@ -58,7 +58,7 @@
     "aegis-tools": "workspace:*",
     "browserslist": "4.21.3",
     "del": "6.1.1",
-    "eslint": "8.22.0",
+    "eslint": "8.23.1",
     "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-react": "7.31.8",
     "eslint-plugin-react-hooks": "4.6.0",
