@@ -48,7 +48,7 @@
     "@swc/jest": "0.2.22",
     "@testing-library/react": "13.4.0",
     "@types/gulp": "4.0.9",
-    "@types/jest": "29.0.1",
+    "@types/jest": "29.0.2",
     "@types/node": "16.11.58",
     "@types/react": "18.0.18",
     "@types/testing-library__react": "10.2.0",
