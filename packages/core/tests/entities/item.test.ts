@@ -38,25 +38,25 @@ beforeEach(() => {
 // Tests
 describe('Item.subscribe', () => {
   it('should subscribe to entity updates with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
+    const listener = (_: StoreUpdateEvent<TestEntity>) => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);
 
     expect(item.subscribe('update', listener)).toBe(unsub);
 
-    expect(entity.subscribe).toHaveBeenCalledWith(`update.${item.id}`, listener, undefined);
+    expect(entity.subscribe).toHaveBeenCalledWith(`update.item.${item.id}`, listener, undefined);
   });
 
   it('should subscribe to entity deletes with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
+    const listener = (_: StoreDeleteEvent<TestEntity>) => undefined;
     const unsub = () => undefined;
 
     jest.spyOn(entity, 'subscribe').mockReturnValue(unsub);
 
     expect(item.subscribe('delete', listener)).toBe(unsub);
 
-    expect(entity.subscribe).toHaveBeenCalledWith(`delete.${item.id}`, listener, undefined);
+    expect(entity.subscribe).toHaveBeenCalledWith(`delete.item.${item.id}`, listener, undefined);
   });
 });
 
@@ -77,8 +77,8 @@ describe('Item.refresh', () => {
         status: 'pending',
       },
       {
-        type: 'status.pending',
-        source: item.manager,
+        key: 'status.pending',
+        origin: item.manager,
       }
     );
   });
@@ -104,8 +104,8 @@ describe('Item.refresh', () => {
         }
       },
       {
-        type: 'status.completed',
-        source: query,
+        key: 'status.completed',
+        origin: query,
       }
     );
 
@@ -116,8 +116,8 @@ describe('Item.refresh', () => {
         new: { id: 'item', value: 1 },
       },
       {
-        type: `update.${entity.name}.item`,
-        source: store,
+        key: `update.${entity.name}.item`,
+        origin: store,
       }
     );
   });
@@ -140,8 +140,8 @@ describe('Item.refresh', () => {
         error: new Error('failed !')
       },
       {
-        type: 'status.failed',
-        source: query,
+        key: 'status.failed',
+        origin: query,
       }
     );
 
@@ -174,8 +174,8 @@ describe('Item.data', () => {
         new: { id: 'item', value: 2 },
       },
       {
-        type: `update.${entity.name}.item`,
-        source: store,
+        key: `update.${entity.name}.item`,
+        origin: store,
       }
     );
   });

@@ -103,8 +103,8 @@ describe('$list', () => {
         { id: 'test-3', success: false },
       ],
       {
-        type: 'update',
-        source: list.$list
+        key: 'update',
+        origin: list.$list
       }
     );
   });
@@ -124,8 +124,8 @@ describe('$list', () => {
         status: 'pending',
       },
       {
-        type: 'status.pending',
-        source: list.$list.manager,
+        key: 'status.pending',
+        origin: list.$list.manager,
       }
     );
 
@@ -152,8 +152,8 @@ describe('$list', () => {
         result: [{ id: 'test', success: false }]
       },
       {
-        type: 'status.completed',
-        source: query,
+        key: 'status.completed',
+        origin: query,
       }
     );
 
@@ -180,8 +180,8 @@ describe('$list', () => {
         error: new Error('Failed !'),
       },
       {
-        type: 'status.failed',
-        source: query,
+        key: 'status.failed',
+        origin: query,
       }
     );
 

@@ -1,4 +1,4 @@
-import { EventSource } from '../events';
+import { EventSource } from '@jujulego/event-tree';
 
 // Types
 export interface StoreUpdateEvent<D = any> {
@@ -12,8 +12,9 @@ export interface StoreDeleteEvent<D = any> {
   item: D;
 }
 
-export type StoreEventMap<D = any> = Record<`update.${string}.${string}`, StoreUpdateEvent<D>>
-  & Record<`delete.${string}.${string}`, StoreDeleteEvent<D>>;
+export type StoreEventMap<D = any> =
+  Record<`update.${string}.${string}`, StoreUpdateEvent<D>> &
+  Record<`delete.${string}.${string}`, StoreDeleteEvent<D>>;
 
 // Store
 /**

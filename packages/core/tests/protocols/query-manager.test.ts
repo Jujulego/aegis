@@ -30,7 +30,7 @@ describe('QueryManager.refresh', () => {
     expect(fetcher).toHaveBeenCalled();
     expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'pending' },
-      { type: 'status.pending', source: manager }
+      { key: 'status.pending', origin: manager }
     );
   });
 
@@ -45,7 +45,7 @@ describe('QueryManager.refresh', () => {
 
     expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'completed', result: { id: 'test', success: true } },
-      { type: 'status.completed', source: query }
+      { key: 'status.completed', origin: query }
     );
 
     // - failed
@@ -54,7 +54,7 @@ describe('QueryManager.refresh', () => {
 
     expect(statusEventSpy).toHaveBeenCalledWith(
       { status: 'failed', error: new Error('Failed !') },
-      { type: 'status.failed', source: query }
+      { key: 'status.failed', origin: query }
     );
   });
 

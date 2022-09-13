@@ -1,16 +1,11 @@
-import {
-  Entity,
-  EventListener,
-  EventListenerOptions, EventType,
-  EventUnsubscribe, ExtractKey,
-  PartialKey, Query, QueryEventMap
-} from '@jujulego/aegis-core';
+import { Entity, Query, QueryEventMap } from '@jujulego/aegis-core';
+import { EventObservable } from '@jujulego/event-tree';
 
 import { $item, AegisItem, AegisUnknownItem } from './item';
 import { AegisId } from '../utils';
 
 // Types
-export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> extends PromiseLike<R> {
+export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> extends EventObservable<QueryEventMap<D>>, PromiseLike<R> {
   readonly $id?: I;
   readonly $query: Query<R>;
   readonly $entity: Entity<D>;
@@ -18,12 +13,6 @@ export interface AegisUnknownMutation<D, R = D, I extends AegisId = AegisId> ext
   readonly item: AegisUnknownItem<D, I>;
   readonly isLoading: boolean;
   readonly result?: R;
-
-  subscribe<T extends PartialKey<EventType<QueryEventMap<D>>>>(
-    type: T,
-    listener: EventListener<QueryEventMap<D>, ExtractKey<EventType<QueryEventMap<D>>, T>>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
 }
 
 export interface AegisMutation<D, R = D, I extends AegisId = AegisId> extends AegisUnknownMutation<D, R, I> {

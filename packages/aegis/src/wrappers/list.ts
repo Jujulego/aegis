@@ -1,15 +1,10 @@
-import {
-  Entity,
-  EventListener,
-  EventListenerOptions, EventType,
-  EventUnsubscribe, ExtractKey, List, ListEventMap,
-  PartialKey, Query, QueryManagerEventMap, RefreshStrategy
-} from '@jujulego/aegis-core';
+import { Entity, List, ListEventMap, Query, RefreshStrategy } from '@jujulego/aegis-core';
+import { EventObservable } from '@jujulego/event-tree';
 
 import { Refreshable } from '../utils';
 
 // Types
-export interface AegisList<D> extends PromiseLike<D[]> {
+export interface AegisList<D> extends EventObservable<ListEventMap<D>>, PromiseLike<D[]> {
   readonly $key: string;
   readonly $list: List<D>;
   readonly $entity: Entity<D>;
@@ -17,17 +12,6 @@ export interface AegisList<D> extends PromiseLike<D[]> {
   readonly isLoading: boolean;
   readonly ids: string[];
   data: D[];
-
-  subscribe(
-    key: 'update',
-    listener: EventListener<ListEventMap<D>, 'update'>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
-    type: T,
-    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
 }
 
 // Item builder

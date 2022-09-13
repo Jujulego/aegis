@@ -11,7 +11,7 @@ beforeEach(() => {
 
   statusEventSpy.mockReset();
   query.subscribe('status', statusEventSpy);
-  jest.spyOn(controller, 'abort').mockImplementation();
+  jest.spyOn(controller, 'abort');
 });
 
 // Tests
@@ -118,6 +118,15 @@ describe('Query.then', () => {
   });
 });
 
+describe('Query.subscribe', () => {
+  it('should not call listener if controller aborted', () => {
+    controller.abort();
+
+    query.complete('result');
+    expect(statusEventSpy).not.toHaveBeenCalled();
+  });
+});
+
 describe('Query.complete', () => {
   it('should update internal state', () => {
     // Change query to "success" state
@@ -140,8 +149,8 @@ describe('Query.complete', () => {
         result: 'result'
       },
       {
-        type: 'status.completed',
-        source: query,
+        key: 'status.completed',
+        origin: query,
       }
     );
   });
@@ -169,8 +178,8 @@ describe('Query.fail', () => {
         error: new Error('fail')
       },
       {
-        type: 'status.failed',
-        source: query,
+        key: 'status.failed',
+        origin: query,
       }
     );
   });

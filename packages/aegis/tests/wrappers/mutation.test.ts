@@ -77,8 +77,8 @@ describe('$mutation', () => {
         result: { id: 'test', success: true }
       },
       {
-        type: 'status.completed',
-        source: query,
+        key: 'status.completed',
+        origin: query,
       }
     );
 
@@ -103,8 +103,8 @@ describe('$mutation', () => {
         error: new Error('Failed !')
       },
       {
-        type: 'status.failed',
-        source: query,
+        key: 'status.failed',
+        origin: query,
       }
     );
 
