@@ -2718,7 +2718,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis-core@workspace:packages/core"
   dependencies:
-    "@jujulego/event-tree": 1.1.0-alpha.5
+    "@jujulego/event-tree": 1.1.0-alpha.6
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.0
@@ -2897,12 +2897,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jujulego/event-tree@npm:1.1.0-alpha.5":
-  version: 1.1.0-alpha.5
-  resolution: "@jujulego/event-tree@npm:1.1.0-alpha.5"
+"@jujulego/event-tree@npm:1.1.0-alpha.6":
+  version: 1.1.0-alpha.6
+  resolution: "@jujulego/event-tree@npm:1.1.0-alpha.6"
   peerDependencies:
     regenerator-runtime: 0.13.9
-  checksum: 1c98446ada212f43b52e0062d2357e29e75178c2e77ad71eadb2cd7baf24f5e66846e1cb1dd9cbd6b184feaaeecc81a81a9fecd7eeb94f6cccdc082e090e2a1c
+  checksum: a0ba7d9c14b83409bef3e15b67f407bff301caec185783c2d4980516f251efa6e506eee78a428af9a5346178991c4ca79eb1dd8fd2fc67a57f74061fd43109ef
   languageName: node
   linkType: hard
 

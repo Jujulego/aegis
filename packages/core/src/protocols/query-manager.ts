@@ -59,7 +59,7 @@ export class QueryManager<D> extends EventSource<QueryManagerEventMap<D>> {
 
     this._unsub = this._query.subscribe('status', (state, metadata) => {
       // Emit event & store
-      this.emit(`status.${state.status}`, state, { source: metadata.origin });
+      this.emit(`status.${state.status}`, state, { origin: metadata.origin });
     });
 
     this.emit(`status.${this._query.state.status}`, this._query.state);

@@ -1,4 +1,10 @@
-import { EventGroupKey, EventGroupListener, EventObservable, EventUnsubscribe } from '@jujulego/event-tree';
+import {
+  EventGroupKey,
+  EventGroupListener,
+  EventListenerOptions,
+  EventObservable,
+  EventUnsubscribe
+} from '@jujulego/event-tree';
 import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 import { StoreDeleteEvent, StoreUpdateEvent } from '../stores';
 
@@ -41,12 +47,13 @@ export class Item<D> implements EventObservable<ItemEventMap<D>> {
   // Methods
   subscribe<GK extends EventGroupKey<ItemEventMap<D>>>(
     key: GK,
-    listener: EventGroupListener<ItemEventMap<D>, GK>
+    listener: EventGroupListener<ItemEventMap<D>, GK>,
+    opts?: EventListenerOptions
   ): EventUnsubscribe {
     if (key === 'update' || key === 'delete') {
-      return this.entity.subscribe(`${key as 'update' | 'delete'}.item.${this.id}`, listener as any);
+      return this.entity.subscribe(`${key as 'update' | 'delete'}.item.${this.id}`, listener as any, opts);
     } else {
-      return this._manager.subscribe(key, listener as any);
+      return this._manager.subscribe(key, listener as any, opts);
     }
   }
 

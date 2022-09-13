@@ -1,4 +1,10 @@
-import { EventGroupKey, EventGroupListener, EventSource, EventUnsubscribe } from '@jujulego/event-tree';
+import {
+  EventGroupKey,
+  EventGroupListener,
+  EventListenerOptions,
+  EventSource,
+  EventUnsubscribe
+} from '@jujulego/event-tree';
 import { Query, QueryManager, QueryManagerEventMap, RefreshStrategy } from '../protocols';
 
 import { Entity } from './entity';
@@ -84,12 +90,13 @@ export class List<D> extends EventSource<ListEventMap<D>> {
 
   subscribe<GK extends EventGroupKey<ListEventMap<D>>>(
     key: GK,
-    listener: EventGroupListener<ListEventMap<D>, GK>
+    listener: EventGroupListener<ListEventMap<D>, GK>,
+    opts?: EventListenerOptions,
   ): EventUnsubscribe {
     if (key === 'update') {
-      return super.subscribe(key, listener);
+      return super.subscribe(key, listener, opts);
     } else {
-      return this._manager.subscribe(key, listener as any);
+      return this._manager.subscribe(key, listener as any, opts);
     }
   }
 
@@ -100,7 +107,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
    * @param fetcher should returns a new query
    * @param strategy refresh strategy to use (see {@link QueryManager} for details)
    */
-  refresh(fetcher:  () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
+  refresh(fetcher: () => Query<D[]>, strategy: RefreshStrategy): Query<D[]> {
     return this._manager.refresh(fetcher, strategy);
   }
 

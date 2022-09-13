@@ -1,6 +1,6 @@
 import {
   EventGroupKey,
-  EventGroupListener,
+  EventGroupListener, EventListenerOptions,
   EventObservable,
   EventUnsubscribe, joinKey, splitKey
 } from '@jujulego/event-tree';
@@ -46,20 +46,15 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
   // - events
   subscribe<GK extends EventGroupKey<EntityEventMap<D>>>(
     key: GK,
-    listener: EventGroupListener<EntityEventMap<D>, GK>
+    listener: EventGroupListener<EntityEventMap<D>, GK>,
+    opts?: EventListenerOptions
   ): EventUnsubscribe {
     const [event, kind, itemId] = splitKey(key);
 
     if (kind === 'item') {
-      return this.store.subscribe(
-        joinKey(event, this.name, itemId),
-        listener as any
-      );
+      return this.store.subscribe(joinKey(event, this.name, itemId), listener as any, opts);
     } else {
-      return this.store.subscribe(
-        joinKey(event, `${this.name}-list`, itemId),
-        listener as any
-      );
+      return this.store.subscribe(joinKey(event, `${this.name}-list`, itemId), listener as any, opts);
     }
   }
 
