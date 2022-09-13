@@ -2,9 +2,7 @@ import {
   Entity,
   Item, List,
   MemoryStore,
-  Query,
-  EventListener, StoreEventMap,
-  StoreUpdateEvent,
+  Query, StoreDeleteEvent, StoreUpdateEvent,
 } from '../../src';
 
 // Types
@@ -23,101 +21,99 @@ beforeEach(() => {
   store = new MemoryStore();
   entity = new Entity<TestEntity>('test', store, ({ id }) => id);
 
+  jest.resetAllMocks();
+  jest.restoreAllMocks();
   updateEventSpy.mockReset();
 
-  entity.subscribe('update', updateEventSpy);
+  entity.subscribe('update.item', updateEventSpy);
 });
 
 // Tests
 describe('Entity.subscribe', () => {
-  it('should subscribe to store updates with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
-
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
-
-    expect(entity.subscribe('update', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}`, listener, undefined);
+  beforeEach(() => {
+    jest.spyOn(store, 'subscribe');
   });
 
-  it('should subscribe to store updates with key prepended', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
+  it('should subscribe to list & item updates with key set', () => {
+    const listener = (_: StoreUpdateEvent<TestEntity> | StoreUpdateEvent<string[]>) => undefined;
 
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+    entity.subscribe('update', listener);
 
-    expect(entity.subscribe('update.item', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}.item`, listener, undefined);
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}`, listener, undefined);
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}-list`, listener, undefined);
   });
 
-  it('should subscribe to store deletes with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
+  it('should subscribe to item updates with key set', () => {
+    const listener = (_: StoreUpdateEvent<TestEntity>) => undefined;
 
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+    entity.subscribe('update.item', listener);
 
-    expect(entity.subscribe('delete', listener)).toBe(unsub);
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}`, listener, undefined);
+  });
 
-    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}`, listener, undefined);
+  it('should subscribe to item updates with key prepended', () => {
+    const listener = (_: StoreUpdateEvent<TestEntity>) => undefined;
+
+    entity.subscribe('update.item.id', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}.id`, listener, undefined);
+  });
+
+  it('should subscribe to list updates with key set', () => {
+    const listener = (_: StoreUpdateEvent<string[]>) => undefined;
+
+    entity.subscribe('update.list', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}-list`, listener, undefined);
+  });
+
+  it('should subscribe to list updates with key prepended', () => {
+    const listener = (_: StoreUpdateEvent<string[]>) => undefined;
+
+    entity.subscribe('update.list.key', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`update.${entity.name}-list.key`, listener, undefined);
+  });
+
+  it('should subscribe to list & item deletes with key set', () => {
+    const listener = (_: StoreDeleteEvent<TestEntity> | StoreDeleteEvent<string[]>) => undefined;
+
+    entity.subscribe('delete', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}`, listener, undefined);
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}-list`, listener, undefined);
+  });
+
+  it('should subscribe to item deletes with key set', () => {
+    const listener = (_: StoreDeleteEvent<TestEntity>) => undefined;
+
+    entity.subscribe('delete.item', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}`, listener, undefined);
+  });
+
+  it('should subscribe to item deletes with key prepended', () => {
+    const listener = (_: StoreDeleteEvent<TestEntity>) => undefined;
+
+    entity.subscribe('delete.item.id', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}.id`, listener, undefined);
+  });
+
+  it('should subscribe to list deletes with key set', () => {
+    const listener = (_: StoreDeleteEvent<string[]>) => undefined;
+
+    entity.subscribe('delete.list', listener);
+
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}-list`, listener, undefined);
   });
 
   it('should subscribe to store deletes with key prepended', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
+    const listener = (_: StoreDeleteEvent<string[]>) => undefined;
 
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
+    entity.subscribe('delete.list.key', listener);
 
-    expect(entity.subscribe('delete.item', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}.item`, listener, undefined);
-  });
-});
-
-describe('Entity.subscribeList', () => {
-  it('should subscribe to store updates with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
-
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
-
-    expect(entity.subscribeList('update', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}-list`, listener, undefined);
-  });
-
-  it('should subscribe to store updates with key prepended', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `update.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
-
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
-
-    expect(entity.subscribeList('update.list', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`update.${entity.name}-list.list`, listener, undefined);
-  });
-
-  it('should subscribe to store deletes with key set', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
-
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
-
-    expect(entity.subscribeList('delete', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}-list`, listener, undefined);
-  });
-
-  it('should subscribe to store deletes with key prepended', () => {
-    const listener: EventListener<StoreEventMap<TestEntity>, `delete.${string}.${string}`> = () => undefined;
-    const unsub = () => undefined;
-
-    jest.spyOn(store, 'subscribe').mockReturnValue(unsub);
-
-    expect(entity.subscribeList('delete.list', listener)).toBe(unsub);
-
-    expect(store.subscribe).toHaveBeenLastCalledWith(`delete.${entity.name}-list.list`, listener, undefined);
+    expect(store.subscribe).toHaveBeenCalledWith(`delete.${entity.name}-list.key`, listener, undefined);
   });
 });
 
@@ -185,8 +181,8 @@ describe('Entity.query', () => {
         new: { id: 'item', value: 1 }
       },
       {
-        type: `update.${entity.name}.item`,
-        source: store,
+        key: `update.${entity.name}.item`,
+        origin: store,
       }
     );
   });
@@ -218,8 +214,8 @@ describe('Entity.mutation', () => {
         new: { id: 'update', value: 2 }
       },
       {
-        type: `update.${entity.name}.update`,
-        source: store
+        key: `update.${entity.name}.update`,
+        origin: store
       }
     );
   });
@@ -251,8 +247,8 @@ describe('Entity.mutation', () => {
         new: { id: 'update', value: 2 }
       },
       {
-        type: `update.${entity.name}.update`,
-        source: store,
+        key: `update.${entity.name}.update`,
+        origin: store,
       }
     );
   });

@@ -53,8 +53,15 @@ export class Entity<D> implements EventObservable<EntityEventMap<D>> {
 
     if (kind === 'item') {
       return this.store.subscribe(joinKey(event, this.name, itemId), listener as any, opts);
-    } else {
+    } else if (kind === 'list') {
       return this.store.subscribe(joinKey(event, `${this.name}-list`, itemId), listener as any, opts);
+    } else {
+      const unsubs = [
+        this.store.subscribe(joinKey(event, this.name, itemId), listener as any, opts),
+        this.store.subscribe(joinKey(event, `${this.name}-list`, itemId), listener as any, opts)
+      ];
+
+      return () => unsubs.forEach((unsub) => unsub());
     }
   }
 
