@@ -29,7 +29,7 @@ export class AegisApi<O> {
    *
    * @param builder
    */
-  request<B, D, A extends unknown[] = []>(builder: ApiRequestBuilder<A, B, O>): (...args: A) => Query<D> {
+  request<B, D = any, A extends unknown[] = []>(builder: ApiRequestBuilder<A, B, O>): (...args: A) => Query<D> {
     return (...args: A) => {
       const ctrl = new AbortController();
       const [req, opts] = wrapRequestBuilder(builder(...args));
@@ -48,7 +48,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  get<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
+  get<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
@@ -71,7 +71,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  head<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
+  head<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
@@ -94,7 +94,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  options<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
+  options<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
@@ -117,7 +117,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  delete<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
+  delete<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return (arg, opts) => {
@@ -142,7 +142,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  post<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, any, O, D> {
+  post<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper((arg, body, opts) => {
@@ -167,7 +167,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  put<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, any, O, D> {
+  put<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper((arg, body, opts) => {
@@ -192,7 +192,7 @@ export class AegisApi<O> {
    *
    * @see $url
    */
-  patch<D, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, any, O, D> {
+  patch<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
     return addBodyHelper(((arg, body, opts) => {
