@@ -44,8 +44,8 @@ describe('new List', () => {
     expect(updateEventSpy).toHaveBeenCalledWith(
       [],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });
@@ -63,8 +63,8 @@ describe('new List', () => {
         { id: 'item-1', value: 1 }
       ],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });
@@ -80,8 +80,8 @@ describe('new List', () => {
     expect(updateEventSpy).toHaveBeenCalledWith(
       [],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });
@@ -111,8 +111,8 @@ describe('List.refresh', () => {
         status: 'pending'
       },
       {
-        type: 'status.pending',
-        source: list.manager,
+        key: 'status.pending',
+        origin: list.manager,
       }
     );
   });
@@ -143,8 +143,8 @@ describe('List.refresh', () => {
         { id: 'item-3', value: 3 },
       ],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });
@@ -218,8 +218,8 @@ describe('List.ids', () => {
         { id: 'item-3', value: 3 },
       ],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });
@@ -244,8 +244,8 @@ describe('List.data', () => {
         { id: 'item-3', value: 3 },
       ],
       {
-        type: 'update',
-        source: list,
+        key: 'update',
+        origin: list,
       }
     );
   });

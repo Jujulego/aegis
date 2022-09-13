@@ -57,7 +57,7 @@ export class List<D> extends EventSource<ListEventMap<D>> {
     });
 
     // Subscribe to entity update events
-    this.entity.subscribe('update', (data) => {
+    this.entity.subscribe('update.item', (data) => {
       if (this.ids.includes(data.id)) {
         this._cache = undefined;
         this._markDirty();
