@@ -37,8 +37,8 @@ describe('MemoryStore.set', () => {
         new: 1,
       },
       {
-        type: 'update.test.set',
-        source: store,
+        key: 'update.test.set',
+        origin: store,
       }
     );
   });
@@ -61,8 +61,8 @@ describe('MemoryStore.set', () => {
         new: 2,
       },
       {
-        type: 'update.test.set',
-        source: store,
+        key: 'update.test.set',
+        origin: store,
       }
     );
   });
@@ -85,8 +85,8 @@ describe('MemoryStore.delete', () => {
         item: 1,
       },
       {
-        type: 'delete.test.delete',
-        source: store,
+        key: 'delete.test.delete',
+        origin: store,
       }
     );
   });

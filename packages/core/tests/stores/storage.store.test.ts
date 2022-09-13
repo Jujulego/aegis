@@ -34,8 +34,8 @@ describe('new StorageStore', () => {
         new: 2,
       },
       {
-        type: 'update.test.event',
-        source: store,
+        key: 'update.test.event',
+        origin: store,
       }
     );
     expect(deleteEventSpy).not.toHaveBeenCalled();
@@ -57,8 +57,8 @@ describe('new StorageStore', () => {
         new: 3,
       },
       {
-        type: 'update.test.event',
-        source: store,
+        key: 'update.test.event',
+        origin: store,
       }
     );
     expect(deleteEventSpy).not.toHaveBeenCalled();
@@ -81,8 +81,8 @@ describe('new StorageStore', () => {
         item: 2,
       },
       {
-        type: 'delete.test.event',
-        source: store,
+        key: 'delete.test.event',
+        origin: store,
       }
     );
   });
@@ -128,8 +128,8 @@ describe('StorageStore.set', () => {
         new: 1,
       },
       {
-        type: 'update.test.set',
-        source: store,
+        key: 'update.test.set',
+        origin: store,
       }
     );
   });
@@ -152,8 +152,8 @@ describe('StorageStore.set', () => {
         new: 2,
       },
       {
-        type: 'update.test.set',
-        source: store,
+        key: 'update.test.set',
+        origin: store,
       }
     );
   });
@@ -177,8 +177,8 @@ describe('StorageStore.delete', () => {
         item: 1,
       },
       {
-        type: 'delete.test.delete',
-        source: store,
+        key: 'delete.test.delete',
+        origin: store,
       }
     );
   });
