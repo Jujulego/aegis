@@ -11,7 +11,7 @@ beforeEach(() => {
 
   statusEventSpy.mockReset();
   query.subscribe('status', statusEventSpy);
-  jest.spyOn(controller, 'abort').mockImplementation();
+  jest.spyOn(controller, 'abort');
 });
 
 // Tests
@@ -115,6 +115,15 @@ describe('Query.then', () => {
     query.fail(new Error('failed'));
 
     await expect(prm).rejects.toEqual(new Error('Reject failed'));
+  });
+});
+
+describe('Query.subscribe', () => {
+  it('should not call listener if controller aborted', () => {
+    controller.abort();
+
+    query.complete('result');
+    expect(statusEventSpy).not.toHaveBeenCalled();
   });
 });
 

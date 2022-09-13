@@ -1,4 +1,10 @@
-import { EventSource } from '@jujulego/event-tree';
+import {
+  EventGroupKey,
+  EventGroupListener,
+  EventListenerOptions,
+  EventSource,
+  EventUnsubscribe
+} from '@jujulego/event-tree';
 
 // Types
 export interface QueryStatePending {
@@ -95,6 +101,17 @@ export class Query<D> extends EventSource<QueryEventMap<D>> implements PromiseLi
     }
 
     return result;
+  }
+
+  subscribe<GK extends EventGroupKey<QueryEventMap<D>>>(
+    key: GK,
+    listener: EventGroupListener<QueryEventMap<D>, GK>,
+    opts: EventListenerOptions = {}
+  ): EventUnsubscribe {
+    // Use controller's signal
+    opts.signal ??= this.controller.signal;
+
+    return super.subscribe(key, listener, opts);
   }
 
   /**
