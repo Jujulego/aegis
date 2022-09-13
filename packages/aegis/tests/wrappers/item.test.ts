@@ -89,8 +89,8 @@ describe('$item', () => {
           new: { id: 'test', success: false }
         },
         {
-          type: `update.${entity.name}.${JSON.stringify('test')}`,
-          source: store,
+          key: `update.${entity.name}.${JSON.stringify('test')}`,
+          origin: store,
         }
       );
 
@@ -115,8 +115,8 @@ describe('$item', () => {
           item: { id: 'test', success: true }
         },
         {
-          type: `delete.${entity.name}.${JSON.stringify('test')}`,
-          source: store,
+          key: `delete.${entity.name}.${JSON.stringify('test')}`,
+          origin: store,
         }
       );
 
@@ -140,8 +140,8 @@ describe('$item', () => {
           status: 'pending'
         },
         {
-          type: 'status.pending',
-          source: item.$item?.manager,
+          key: 'status.pending',
+          origin: item.$item?.manager,
         }
       );
 
@@ -169,8 +169,8 @@ describe('$item', () => {
           result: { id: 'test', success: false }
         },
         {
-          type: 'status.completed',
-          source: q2,
+          key: 'status.completed',
+          origin: q2,
         }
       );
 
@@ -198,8 +198,8 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'status.failed',
-          source: q2,
+          key: 'status.failed',
+          origin: q2,
         }
       );
 
@@ -225,8 +225,8 @@ describe('$item', () => {
           result: { id: 'test', success: true }
         },
         {
-          type: 'status.completed',
-          source: query,
+          key: 'status.completed',
+          origin: query,
         }
       );
 
@@ -252,8 +252,8 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'status.failed',
-          source: query,
+          key: 'status.failed',
+          origin: query,
         }
       );
 
@@ -341,8 +341,8 @@ describe('$item', () => {
           new: { id: 'test', success: false }
         },
         {
-          type: `update.${entity.name}.${JSON.stringify('test')}`,
-          source: store,
+          key: `update.${entity.name}.${JSON.stringify('test')}`,
+          origin: store,
         }
       );
 
@@ -366,8 +366,8 @@ describe('$item', () => {
           item: { id: 'test', success: true }
         },
         {
-          type: `delete.${entity.name}.${JSON.stringify('test')}`,
-          source: store,
+          key: `delete.${entity.name}.${JSON.stringify('test')}`,
+          origin: store,
         }
       );
 
@@ -389,8 +389,8 @@ describe('$item', () => {
           status: 'pending'
         },
         {
-          type: 'status.pending',
-          source: item.$item.manager,
+          key: 'status.pending',
+          origin: item.$item.manager,
         }
       );
 
@@ -417,8 +417,8 @@ describe('$item', () => {
           result: { id: 'test', success: false }
         },
         {
-          type: 'status.completed',
-          source: query,
+          key: 'status.completed',
+          origin: query,
         }
       );
 
@@ -445,8 +445,8 @@ describe('$item', () => {
           error: new Error('Failed !')
         },
         {
-          type: 'status.failed',
-          source: query,
+          key: 'status.failed',
+          origin: query,
         }
       );
 

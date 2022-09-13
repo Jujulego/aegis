@@ -1,38 +1,16 @@
-import {
-  Entity,
-  EventListener,
-  EventListenerOptions, EventSource, EventType,
-  EventUnsubscribe, ExtractKey, Item,
-  PartialKey, Query, QueryManagerEventMap, RefreshStrategy,
-  StoreEventMap
-} from '@jujulego/aegis-core';
+import { Entity, Item, ItemEventMap, Query, RefreshStrategy } from '@jujulego/aegis-core';
+import { EventObservable, EventSource } from '@jujulego/event-tree';
 
 import { AegisId, Refreshable } from '../utils';
 
 // Types
-export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends PromiseLike<D> {
+export interface AegisUnknownItem<D, I extends AegisId = AegisId> extends EventObservable<ItemEventMap<D>>, PromiseLike<D> {
   readonly $id?: I;
   readonly $item?: Item<D>;
   readonly $entity: Entity<D>;
 
   readonly isLoading: boolean;
   data?: D;
-
-  subscribe(
-    key: 'update',
-    listener: EventListener<StoreEventMap<D>, `update.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe(
-    key: 'delete',
-    listener: EventListener<StoreEventMap<D>, `delete.${string}.${string}`>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
-  subscribe<T extends PartialKey<EventType<QueryManagerEventMap<D>>>>(
-    type: T,
-    listener: EventListener<QueryManagerEventMap<D>, ExtractKey<EventType<QueryManagerEventMap<D>>, T>>,
-    opts?: EventListenerOptions
-  ): EventUnsubscribe;
 }
 
 export interface AegisItem<D, I extends AegisId = AegisId> extends AegisUnknownItem<D, I> {
@@ -47,7 +25,7 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, query: Query<D>):
 
 export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D>, refresh?: () => Query<D>) {
   if (arg1 instanceof Query) {
-    const events = new EventSource<StoreEventMap<D> & QueryManagerEventMap<D>>();
+    const events = new EventSource<ItemEventMap<D>>();
 
     const item: AegisUnknownItem<D, I> = {
       $entity: entity,
@@ -79,7 +57,7 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
 
     // Events
     arg1.subscribe('status.failed', (state, mtd) => {
-      events.emit('status.failed', state, { source: mtd.source });
+      events.emit('status.failed', state, { origin: mtd.origin });
     });
 
     arg1.subscribe('status.completed', ({ result }, mtd) => {
@@ -92,18 +70,18 @@ export function $item<D, I extends AegisId>(entity: Entity<D>, arg1: I | Query<D
       });
 
       $item.subscribe('update', (data, mtd) => {
-        events.emit(mtd.type, data, { source: mtd.source });
+        events.emit(mtd.key as 'update', data, { origin: mtd.origin });
       });
 
       $item.subscribe('delete', (data, mtd) => {
-        events.emit(mtd.type, data, { source: mtd.source });
+        events.emit(mtd.key as 'delete', data, { origin: mtd.origin });
       });
 
       $item.subscribe('status', (data, mtd) => {
-        events.emit(mtd.type, data, { source: mtd.source });
+        events.emit(`status.${data.status}`, data, { origin: mtd.origin });
       });
 
-      events.emit('status.completed', { status: 'completed', result: result }, { source: mtd.source });
+      events.emit('status.completed', { status: 'completed', result: result }, { origin: mtd.origin });
     });
 
     return item;
