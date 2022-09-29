@@ -45,7 +45,7 @@
     "@swc/jest": "0.2.22",
     "@types/gulp": "4.0.9",
     "@types/jest": "29.0.3",
-    "@types/node": "16.11.59",
+    "@types/node": "16.11.62",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",
     "aegis-tools": "workspace:*",
