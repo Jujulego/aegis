@@ -24,11 +24,11 @@ jobs:
 
       - name: List workspaces to lint
         id: lint
-        run: echo "::set-output name=matrix::$(yarn jill list --with-script lint --affected origin/${{ github.base_ref }} --json)"
+        run: echo "matrix=$(yarn jill list --with-script lint --affected origin/${{ github.base_ref }} --json)" >> $GITHUB_OUTPUT
 
       - name: List workspaces to test
         id: test
-        run: echo "::set-output name=matrix::$(yarn jill list --with-script test --affected origin/${{ github.base_ref }} --json)"
+        run: echo "matrix=$(yarn jill list --with-script test --affected origin/${{ github.base_ref }} --json)" >> $GITHUB_OUTPUT
 
     outputs:
       matrix-lint: ${{ steps.lint.outputs.matrix }}
