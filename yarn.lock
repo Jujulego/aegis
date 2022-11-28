@@ -2689,7 +2689,7 @@ __metadata:
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@typescript-eslint/eslint-plugin": 5.39.0
@@ -2721,7 +2721,7 @@ __metadata:
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@typescript-eslint/eslint-plugin": 5.39.0
@@ -2751,7 +2751,7 @@ __metadata:
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
     "@testing-library/react": 13.4.0
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@types/react": 18.0.18
@@ -2793,7 +2793,7 @@ __metadata:
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@typescript-eslint/eslint-plugin": 5.39.0
@@ -2826,7 +2826,7 @@ __metadata:
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@typescript-eslint/eslint-plugin": 5.39.0
@@ -2865,7 +2865,7 @@ __metadata:
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
     "@swc/jest": 0.2.23
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/jest": 29.1.2
     "@types/node": 16.18.3
     "@typescript-eslint/eslint-plugin": 5.39.0
@@ -3699,14 +3699,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/gulp@npm:4.0.9":
-  version: 4.0.9
-  resolution: "@types/gulp@npm:4.0.9"
+"@types/gulp@npm:4.0.10":
+  version: 4.0.10
+  resolution: "@types/gulp@npm:4.0.10"
   dependencies:
-    "@types/undertaker": "*"
+    "@types/undertaker": ">=1.2.6"
     "@types/vinyl-fs": "*"
     chokidar: ^3.3.1
-  checksum: d0fe14866cc2c233c4116941f7c275b1b907d5b40de8bf92899e4152979cd6c51a71d407ac752f0434a7ed95a97979f61c1dd05b82fdee73088809476f8d9f85
+  checksum: ac85fc1ad53bf3e093b72e88700db61b10997e9facf82fe6dc0dd50fcd89af39ef1342baaaf34609174601e84066607e29598d0b99fe9e75e1f197097cba0308
   languageName: node
   linkType: hard
 
@@ -4054,7 +4054,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/undertaker@npm:*":
+"@types/undertaker@npm:>=1.2.6":
   version: 1.2.8
   resolution: "@types/undertaker@npm:1.2.8"
   dependencies:
@@ -4616,7 +4616,7 @@ __metadata:
     "@jujulego/flow": 1.1.0
     "@swc/cli": 0.1.57
     "@swc/core": 1.3.20
-    "@types/gulp": 4.0.9
+    "@types/gulp": 4.0.10
     "@types/gulp-sourcemaps": 0.0.35
     "@typescript-eslint/eslint-plugin": 5.39.0
     "@typescript-eslint/parser": 5.39.0
