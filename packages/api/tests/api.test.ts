@@ -93,6 +93,29 @@ describe('AegisApi.get', () => {
       { opt1: 'option' }
     );
   });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.get`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
+  });
 });
 
 describe('AegisApi.head', () => {
@@ -122,6 +145,29 @@ describe('AegisApi.head', () => {
       query.controller.signal,
       { opt1: 'option' }
     );
+  });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.head`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
   });
 });
 
@@ -153,6 +199,29 @@ describe('AegisApi.options', () => {
       { opt1: 'option' }
     );
   });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.options`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
+  });
 });
 
 describe('AegisApi.delete', () => {
@@ -182,6 +251,29 @@ describe('AegisApi.delete', () => {
       query.controller.signal,
       { opt1: 'option' }
     );
+  });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.delete`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
   });
 });
 
@@ -213,6 +305,29 @@ describe('AegisApi.post', () => {
       { opt1: 'option' }
     );
   });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.post`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { id: '1', success: true }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
+  });
 });
 
 describe('AegisApi.put', () => {
@@ -243,6 +358,29 @@ describe('AegisApi.put', () => {
       { opt1: 'option' }
     );
   });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.put`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { id: '1', success: true }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
+  });
 });
 
 describe('AegisApi.patch', () => {
@@ -272,5 +410,28 @@ describe('AegisApi.patch', () => {
       query.controller.signal,
       { opt1: 'option' }
     );
+  });
+
+  it('should call mapper with request result', async () => {
+    sender.mockResolvedValue({ id: 'test', success: true });
+
+    // Create and call fetcher
+    const mapper = jest.fn((data) => ({ ...data, mapped: true }));
+
+    const fetcher = $testApi.patch`/test/${'id'}`
+      .map(mapper);
+
+    const query = fetcher({ id: 1 }, { id: '1', success: true }, { opt1: 'option' });
+
+    await expect(query).resolves.toEqual({
+      id: 'test',
+      success: true,
+      mapped: true,
+    });
+
+    expect(mapper).toHaveBeenCalledWith({
+      id: 'test',
+      success: true,
+    });
   });
 });
