@@ -3942,14 +3942,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.50":
-  version: 17.0.50
-  resolution: "@types/react@npm:17.0.50"
+"@types/react@npm:17.0.52":
+  version: 17.0.52
+  resolution: "@types/react@npm:17.0.52"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: b5629dff7c2f3e9fcba95a19b2b3bfd78d7cacc33ba5fc26413dba653d34afcac3b93ddabe563e8062382688a1eac7db68e93739bb8e712d27637a03aaafbbb8
+  checksum: a51b98dd87838d161278fdf9dd78e6a4ff8c018f406d6647f77963e144fb52a8beee40c89fd0e7e840eaeaa8bd9fe2f34519410540b1a52d43a6f8b4d2fbce33
   languageName: node
   linkType: hard
 
@@ -4640,7 +4640,7 @@ __metadata:
     "@docusaurus/preset-classic": 2.1.0
     "@mdx-js/react": 1.6.22
     "@tsconfig/docusaurus": 1.0.6
-    "@types/react": 17.0.50
+    "@types/react": 17.0.52
     "@typescript-eslint/eslint-plugin": 5.39.0
     "@typescript-eslint/parser": 5.39.0
     clsx: 1.2.1
