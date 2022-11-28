@@ -9,6 +9,9 @@
     "type": "es6"
   },
   "env": {
-    "coreJs": "3.22"
+    "targets": [
+      "defaults",
+      "not ie 11"
+    ]
   }
 }

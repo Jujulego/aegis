@@ -5,10 +5,6 @@
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": "git@github.com:Jujulego/aegis.git",
   "packageManager": "yarn@3.2.4",
-  "browserslist": [
-    "defaults",
-    "not ie 11"
-  ],
   "workspaces": [
     "packages/*",
     "tools",
