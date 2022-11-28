@@ -8,10 +8,22 @@ function wrapRequestBuilder<B, O>(ret: ApiRequest<B> | [ApiRequest<B>, O]): [Api
   return Array.isArray(ret) ? ret : [ret, undefined];
 }
 
-function addBodyHelper<A, B, O, D>(fetcher: (arg: A, body: B, opts?: O) => Query<D>) {
+function addNoBodyModifiers<A, O, D>(fetcher: (arg: A, opts?: O) => Query<D>) {
+  return Object.assign(fetcher, {
+    map<ND>(map: (res: D) => ND) {
+      return addNoBodyModifiers((arg: A, opts?: O) => fetcher(arg, opts).then(map));
+    }
+  });
+}
+
+function addWithBodyModifiers<A, B, O, D>(fetcher: (arg: A, body: B, opts?: O) => Query<D>) {
   return Object.assign(fetcher, {
     body() {
       return this;
+    },
+
+    map<ND>(map: (res: D) => ND) {
+      return addWithBodyModifiers((arg: A, body: B, opts?: O) => fetcher(arg, body, opts).then(map));
     }
   });
 }
@@ -51,14 +63,14 @@ export class AegisApi<O> {
   get<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg, opts) => {
+    return addNoBodyModifiers((arg, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
         this.fetcher({ method: 'get', url: builder(arg) }, controller.signal, opts),
         controller
       );
-    };
+    });
   }
 
   /**
@@ -74,14 +86,14 @@ export class AegisApi<O> {
   head<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg, opts) => {
+    return addNoBodyModifiers((arg, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
         this.fetcher({ method: 'head', url: builder(arg) }, controller.signal, opts),
         controller
       );
-    };
+    });
   }
 
   /**
@@ -97,14 +109,14 @@ export class AegisApi<O> {
   options<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg, opts) => {
+    return addNoBodyModifiers((arg, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
         this.fetcher({ method: 'options', url: builder(arg) }, controller.signal, opts),
         controller
       );
-    };
+    });
   }
 
   /**
@@ -120,14 +132,14 @@ export class AegisApi<O> {
   delete<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherNoBody<ApiUrlArg<P>, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return (arg, opts) => {
+    return addNoBodyModifiers((arg, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
         this.fetcher({ method: 'delete', url: builder(arg) }, controller.signal, opts),
         controller
       );
-    };
+    });
   }
 
   /**
@@ -145,7 +157,7 @@ export class AegisApi<O> {
   post<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper((arg, body, opts) => {
+    return addWithBodyModifiers((arg, body, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
@@ -170,7 +182,7 @@ export class AegisApi<O> {
   put<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper((arg, body, opts) => {
+    return addWithBodyModifiers((arg, body, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(
@@ -195,7 +207,7 @@ export class AegisApi<O> {
   patch<D = any, P extends string[] = []>(strings: TemplateStringsArray, ...param: P): ApiFetcherWithBody<ApiUrlArg<P>, unknown, O, D> {
     const builder = $url<P>(strings, ...param);
 
-    return addBodyHelper(((arg, body, opts) => {
+    return addWithBodyModifiers(((arg, body, opts) => {
       const controller = new AbortController();
 
       return $queryfy<D>(

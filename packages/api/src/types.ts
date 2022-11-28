@@ -21,7 +21,15 @@ export type ApiRequestBuilder<A extends unknown[], B, O> = (...args: A) => ApiRe
 // - fetcher
 export type ApiFetcher<O> = (request: ApiRequest<unknown>, signal: AbortSignal, opts?: O) => PromiseLike<any>;
 
-export type ApiFetcherNoBody<A, O, D> = (arg: A, opts?: O) => Query<D>;
+export interface ApiFetcherNoBody<A, O, D> {
+  (arg: A, opts?: O): Query<D>;
+
+  // Methods
+  /**
+   * Maps query result
+   */
+  map<ND>(map: (res: D) => ND): ApiFetcherNoBody<A, O, ND>;
+}
 
 export interface ApiFetcherWithBody<A, B, O, D> {
   (arg: A, body: B, opts?: O): Query<D>;
@@ -31,6 +39,11 @@ export interface ApiFetcherWithBody<A, B, O, D> {
    * Changes body type
    */
   body<NB>(): ApiFetcherWithBody<A, NB, O, D>;
+
+  /**
+   * Maps query result
+   */
+  map<ND>(map: (res: D) => ND): ApiFetcherWithBody<A, B, O, ND>;
 }
 
 // - url utils
