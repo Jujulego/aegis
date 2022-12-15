@@ -142,7 +142,7 @@ jobs:
         run: echo ::set-output name=package::`cat ${{ matrix.root }}/package.json`
 
       - name: Sonarcloud
-        uses: sonarsource/sonarcloud-github-action@v1.7
+        uses: sonarsource/sonarcloud-github-action@v1.8
         with:
           projectBaseDir: ${{ matrix.root }}
           args: >
