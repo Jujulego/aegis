@@ -2900,9 +2900,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/jill@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@jujulego/jill@npm:2.0.1"
+"@jujulego/jill@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@jujulego/jill@npm:2.0.3"
   dependencies:
     "@jujulego/event-tree": ^1.1.0
     "@jujulego/tasks": ^1.0.0
@@ -2925,7 +2925,7 @@ __metadata:
     yargs: ^17.6.0
   bin:
     jill: ./bin/jill.js
-  checksum: a8342dcd20774989da14c474e7b51856f8afd1f8e2228231e88308596288a824442633dd2a12186fa2f3518fcbb76fbcfcdaf4ec7a354576914ff13880bc53a4
+  checksum: 17916d3dc021aba6d8bf022da482367897f514e26e0daa5579d9c2ed0039dae76a5f93b50ad375f3409a0261da8955339dea08de7b1ce243de87a71d4456d0dc
   languageName: node
   linkType: hard
 
@@ -4671,7 +4671,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "aegis@workspace:."
   dependencies:
-    "@jujulego/jill": 2.0.1
+    "@jujulego/jill": 2.0.3
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
     eslint: 8.28.0
