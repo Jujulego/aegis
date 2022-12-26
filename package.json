@@ -7,8 +7,7 @@
   "packageManager": "yarn@3.3.0",
   "workspaces": [
     "packages/*",
-    "tools",
-    "website"
+    "tools"
   ],
   "scripts": {
     "build": "jill each build --no-private"
