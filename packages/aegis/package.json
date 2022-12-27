@@ -48,7 +48,7 @@
     "aegis-tools": "workspace:*",
     "browserslist": "4.21.4",
     "del": "6.1.1",
-    "eslint": "8.28.0",
+    "eslint": "8.30.0",
     "eslint-plugin-jest": "27.1.7",
     "eslint-plugin-workspaces": "0.7.0",
     "gulp": "4.0.2",
