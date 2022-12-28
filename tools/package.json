@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@jujulego/flow": "1.1.0",
-    "@swc/cli": "0.1.57",
+    "@swc/cli": "0.1.59",
     "@swc/core": "1.3.24",
     "@types/gulp": "4.0.10",
     "@types/gulp-sourcemaps": "0.0.35",
