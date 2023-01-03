@@ -1096,12 +1096,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/jill@npm:2.0.4":
-  version: 2.0.4
-  resolution: "@jujulego/jill@npm:2.0.4"
+"@jujulego/jill@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@jujulego/jill@npm:2.1.0"
   bin:
     jill: ./bin/jill.js
-  checksum: 9fb3c0bf3ffb37f579f86ca94f07fddc517a495af8aab60ab69ed06d8e8304349aaebdbc475140b7dec528688d0478687322aeb2efe677e2dd2005d53a0f6e36
+  checksum: 74316b1a52025c76960de42a4fbe752b78a3cd1f1fd4c40b9ff52e51a80dcba689eb689ac8b69a9e2ff0acbee7378389e2d761535199b77ea37573fb73f05e2a
   languageName: node
   linkType: hard
 
@@ -2066,7 +2066,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "aegis@workspace:."
   dependencies:
-    "@jujulego/jill": 2.0.4
+    "@jujulego/jill": 2.1.0
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
     eslint: 8.31.0
