@@ -43,7 +43,7 @@ describe('QRef.refresh', () => {
   });
 
   describe('keep strategy', () => {
-    it('should use old pending query', () => {
+    it('should keep old pending query', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
       const fetcher = jest.fn(() => q2);
@@ -56,7 +56,7 @@ describe('QRef.refresh', () => {
       expect(fetcher).not.toHaveBeenCalled();
     });
 
-    it('should use new query from fetcher', () => {
+    it('should use new query from fetcher, as previous is done', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
       const fetcher = jest.fn(() => q2);
@@ -68,6 +68,38 @@ describe('QRef.refresh', () => {
       expect(qref.query).toBe(q2);
 
       expect(fetcher).toHaveBeenCalled();
+    });
+
+    it('should use new query from fetcher, as previous has failed', () => {
+      const q1 = new Query<number>();
+      const q2 = new Query<number>();
+      const fetcher = jest.fn(() => q2);
+
+      qref.refresh(() => q1, 'keep');
+      q1.fail(new Error('Failed !'));
+
+      expect(qref.refresh(fetcher, 'keep')).toBe(q2);
+      expect(qref.query).toBe(q2);
+
+      expect(fetcher).toHaveBeenCalled();
+    });
+  });
+
+  describe('replace strategy', () => {
+    it('should cancel old pending query and replace it', () => {
+      const q1 = new Query<number>();
+      jest.spyOn(q1, 'cancel');
+
+      const q2 = new Query<number>();
+      const fetcher = jest.fn(() => q2);
+
+      qref.refresh(() => q1, 'replace');
+      expect(qref.refresh(fetcher, 'replace')).toBe(q2);
+
+      expect(qref.query).toBe(q2);
+
+      expect(fetcher).toHaveBeenCalled();
+      expect(q1.cancel).toHaveBeenCalled();
     });
   });
 });
