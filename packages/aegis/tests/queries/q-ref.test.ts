@@ -42,6 +42,36 @@ describe('QRef.refresh', () => {
     expect(qrefSpy).toHaveBeenCalledWith({ status: 'pending' });
   });
 
+  it('should emit done event when current query is done', () => {
+    const query = new Query<number>();
+    qref.refresh(() => query, 'keep');
+
+    query.done(42);
+
+    expect(qrefSpy).toHaveBeenCalledWith({
+      status: 'done',
+      data: 42
+    });
+
+    expect(qref.data).toBe(42);
+    expect(qref.isLoading).toBe(false);
+  });
+
+  it('should emit failed event when current query fails', () => {
+    const query = new Query<number>();
+    qref.refresh(() => query, 'keep');
+
+    const error = new Error('Failed !');
+    query.fail(error);
+
+    expect(qrefSpy).toHaveBeenCalledWith({
+      status: 'failed',
+      error
+    });
+
+    expect(qref.isLoading).toBe(false);
+  });
+
   describe('keep strategy', () => {
     it('should keep old pending query', () => {
       const q1 = new Query<number>();
@@ -101,5 +131,37 @@ describe('QRef.refresh', () => {
       expect(fetcher).toHaveBeenCalled();
       expect(q1.cancel).toHaveBeenCalled();
     });
+  });
+});
+
+describe('QRef.cancel', () => {
+  it('should cancel current query', () => {
+    const query = new Query<number>();
+    jest.spyOn(query, 'cancel');
+
+    qref.refresh(() => query, 'keep');
+    qref.cancel();
+
+    expect(query.cancel).toHaveBeenCalled();
+  });
+});
+
+describe('QRef.read', () => {
+  it('should resolve to current result', async () => {
+    const query = new Query<number>();
+    qref.refresh(() => query, 'keep');
+
+    query.done(42);
+
+    await expect(qref.read()).resolves.toBe(42);
+  });
+
+  it('should resolve when current query succeed', async () => {
+    const query = new Query<number>();
+    qref.refresh(() => query, 'keep');
+
+    setTimeout(() => query.done(42), 0);
+
+    await expect(qref.read()).resolves.toBe(42);
   });
 });
