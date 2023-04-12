@@ -1,42 +1,25 @@
 import { group, IListenable, IObservable, KeyPart, source, waitFor } from '@jujulego/event-tree';
 
+import { DataRepository, StoreDeleteEvent, StoreEvent, StoreUpdateEvent } from './types';
+
 // Types
-export interface SRefAccessor<D> {
-  read(): D | undefined;
-}
-
-export interface SRefUpdateEvent<D, K extends KeyPart = KeyPart> {
-  key: K;
-  data: D;
-  old?: D;
-}
-
-export interface SRefDeleteEvent<D, K extends KeyPart = KeyPart> {
-  key: K;
-  old: D;
-}
-
-export type SRefEvent<D, K extends KeyPart = KeyPart> =
-  | SRefUpdateEvent<D, K>
-  | SRefDeleteEvent<D, K>;
-
 export type SRefEventMap<D, K extends KeyPart = KeyPart> = {
-  update: SRefUpdateEvent<D, K>;
-  delete: SRefDeleteEvent<D, K>;
+  update: StoreUpdateEvent<D, K>;
+  delete: StoreDeleteEvent<D, K>;
 };
 
 // Class
-export class SRef<D, K extends KeyPart = KeyPart> implements IObservable<SRefEvent<D, K>>, IListenable<SRefEventMap<D, K>> {
+export class SRef<D, K extends KeyPart = KeyPart> implements IObservable<StoreEvent<D, K>>, IListenable<SRefEventMap<D, K>> {
   // Attributes
   private readonly _events = group({
-    update: source<SRefUpdateEvent<D, K>>(),
-    delete: source<SRefDeleteEvent<D, K>>(),
+    update: source<StoreUpdateEvent<D, K>>(),
+    delete: source<StoreDeleteEvent<D, K>>(),
   });
 
   // Constructor
   constructor(
     readonly key: K,
-    private readonly accessor: SRefAccessor<D>,
+    private readonly accessor: DataRepository<D, K>,
   ) {}
 
   // Methods
@@ -59,6 +42,6 @@ export class SRef<D, K extends KeyPart = KeyPart> implements IObservable<SRefEve
 
   // Properties
   get data(): D | undefined {
-    return this.accessor.read();
+    return this.accessor.read(this.key);
   }
 }
