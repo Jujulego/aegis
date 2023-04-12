@@ -40,6 +40,15 @@ export class SRef<D, K extends KeyPart = KeyPart> implements IObservable<StoreEv
     return data;
   }
 
+  update(data: D): void {
+    const old = this.accessor.read(this.key);
+    this.accessor.update(this.key, data);
+
+    this._events.emit('update', {
+      key: this.key, data, old,
+    });
+  }
+
   // Properties
   get data(): D | undefined {
     return this.accessor.read(this.key);

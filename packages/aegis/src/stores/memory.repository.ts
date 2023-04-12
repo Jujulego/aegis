@@ -12,6 +12,10 @@ export class MemoryRepository<D, K extends KeyPart = KeyPart> implements DataRep
   read(key: K): D | undefined {
     return this._memory.get(key);
   }
+
+  update(key: K, data: D) {
+    this._memory.set(key, data);
+  }
 }
 
 // Utils

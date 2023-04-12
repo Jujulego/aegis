@@ -3,6 +3,7 @@ import { KeyPart } from '@jujulego/event-tree';
 // Types
 export interface DataRepository<D, K extends KeyPart = KeyPart> {
   read(key: K): D | undefined;
+  update(key: K, data: D): void;
 }
 
 // Events
