@@ -1,16 +1,17 @@
-import { DataAccessor } from './types';
+import { DRef } from './d-ref';
 
 // Class
-export class DVar<D> implements DataAccessor<D> {
+export class DVar<D> extends DRef<D> {
   // Attributes
   private _data: D | undefined;
 
-  // Methods
-  read(): D | undefined {
-    return this._data;
-  }
-
-  update(data: D) {
-    this._data = data;
+  // Constructor
+  constructor() {
+    super({
+      read: () => this._data,
+      update(data: D) {
+        this._data = data;
+      }
+    });
   }
 }
