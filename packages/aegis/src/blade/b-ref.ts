@@ -1,11 +1,19 @@
-import { lazy, multiplexer, source } from '@jujulego/event-tree';
+import { IListenable, inherit, IObservable, lazy, PrependEventMapKeys } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
 
-import { DRef, DVar } from '@/src/data';
-import { Fetcher, QRef, Strategy } from '@/src/query';
+import { DRef, DRefEventMap, DVar, StoreEvent } from '@/src/data';
+import { Fetcher, QRef, QRefEventMap, Strategy } from '@/src/query';
+
+// Types
+export type BRefEventMap<D> = DRefEventMap<D> & PrependEventMapKeys<'status', QRefEventMap<D>>;
 
 // Class
-export class BRef<D> {
+export class BRef<D> implements IObservable<StoreEvent<D>>, IListenable<BRefEventMap<D>> {
+  // Attributes
+  private readonly _events = inherit(lazy(() => this.ref), {
+    status: lazy(() => this.query)
+  });
+
   // Constructor
   constructor(
     readonly query: QRef<D> = new QRef(),
@@ -20,6 +28,12 @@ export class BRef<D> {
   }
 
   // Methods
+  readonly on = this._events.on;
+  readonly off = this._events.off;
+  readonly subscribe = this._events.subscribe;
+  readonly unsubscribe = this._events.unsubscribe;
+  readonly clear = this._events.clear;
+
   refresh(fetcher: Fetcher<D>, strategy: Strategy): Query<D> {
     return this.query.refresh(fetcher, strategy);
   }
