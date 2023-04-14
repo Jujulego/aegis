@@ -1,8 +1,7 @@
 import { IListenable, KeyPart, multiplexerMap, PrependEventMapKeys } from '@jujulego/event-tree';
 
+import { DRef, DRefEventMap } from '@/src/data';
 import { WeakStore } from '@/src/utils';
-
-import { DRef, DRefEventMap } from '../data/d-ref';
 
 // Types
 export type StoreEventMap<D, K extends KeyPart = KeyPart> = PrependEventMapKeys<K, DRefEventMap<D>>;
