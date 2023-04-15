@@ -4,7 +4,7 @@
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": "git@github.com:Jujulego/aegis.git",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@3.5.0",
   "workspaces": [
     "packages/*",
     "tools"
