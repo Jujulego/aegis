@@ -5,13 +5,13 @@ import { DRef, DRefEventMap, DVar, StoreEvent } from '@/src/data';
 import { Fetcher, QRef, QRefEventMap, Strategy } from '@/src/query';
 
 // Types
-export type BRefEventMap<D> = DRefEventMap<D> & PrependEventMapKeys<'status', QRefEventMap<D>>;
+export type BRefEventMap<D> = DRefEventMap<D> & PrependEventMapKeys<'query', QRefEventMap<D>>;
 
 // Class
 export class BRef<D> implements IObservable<StoreEvent<D>>, IListenable<BRefEventMap<D>> {
   // Attributes
   private readonly _events = inherit(lazy(() => this.ref), {
-    status: lazy(() => this.query)
+    query: lazy(() => this.query)
   });
 
   // Constructor
