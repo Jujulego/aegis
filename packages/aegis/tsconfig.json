@@ -2,10 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "incremental": true,
-    "rootDir": ".",
+    "rootDir": "./",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./",
+    "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@/src": ["src"],
+      "@/src/*": ["src/*"],
+    }
   },
   "ts-node": {
     "swc": true

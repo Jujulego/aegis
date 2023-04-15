@@ -1,7 +1,4 @@
-export * from '@jujulego/aegis-core';
-
-export * from './entity';
-export * from './mixin';
+export * from './data';
+export * from './query';
 export * from './store';
 export * from './utils';
-export * from './wrappers';
