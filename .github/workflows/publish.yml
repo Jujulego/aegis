@@ -147,7 +147,7 @@ jobs:
           path: packages
 
       - name: Publish
-        run: yarn workspaces foreach --no-private npm publish --access public --tolerate-republish
+        run: yarn jill each --no-private publish
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
