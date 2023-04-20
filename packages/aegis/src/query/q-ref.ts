@@ -1,8 +1,8 @@
 import { group, IListenable, IObservable, OffGroup, offGroup, once, source, waitFor } from '@jujulego/event-tree';
-import { Query, QueryState, QueryStateDone, QueryStateFailed, QueryStatePending } from '@jujulego/utils';
+import { queryfy, Query, QueryState, QueryStateDone, QueryStateFailed, QueryStatePending } from '@jujulego/utils';
 
 // Types
-export type Fetcher<D> = () => Query<D>;
+export type Fetcher<D> = () => PromiseLike<D>;
 export type Strategy = 'keep' | 'replace';
 
 export type QRefEventMap<D> = {
@@ -51,7 +51,7 @@ export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEven
     this.cancel();
 
     // Create new query
-    this._query = fetcher();
+    this._query = queryfy(fetcher());
 
     if (this._query.status === 'pending') {
       this._off = offGroup();

@@ -3,7 +3,12 @@
     "parser": {
       "syntax": "typescript"
     },
-    "target": "es2022"
+    "target": "es2022",
+    "baseUrl": "./",
+    "paths": {
+      "@/src/*": ["./src/*"],
+      "@/tools/*": ["./tools/*"]
+    }
   },
   "module": {
     "type": "es6"
