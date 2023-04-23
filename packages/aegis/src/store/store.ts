@@ -10,7 +10,7 @@ export type StoreEventMap<D, K extends KeyPart = KeyPart> = PrependEventMapKeys<
 export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenable<StoreEventMap<D, K>> {
   // Attributes
   private readonly _refs = new WeakStore<K, DRef<D>>();
-  private readonly _events = multiplexerMap((key: K) => this.read(key));
+  private readonly _events = multiplexerMap((key: K) => this.ref(key));
 
   // Methods
   readonly on = this._events.on;
@@ -27,7 +27,7 @@ export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenab
     });
   }
 
-  read(key: K): DRef<D> {
+  ref(key: K): DRef<D> {
     return this._refs.getOrCreate(key, () => this._createRef(key));
   }
 
