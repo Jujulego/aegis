@@ -1316,7 +1316,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis@workspace:packages/aegis"
   dependencies:
-    "@jujulego/event-tree": ^2.6.1
+    "@jujulego/event-tree": ^2.6.2
     "@jujulego/flow": 1.1.0
     "@jujulego/utils": ^1.3.2
     "@swc/cli": 0.1.62
@@ -1363,10 +1363,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/event-tree@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@jujulego/event-tree@npm:2.6.1"
-  checksum: 04a59f0ad2c7402e98a110918a0ebd00ea13c1a330ea4f0c7a811635dc7631d5ad1c9b76003263984f986555fd9124b48f8a1584e8b88acc0a601d21fc3409d5
+"@jujulego/event-tree@npm:^2.6.2":
+  version: 2.6.2
+  resolution: "@jujulego/event-tree@npm:2.6.2"
+  checksum: 71ff291a6d5580f649fe37136fbb409322705734f7df0b37265a78c14f52de50d910727aae530ae93cef9cf9a5e99f4b607c8a0fd85dcc41321876f8f8610a86
   languageName: node
   linkType: hard
 
