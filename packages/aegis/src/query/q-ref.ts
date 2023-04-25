@@ -11,6 +11,13 @@ export type QRefEventMap<D> = {
   failed: QueryStateFailed;
 };
 
+export interface QRefReadOpts {
+  /**
+   * Should throw if current query fails ?
+   */
+  throws?: boolean;
+}
+
 // Class
 export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEventMap<D>> {
   // Attributes
@@ -82,11 +89,19 @@ export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEven
   /**
    * Resolves to loaded data. Will return immediately if the current Query is done.
    */
-  async read(): Promise<D> {
+  async read(opts: QRefReadOpts = {}): Promise<D> {
     let state = this._query?.state;
 
     if (state?.status !== 'done') {
-      state = await waitFor(this._events, 'done');
+      state = await new Promise<QueryStateDone<D>>((resolve, reject) => {
+        const off = offGroup();
+
+        once(this._events, 'done', resolve, { off });
+
+        if (opts.throws) {
+          once(this._events, 'failed', ({ error }) => reject(error), { off });
+        }
+      });
     }
 
     return state.data;

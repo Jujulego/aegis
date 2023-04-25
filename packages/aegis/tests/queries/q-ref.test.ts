@@ -164,4 +164,13 @@ describe('QRef.read', () => {
 
     await expect(qref.read()).resolves.toBe(42);
   });
+
+  it('should reject when current query fails', async () => {
+    const query = new Query<number>();
+    qref.refresh(() => query, 'keep');
+
+    setTimeout(() => query.fail(new Error('Failed !')), 0);
+
+    await expect(qref.read({ throws: true })).rejects.toEqual(new Error('Failed !'));
+  });
 });
