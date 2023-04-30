@@ -1,9 +1,10 @@
-import { KeyPart, once } from '@jujulego/event-tree';
+import { KeyPart } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
 
 import { Fetcher, Manager, Strategy } from '@/src/query';
 import { MemoryStore, Store } from '@/src/store';
 import { BRef } from '@/src/blade/b-ref';
+import { FRef } from '@/src/blade/f-ref';
 
 // Types
 export type Extractor<D, K extends KeyPart = KeyPart> = (entity: D) => K;
@@ -31,10 +32,8 @@ export class Blade<D, K extends KeyPart = KeyPart> {
   }
 
   // Methods
-  register(query: Query<D>) { // TODO: return a reference on unknown data
-    once(query, 'done', ({ data }) => {
-      this._store.update(this._extractor(data), data, { lazy: true });
-    });
+  register(query: Query<D>): FRef<D> {
+    return new FRef(query, (data) => this._store.ref(this._extractor(data)));
   }
 
   refresh(key: K, fetcher: Fetcher<D>, strategy: Strategy): BRef<D> {

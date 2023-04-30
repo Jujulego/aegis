@@ -1316,9 +1316,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis@workspace:packages/aegis"
   dependencies:
-    "@jujulego/event-tree": ^2.6.2
+    "@jujulego/event-tree": ^2.7.0
     "@jujulego/flow": 1.1.0
-    "@jujulego/utils": ^1.4.1
+    "@jujulego/utils": ^1.4.2
     "@swc/cli": 0.1.62
     "@swc/core": 1.3.50
     "@swc/helpers": 0.5.0
@@ -1349,17 +1349,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jujulego/event-tree@npm:>=2.6.0, @jujulego/event-tree@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "@jujulego/event-tree@npm:2.7.0"
+  checksum: 97a325a03ef4c353f5482f475b8d966e33b0a090f31db3c6bff9a83627aa4d387a0810324690ad7b66be4984cab0886dd1d6ddabe3f012c13fe8e2d628bc7c99
+  languageName: node
+  linkType: hard
+
 "@jujulego/event-tree@npm:^1.1.0":
   version: 1.1.1
   resolution: "@jujulego/event-tree@npm:1.1.1"
   checksum: f252bf1d3c04a892374efd0d4950e878bed617cce201c1d5d5d9aa67f3f5633a979decdb72ae0602b640aadbc1f4003ab2c04aa8da202184827d025f2395d8b9
-  languageName: node
-  linkType: hard
-
-"@jujulego/event-tree@npm:^2.6.0, @jujulego/event-tree@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "@jujulego/event-tree@npm:2.6.2"
-  checksum: 71ff291a6d5580f649fe37136fbb409322705734f7df0b37265a78c14f52de50d910727aae530ae93cef9cf9a5e99f4b607c8a0fd85dcc41321876f8f8610a86
   languageName: node
   linkType: hard
 
@@ -1381,12 +1381,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/utils@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@jujulego/utils@npm:1.4.1"
+"@jujulego/utils@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@jujulego/utils@npm:1.4.2"
   dependencies:
-    "@jujulego/event-tree": ^2.6.0
-  checksum: cac18f405fce6a5bc59c60c87e8014cb6c249dec8d94dcc2d6dc76a5463b5b997a651c3677de794cbed77a196059d7c2f3ab1f5a9a09a84485895dafe087c637
+    "@jujulego/event-tree": ">=2.6.0"
+  checksum: 9bcea3dbd055a4f65d14a69335df0172b564f2712603b5e7ca83d477997253bcd86a459f5d14b31747fd23f95b8d612c1b68ff9f612b6657e8c784bc2574058f
   languageName: node
   linkType: hard
 
