@@ -1279,7 +1279,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
     "@vue/composition-api": 0.6.7
-    "@vue/test-utils": 1.3.4
+    "@vue/test-utils": 1.3.5
     aegis-tools: "workspace:*"
     browserslist: 4.21.4
     del: 6.1.1
@@ -2608,9 +2608,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/test-utils@npm:1.3.4":
-  version: 1.3.4
-  resolution: "@vue/test-utils@npm:1.3.4"
+"@vue/test-utils@npm:1.3.5":
+  version: 1.3.5
+  resolution: "@vue/test-utils@npm:1.3.5"
   dependencies:
     dom-event-types: ^1.0.0
     lodash: ^4.17.15
@@ -2618,7 +2618,7 @@ __metadata:
   peerDependencies:
     vue: 2.x
     vue-template-compiler: ^2.x
-  checksum: 24c1bcbe55e76c11152454fe76e34a4db4405292339fa4f69ee7a8ca208cbe872fed1879a0d459d9562c2d64c2e3cc74aa5cc339f87fc3161279ce381fa54647
+  checksum: c8834fe4d0323afe5b2efea76c116d4ce6114b3179bf114e21b5d8f0d304fbfe7b229f89c6f42ede0ad312ba4d83e4ccd5ba00d3bdee4339b9a3c0edac1be875
   languageName: node
   linkType: hard
 
