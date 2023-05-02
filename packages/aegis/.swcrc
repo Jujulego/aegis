@@ -16,7 +16,8 @@
   "env": {
     "targets": [
       "defaults",
-      "not ie 11"
+      "not ie 11",
+      "maintained node versions and not node < 16"
     ]
   }
 }
