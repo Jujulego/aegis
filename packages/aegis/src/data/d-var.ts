@@ -9,7 +9,7 @@ export class DVar<D> extends DRef<D> {
   constructor() {
     super({
       read: () => this._data,
-      update(data: D) {
+      update: (data: D) => {
         this._data = data;
       }
     });
