@@ -1,4 +1,4 @@
-import { group, IListenable, IObservable, OffGroup, offGroup, once, source, waitFor } from '@jujulego/event-tree';
+import { group, IListenable, IObservable, OffGroup, offGroup, once, source } from '@jujulego/event-tree';
 import { queryfy, Query, QueryState, QueryStateDone, QueryStateFailed, QueryStatePending } from '@jujulego/utils';
 
 // Types
