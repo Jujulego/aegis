@@ -5,7 +5,7 @@ import { Store } from './store';
 // Repository
 export class MemoryStore<D, K extends KeyPart = KeyPart> extends Store<D, K> {
   // Attributes
-  private readonly _map = new Map<K, D>();
+  protected readonly _map = new Map<K, D>();
 
   // Methods
   protected get(key: K): D | undefined {
