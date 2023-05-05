@@ -170,6 +170,6 @@ describe('QRef.read', () => {
 
     setTimeout(() => query.fail(new Error('Failed !')), 0);
 
-    await expect(qref.read({ throws: true })).rejects.toEqual(new Error('Failed !'));
+    await expect(qref.read()).rejects.toEqual(new Error('Failed !'));
   });
 });

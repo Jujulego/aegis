@@ -21,13 +21,6 @@ export type QRefEventMap<D> = {
   failed: Error;
 };
 
-export interface QRefReadOpts {
-  /**
-   * Should throw if current query fails ?
-   */
-  throws?: boolean;
-}
-
 /**
  * Reference on data received by query
  */
@@ -121,7 +114,7 @@ export class QRef<D> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
   /**
    * Resolves to loaded data. Will return immediately if the current Query is done.
    */
-  async read(opts: QRefReadOpts = {}): Promise<D> {
+  async read(): Promise<D> {
     const state = this._query?.state;
 
     if (state?.status !== 'done') {
@@ -129,10 +122,7 @@ export class QRef<D> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
         const off = offGroup();
 
         once(this._events, 'done', resolve, { off });
-
-        if (opts.throws) {
-          once(this._events, 'failed', (error) => reject(error), { off });
-        }
+        once(this._events, 'failed', (error) => reject(error), { off });
       });
     }
 
