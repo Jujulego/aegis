@@ -5,6 +5,7 @@ import { QRef } from '@/src';
 
 // Setup
 let qref: QRef<number>;
+
 const spyRef: Listener<number> = jest.fn();
 const spyPending: Listener<true> = jest.fn();
 const spyFailed: Listener<Error> = jest.fn();

@@ -1,20 +1,13 @@
-import { group, IListenable, IObservable, source, waitFor } from '@jujulego/event-tree';
+import { source, waitFor } from '@jujulego/event-tree';
 
-import { DataAccessor, StoreDeleteEvent, StoreEvent, StoreUpdateEvent } from './types';
+import { Ref } from '../defs';
 
-// Types
-export type DRefEventMap<D> = {
-  update: StoreUpdateEvent<D>;
-  delete: StoreDeleteEvent<D>;
-};
+import { DataAccessor } from './types';
 
 // Class
-export class DRef<D> implements IObservable<StoreEvent<D>>, IListenable<DRefEventMap<D>> {
+export class DRef<D> implements Ref<D> {
   // Attributes
-  private readonly _events = group({
-    update: source<StoreUpdateEvent<D>>(),
-    delete: source<StoreDeleteEvent<D>>(),
-  });
+  private readonly _events = source<D>();
 
   // Constructor
   constructor(
@@ -22,32 +15,35 @@ export class DRef<D> implements IObservable<StoreEvent<D>>, IListenable<DRefEven
   ) {}
 
   // Methods
-  readonly on = this._events.on;
-  readonly off = this._events.off;
   readonly subscribe = this._events.subscribe;
   readonly unsubscribe = this._events.unsubscribe;
   readonly clear = this._events.clear;
 
   async read(): Promise<D> {
-    let data = this.data;
+    const data = this.data;
 
     if (data === undefined) {
-      const event = await waitFor(this._events, 'update');
-      data = event.data;
+      return waitFor(this._events);
     }
 
     return data;
   }
 
   update(data: D): void {
-    const old = this.accessor.read();
     this.accessor.update(data);
-
-    this._events.emit('update', { data, old });
+    this._events.emit(data);
   }
 
   // Properties
   get data(): D | undefined {
     return this.accessor.read();
+  }
+
+  get isEmpty(): boolean {
+    if (this.accessor.isEmpty) {
+      return this.accessor.isEmpty();
+    }
+
+    return this.accessor.read() === undefined;
   }
 }
