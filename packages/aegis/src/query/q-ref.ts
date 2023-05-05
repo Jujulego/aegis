@@ -24,7 +24,7 @@ export type QRefEventMap<D> = {
 /**
  * Reference on data received by query
  */
-export class QRef<D> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
+export class QRef<D = unknown> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
   // Attributes
   private _off?: OffGroup;
   private _query?: Query<D>;

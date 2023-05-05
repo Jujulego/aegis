@@ -5,7 +5,7 @@ import { Ref } from '../defs';
 import { DataAccessor } from './types';
 
 // Class
-export class DRef<D> implements Ref<D> {
+export class DRef<D = unknown> implements Ref<D> {
   // Attributes
   private readonly _events = source<D>();
 

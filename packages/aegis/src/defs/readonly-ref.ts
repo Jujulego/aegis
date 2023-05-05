@@ -3,7 +3,7 @@ import { IObservable } from '@jujulego/event-tree';
 /**
  * Readonly reference
  */
-export interface ReadonlyRef<D> extends IObservable<D> {
+export interface ReadonlyRef<D = unknown> extends IObservable<D> {
   // Attributes
   readonly isEmpty: boolean;
   readonly data: D | undefined;
