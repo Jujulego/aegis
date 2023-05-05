@@ -1,8 +1,8 @@
 import { IListenable, inherit, IObservable, lazy, PrependEventMapKeys } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
 
-import { DRef, DRefEventMap, DVar, StoreEvent } from '@/src/data';
-import { Fetcher, QRef, QRefEventMap, Strategy } from '@/src/query';
+import { DRef, DRefEventMap, DVar, StoreEvent } from '../data';
+import { Fetcher, QRef, QRefEventMap, Strategy } from '../query';
 
 // Types
 export type BRefEventMap<D> = DRefEventMap<D> & PrependEventMapKeys<'query', QRefEventMap<D>>;

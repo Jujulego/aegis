@@ -1,6 +1,6 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { WeakStore } from '@/src/utils';
+import { WeakStore } from '../utils';
 
 import { Store } from './store';
 
