@@ -1,14 +1,24 @@
-import { group, IListenable, IObservable, OffGroup, offGroup, once, source } from '@jujulego/event-tree';
-import { queryfy, Query, QueryState, QueryStateDone, QueryStateFailed, QueryStatePending } from '@jujulego/utils';
+import {
+  IListenable, IMultiplexer,
+  Listener,
+  multiplexer,
+  OffGroup,
+  offGroup,
+  once,
+  source
+} from '@jujulego/event-tree';
+import { queryfy, Query, QueryState } from '@jujulego/utils';
+
+import { ReadonlyRef } from '../defs';
 
 // Types
 export type Fetcher<D> = () => PromiseLike<D>;
 export type Strategy = 'keep' | 'replace';
 
 export type QRefEventMap<D> = {
-  pending: QueryStatePending;
-  done: QueryStateDone<D>;
-  failed: QueryStateFailed;
+  pending: true;
+  done: D;
+  failed: Error;
 };
 
 export interface QRefReadOpts {
@@ -18,24 +28,46 @@ export interface QRefReadOpts {
   throws?: boolean;
 }
 
-// Class
-export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEventMap<D>> {
+/**
+ * Reference on data received by query
+ */
+export class QRef<D> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
   // Attributes
   private _off?: OffGroup;
   private _query?: Query<D>;
 
-  private readonly _events = group({
-    'pending': source<QueryStatePending>(),
-    'done': source<QueryStateDone<D>>(),
-    'failed': source<QueryStateFailed>(),
-  });
+  private readonly _events = multiplexer({
+    'pending': source<true>(),
+    'done': source<D>(),
+    'failed': source<Error>(),
+  }) as IMultiplexer<QRefEventMap<D>, QRefEventMap<D>>;
 
   // Methods
   readonly on = this._events.on;
   readonly off = this._events.off;
-  readonly subscribe = this._events.subscribe;
-  readonly unsubscribe = this._events.unsubscribe;
   readonly clear = this._events.clear;
+
+  /**
+   * Subscribe to data updates
+   * @param listener
+   */
+  readonly subscribe = (listener: Listener<D>) => this._events.on('done', listener);
+
+  /**
+   * Unsubscribe from data updates
+   * @param listener
+   */
+  readonly unsubscribe = (listener: Listener<D>) => this._events.off('done', listener);
+
+  private _emitQueryState(state: QueryState<D>) {
+    if (state.status === 'pending') {
+      this._events.emit('pending', true);
+    } else if (state.status === 'done') {
+      this._events.emit('done', state.data);
+    } else {
+      this._events.emit('failed', state.error);
+    }
+  }
 
   /**
    * Triggers refresh of the q-ref. Will call fetcher to replace current Query according to its state and the selected
@@ -62,10 +94,10 @@ export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEven
 
     if (this._query.status === 'pending') {
       this._off = offGroup();
-      once(this._query, (state) => this._events.emit(state.status, state), { off: this._off });
+      once(this._query, (state) => this._emitQueryState(state), { off: this._off });
     }
 
-    this._events.emit(this._query.state.status, this._query.state);
+    this._emitQueryState(this._query.state);
 
     return this._query;
   }
@@ -90,16 +122,16 @@ export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEven
    * Resolves to loaded data. Will return immediately if the current Query is done.
    */
   async read(opts: QRefReadOpts = {}): Promise<D> {
-    let state = this._query?.state;
+    const state = this._query?.state;
 
     if (state?.status !== 'done') {
-      state = await new Promise<QueryStateDone<D>>((resolve, reject) => {
+      return new Promise<D>((resolve, reject) => {
         const off = offGroup();
 
         once(this._events, 'done', resolve, { off });
 
         if (opts.throws) {
-          once(this._events, 'failed', ({ error }) => reject(error), { off });
+          once(this._events, 'failed', (error) => reject(error), { off });
         }
       });
     }
@@ -114,6 +146,10 @@ export class QRef<D> implements IObservable<QueryState<D>>, IListenable<QRefEven
 
   get data(): D | undefined {
     return this._query?.data;
+  }
+
+  get isEmpty(): boolean {
+    return this._query?.status !== 'done';
   }
 
   get isLoading(): boolean {

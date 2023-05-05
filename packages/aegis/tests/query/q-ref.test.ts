@@ -1,17 +1,21 @@
 import { Listener } from '@jujulego/event-tree';
-import { Query, QueryState } from '@jujulego/utils';
+import { Query } from '@jujulego/utils';
 
 import { QRef } from '@/src';
 
 // Setup
 let qref: QRef<number>;
-let qrefSpy: Listener<QueryState<number>>;
+const spyRef: Listener<number> = jest.fn();
+const spyPending: Listener<true> = jest.fn();
+const spyFailed: Listener<Error> = jest.fn();
 
 beforeEach(() => {
-  qref = new QRef();
+  jest.resetAllMocks();
 
-  qrefSpy = jest.fn();
-  qref.subscribe(qrefSpy);
+  qref = new QRef();
+  qref.subscribe(spyRef);
+  qref.on('pending', spyPending);
+  qref.on('failed', spyFailed);
 });
 
 // Tests
@@ -39,7 +43,7 @@ describe('QRef.refresh', () => {
     expect(qref.query).toBe(query);
     expect(qref.isLoading).toBe(true);
 
-    expect(qrefSpy).toHaveBeenCalledWith({ status: 'pending' });
+    expect(spyPending).toHaveBeenCalledWith(true);
   });
 
   it('should emit done event when current query is done', () => {
@@ -48,10 +52,7 @@ describe('QRef.refresh', () => {
 
     query.done(42);
 
-    expect(qrefSpy).toHaveBeenCalledWith({
-      status: 'done',
-      data: 42
-    });
+    expect(spyRef).toHaveBeenCalledWith(42);
 
     expect(qref.data).toBe(42);
     expect(qref.isLoading).toBe(false);
@@ -64,10 +65,7 @@ describe('QRef.refresh', () => {
     const error = new Error('Failed !');
     query.fail(error);
 
-    expect(qrefSpy).toHaveBeenCalledWith({
-      status: 'failed',
-      error
-    });
+    expect(spyFailed).toHaveBeenCalledWith(error);
 
     expect(qref.isLoading).toBe(false);
   });
