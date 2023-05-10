@@ -1,17 +1,19 @@
 import { DRef } from './d-ref';
 
 // Class
-export class DVar<D> extends DRef<D> {
+export class DVar<D = unknown> extends DRef<D> {
   // Attributes
   private _data: D | undefined;
 
   // Constructor
-  constructor() {
+  constructor(initial?: D) {
     super({
       read: () => this._data,
       update: (data: D) => {
         this._data = data;
       }
     });
+
+    this._data = initial;
   }
 }

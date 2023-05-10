@@ -10,9 +10,10 @@ import {
 } from '@jujulego/event-tree';
 import { Query, QueryEventMap } from '@jujulego/utils';
 
-import { DRef, DRefEventMap, StoreEvent } from '@/src/data';
-import { QRef } from '@/src/query';
-import { BRef } from '@/src/blade/b-ref';
+import { DRef, DRefEventMap, StoreEvent } from '../data';
+import { QRef } from '../query';
+
+import { BRef } from './b-ref';
 
 // Types
 export type DGetter<D> = (data: D) => DRef<D>;

@@ -1,10 +1,10 @@
-import { IListenable, KeyPart, multiplexerMap, PrependEventMapKeys } from '@jujulego/event-tree';
+import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
 
-import { DRef, DRefEventMap } from '@/src/data';
-import { WeakStore } from '@/src/utils';
+import { DRef } from '../data';
+import { WeakStore } from '../utils';
 
 // Types
-export type StoreEventMap<D, K extends KeyPart = KeyPart> = PrependEventMapKeys<K, DRefEventMap<D>>;
+export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;
 
 // Class
 export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenable<StoreEventMap<D, K>> {
@@ -23,7 +23,7 @@ export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenab
   private _createRef(key: K): DRef<D> {
     return new DRef<D>({
       read: () => this.get(key),
-      update: (data) => this.set(key, data),
+      update: (data: D) => this.set(key, data),
     });
   }
 

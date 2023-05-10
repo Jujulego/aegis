@@ -6,8 +6,7 @@
     "target": "es2022",
     "baseUrl": "./",
     "paths": {
-      "@/src/*": ["./src/*"],
-      "@/tools/*": ["./tools/*"]
+      "@/src/*": ["./src/*"]
     }
   },
   "module": {

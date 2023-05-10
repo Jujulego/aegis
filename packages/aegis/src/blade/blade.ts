@@ -1,10 +1,11 @@
 import { KeyPart } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
 
-import { Fetcher, Manager, Strategy } from '@/src/query';
-import { MemoryStore, Store } from '@/src/store';
-import { BRef } from '@/src/blade/b-ref';
-import { FRef } from '@/src/blade/f-ref';
+import { Fetcher, Manager, Strategy } from '../query';
+import { MemoryStore, Store } from '../store';
+
+import { BRef } from './b-ref';
+import { FRef } from './f-ref';
 
 // Types
 export type Extractor<D, K extends KeyPart = KeyPart> = (entity: D) => K;

@@ -1,6 +1,6 @@
 import { IListenable, KeyPart, multiplexerMap, PrependEventMapKeys } from '@jujulego/event-tree';
 
-import { WeakStore } from '@/src/utils';
+import { WeakStore } from '../utils';
 
 import { Fetcher, QRef, QRefEventMap, Strategy } from './q-ref';
 
