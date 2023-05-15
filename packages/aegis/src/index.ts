@@ -1,3 +1,4 @@
+export * from './aegis';
 export * from './data';
 export * from './query';
 export * from './store';

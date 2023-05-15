@@ -64,5 +64,5 @@ export class Aegis<D, A extends unknown[]> implements ReadonlyRef<D> {
  *
  */
 export function aegis<D, A extends unknown[]>(blade: Blade<D, A>): Aegis<D, A> {
-  return new Aegis(blade);
+  return new Aegis<D, A>(blade);
 }

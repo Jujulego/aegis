@@ -1,4 +1,4 @@
 /**
  * Blade logic
  */
-export type Blade<D, A extends unknown[]> = (...args: A) => PromiseLike<D>;
+export type Blade<D, A extends unknown[]> = (...args: A) => D | PromiseLike<D>;
