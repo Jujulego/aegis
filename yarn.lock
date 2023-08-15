@@ -1278,7 +1278,7 @@ __metadata:
     "@types/node": 16.18.25
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
-    "@vue/composition-api": 0.6.7
+    "@vue/composition-api": 1.7.2
     "@vue/test-utils": 1.3.5
     aegis-tools: "workspace:*"
     browserslist: 4.21.4
@@ -1296,7 +1296,7 @@ __metadata:
     vue-template-compiler: 2.6.14
   peerDependencies:
     "@jujulego/aegis": ^1.0.0-rc.8
-    "@vue/composition-api": ^0.6.7
+    "@vue/composition-api": ^0.6.7 || ^1.0.0
     regenerator-runtime: ^0.13.0
     vue: ^2.6.14
   languageName: unknown
@@ -2597,14 +2597,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/composition-api@npm:0.6.7":
-  version: 0.6.7
-  resolution: "@vue/composition-api@npm:0.6.7"
-  dependencies:
-    tslib: ^2.0.0
+"@vue/composition-api@npm:1.7.2":
+  version: 1.7.2
+  resolution: "@vue/composition-api@npm:1.7.2"
   peerDependencies:
-    vue: ^2.5.22
-  checksum: 7d84e3a4513fbf982228f372bffdced8313109a469dd71bdd79eaf83ee80ba46c7013fa704ffb549fd280d834ca12dbf578c24b01e0ad034bd8ba311d792dc7f
+    vue: ">= 2.5 < 2.7"
+  checksum: 6ce5ce4c0301fe45873c12bb46f449e1b0e978fa7df60de2a54aa314c5dc6e299640d0e9433e6edcd764f86ed9b737123f9346680733d228d5111d4b02736ff4
   languageName: node
   linkType: hard
 
@@ -11609,7 +11607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.1.0":
+"tslib@npm:^2.1.0":
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
