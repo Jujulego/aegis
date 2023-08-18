@@ -45,7 +45,7 @@
     "@swc/jest": "0.2.24",
     "@types/gulp": "4.0.10",
     "@types/jest": "29.2.5",
-    "@types/node": "16.18.25",
+    "@types/node": "16.18.41",
     "@typescript-eslint/eslint-plugin": "5.48.0",
     "@typescript-eslint/parser": "5.48.0",
     "@vue/composition-api": "0.6.7",

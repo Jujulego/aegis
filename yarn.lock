@@ -1158,7 +1158,7 @@ __metadata:
     "@swc/jest": 0.2.24
     "@types/gulp": 4.0.10
     "@types/jest": 29.2.5
-    "@types/node": 16.18.25
+    "@types/node": 16.18.41
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
     aegis-tools: "workspace:*"
@@ -1200,7 +1200,7 @@ __metadata:
     "@testing-library/react": 13.4.0
     "@types/gulp": 4.0.10
     "@types/jest": 29.2.5
-    "@types/node": 16.18.25
+    "@types/node": 16.18.41
     "@types/react": 18.2.0
     "@types/testing-library__react": 10.2.0
     "@types/use-sync-external-store": 0.0.3
@@ -1242,7 +1242,7 @@ __metadata:
     "@swc/jest": 0.2.24
     "@types/gulp": 4.0.10
     "@types/jest": 29.2.5
-    "@types/node": 16.18.25
+    "@types/node": 16.18.41
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
     aegis-tools: "workspace:*"
@@ -1275,7 +1275,7 @@ __metadata:
     "@swc/jest": 0.2.24
     "@types/gulp": 4.0.10
     "@types/jest": 29.2.5
-    "@types/node": 16.18.25
+    "@types/node": 16.18.41
     "@typescript-eslint/eslint-plugin": 5.48.0
     "@typescript-eslint/parser": 5.48.0
     "@vue/composition-api": 0.6.7
@@ -1325,7 +1325,7 @@ __metadata:
     "@swc/jest": 0.2.26
     "@types/gulp": 4.0.10
     "@types/jest": 29.5.0
-    "@types/node": 16.18.25
+    "@types/node": 16.18.41
     "@typescript-eslint/eslint-plugin": 5.58.0
     "@typescript-eslint/parser": 5.58.0
     aegis-tools: "workspace:*"
@@ -2126,10 +2126,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.25":
-  version: 16.18.25
-  resolution: "@types/node@npm:16.18.25"
-  checksum: 181760ad6b54fcc498dfeb249e98bbf0be51d7c35e92e760e1a82004fa42b86e8c33a8f8dd7743b5ef872bda0753d9e6a5b8e3f0aed63e9eb79b4e65760c1fbe
+"@types/node@npm:16.18.41":
+  version: 16.18.41
+  resolution: "@types/node@npm:16.18.41"
+  checksum: b12650d8e4289edafcf0453c8a66c00d6397d465a48b1c683babba4f16f92a6418f678e98a85751e3fef78d23c2b07f641df8da14bf5428ad8282b57b2695243
   languageName: node
   linkType: hard
 
