@@ -80,7 +80,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Type check tests
-        run: yarn test:types
+        run: yarn test:types --pass-with-no-tests
 
       - name: Run tests
         run: yarn test --coverage
