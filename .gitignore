@@ -8,5 +8,8 @@
 .pnp.*
 
 # Generated files
+.vitest
+coverage
+dist
 *.log
 *.pid
