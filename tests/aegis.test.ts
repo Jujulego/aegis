@@ -1,4 +1,4 @@
-import { aegis } from 'src';
+import { aegis } from '@/src/aegis.js';
 
 // Tests
 describe('aegis', () => {

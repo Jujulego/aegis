@@ -1,17 +1,18 @@
 import { Listener } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
+import { vi } from 'vitest';
 
-import { QRef } from 'src';
+import { QRef } from '@/src/query/q-ref.js';
 
 // Setup
 let qref: QRef<number>;
 
-const spyRef: Listener<number> = jest.fn();
-const spyPending: Listener<true> = jest.fn();
-const spyFailed: Listener<Error> = jest.fn();
+const spyRef: Listener<number> = vi.fn();
+const spyPending: Listener<true> = vi.fn();
+const spyFailed: Listener<Error> = vi.fn();
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 
   qref = new QRef();
   qref.subscribe(spyRef);
@@ -37,7 +38,7 @@ describe('new QRef', () => {
 describe('QRef.refresh', () => {
   it('should call fetcher and emit pending query state', () => {
     const query = new Query<number>();
-    const fetcher = jest.fn(() => query);
+    const fetcher = vi.fn(() => query);
 
     expect(qref.refresh(fetcher, 'keep')).toBe(query);
 
@@ -75,7 +76,7 @@ describe('QRef.refresh', () => {
     it('should keep old pending query', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
-      const fetcher = jest.fn(() => q2);
+      const fetcher = vi.fn(() => q2);
 
       qref.refresh(() => q1, 'keep');
       expect(qref.refresh(fetcher, 'keep')).toBe(q1);
@@ -88,7 +89,7 @@ describe('QRef.refresh', () => {
     it('should use new query from fetcher, as previous is done', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
-      const fetcher = jest.fn(() => q2);
+      const fetcher = vi.fn(() => q2);
 
       qref.refresh(() => q1, 'keep');
       q1.done(42);
@@ -102,7 +103,7 @@ describe('QRef.refresh', () => {
     it('should use new query from fetcher, as previous has failed', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
-      const fetcher = jest.fn(() => q2);
+      const fetcher = vi.fn(() => q2);
 
       qref.refresh(() => q1, 'keep');
       q1.fail(new Error('Failed !'));
@@ -117,10 +118,10 @@ describe('QRef.refresh', () => {
   describe('replace strategy', () => {
     it('should cancel old pending query and replace it', () => {
       const q1 = new Query<number>();
-      jest.spyOn(q1, 'cancel');
+      vi.spyOn(q1, 'cancel');
 
       const q2 = new Query<number>();
-      const fetcher = jest.fn(() => q2);
+      const fetcher = vi.fn(() => q2);
 
       qref.refresh(() => q1, 'replace');
       expect(qref.refresh(fetcher, 'replace')).toBe(q2);
@@ -136,7 +137,7 @@ describe('QRef.refresh', () => {
 describe('QRef.cancel', () => {
   it('should cancel current query', () => {
     const query = new Query<number>();
-    jest.spyOn(query, 'cancel');
+    vi.spyOn(query, 'cancel');
 
     qref.refresh(() => query, 'keep');
     qref.cancel();

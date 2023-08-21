@@ -1,20 +1,22 @@
 import { Listener } from '@jujulego/event-tree';
+import { vi } from 'vitest';
 
-import { DataAccessor, DRef } from 'src';
+import { DRef } from '@/src/data/d-ref.js';
+import { DataAccessor } from '@/src/data/types.js';
 
 // Setup
 let dref: DRef<number>;
 let assessor: DataAccessor<number>;
 
-const spyRef: Listener<number> = jest.fn();
+const spyRef: Listener<number> = vi.fn();
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 
   assessor = {
-    isEmpty: jest.fn().mockReturnValue(false),
-    read: jest.fn().mockReturnValue(42),
-    update: jest.fn(),
+    isEmpty: vi.fn().mockReturnValue(false),
+    read: vi.fn().mockReturnValue(42),
+    update: vi.fn(),
   };
   dref = new DRef<number>(assessor);
   dref.subscribe(spyRef);
@@ -27,7 +29,7 @@ describe('DRef.read', () => {
   });
 
   it('should wait for an update if empty', async () => {
-    jest.mocked(assessor.read).mockReturnValue(undefined);
+    vi.mocked(assessor.read).mockReturnValue(undefined);
 
     setTimeout(() => dref.update(2));
     await expect(dref.read()).resolves.toBe(2);
@@ -70,7 +72,7 @@ describe('DRef.isEmpty', () => {
 
   it('should use assessor read result if it has no isEmpty (undefined => true)', () => {
     delete assessor.isEmpty;
-    jest.mocked(assessor.read).mockReturnValue(undefined);
+    vi.mocked(assessor.read).mockReturnValue(undefined);
 
     expect(dref.isEmpty).toBe(true);
     expect(assessor.read).toHaveBeenCalled();
