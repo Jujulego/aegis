@@ -1,4 +1,4 @@
-import { ReadonlyRef } from './readonly-ref';
+import { ReadonlyRef } from './readonly-ref.js';
 
 /**
  * Updatable reference

@@ -1,1 +1,1 @@
-export * from './weak-store';
+export * from './weak-store.js';

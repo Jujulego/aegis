@@ -1,8 +1,8 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { WeakStore } from '../utils';
+import { WeakStore } from '../utils/index.js';
 
-import { Store } from './store';
+import { Store } from './store.js';
 
 // Repository
 export class StorageStore<D, K extends KeyPart = KeyPart> extends Store<D, K> {

@@ -1,6 +1,6 @@
 import { source, waitFor } from '@jujulego/event-tree';
 
-import { Blade, ReadonlyRef } from './defs';
+import { Blade, ReadonlyRef } from './defs/index.js';
 
 /**
  *

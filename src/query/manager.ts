@@ -1,8 +1,8 @@
 import { IListenable, KeyPart, multiplexerMap, PrependEventMapKeys } from '@jujulego/event-tree';
 
-import { WeakStore } from '../utils';
+import { WeakStore } from '../utils/index.js';
 
-import { Fetcher, QRef, QRefEventMap, Strategy } from './q-ref';
+import { Fetcher, QRef, QRefEventMap, Strategy } from './q-ref.js';
 
 // Types
 export type ManagerEventMap<D, K extends KeyPart = KeyPart> = PrependEventMapKeys<K, QRefEventMap<D>>;

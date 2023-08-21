@@ -1,3 +1,3 @@
-export * from './blade';
-export * from './readonly-ref';
-export * from './ref';
+export * from './blade.js';
+export * from './readonly-ref.js';
+export * from './ref.js';

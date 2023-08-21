@@ -9,7 +9,7 @@ import {
 } from '@jujulego/event-tree';
 import { queryfy, Query, QueryState } from '@jujulego/utils';
 
-import { ReadonlyRef } from '../defs';
+import { ReadonlyRef } from '../defs/index.js';
 
 // Types
 export type Fetcher<D> = () => PromiseLike<D>;
@@ -107,7 +107,7 @@ export class QRef<D = unknown> implements ReadonlyRef<D>, IListenable<QRefEventM
     // Unsubscribe to query
     if (this._off) {
       this._off();
-      this._off = undefined;
+      delete this._off;
     }
   }
 

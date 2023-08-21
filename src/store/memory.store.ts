@@ -1,6 +1,6 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { Store } from './store';
+import { Store } from './store.js';
 
 // Repository
 export class MemoryStore<D, K extends KeyPart = KeyPart> extends Store<D, K> {

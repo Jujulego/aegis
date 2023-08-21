@@ -1,4 +1,4 @@
-import { DRef } from './d-ref';
+import { DRef } from './d-ref.js';
 
 // Class
 export class DVar<D = unknown> extends DRef<D> {

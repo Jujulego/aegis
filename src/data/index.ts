@@ -1,3 +1,3 @@
-export * from './d-ref';
-export * from './d-var';
-export * from './types';
+export * from './d-ref.js';
+export * from './d-ref.js';
+export * from './d-ref.js';

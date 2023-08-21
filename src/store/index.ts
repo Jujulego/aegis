@@ -1,3 +1,3 @@
-export * from './memory.store';
-export * from './storage.store';
-export * from './store';
+export * from './memory.store.js';
+export * from './storage.store.js';
+export * from './store.js';
