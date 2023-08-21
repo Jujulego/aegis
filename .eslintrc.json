@@ -2,16 +2,18 @@
   "parser": "@typescript-eslint/parser",
   "root": true,
   "plugins": [
-    "@typescript-eslint",
-    "workspaces"
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**"
   ],
   "overrides": [
     {
       "files": "**/*.{js,jsx,ts,tsx}",
       "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:workspaces/recommended"
+        "plugin:@typescript-eslint/recommended"
       ],
       "env": {
         "node": true
@@ -23,6 +25,12 @@
           "allow": ["warn", "error"]
         }]
       }
+    },
+    {
+      "files": "**/*.test.{js,jsx,ts,tsx}",
+      "extends": [
+        "plugin:vitest/recommended"
+      ]
     }
   ]
 }
