@@ -31,7 +31,7 @@ export class DRef<D = unknown> implements Ref<D> {
 
   update(data: D): void {
     this.accessor.update(data);
-    this._events.emit(data);
+    this._events.next(data);
   }
 
   // Properties

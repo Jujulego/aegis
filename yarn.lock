@@ -381,7 +381,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jujulego/aegis@workspace:."
   dependencies:
-    "@jujulego/event-tree": ^2.7.0
+    "@jujulego/event-tree": ^4.0.1
     "@jujulego/jill": 2.3.1
     "@jujulego/utils": ^2.0.0
     "@microsoft/eslint-formatter-sarif": 3.0.0
@@ -399,13 +399,6 @@ __metadata:
     vitest: 0.34.2
   languageName: unknown
   linkType: soft
-
-"@jujulego/event-tree@npm:^2.7.0":
-  version: 2.7.0
-  resolution: "@jujulego/event-tree@npm:2.7.0"
-  checksum: 97a325a03ef4c353f5482f475b8d966e33b0a090f31db3c6bff9a83627aa4d387a0810324690ad7b66be4984cab0886dd1d6ddabe3f012c13fe8e2d628bc7c99
-  languageName: node
-  linkType: hard
 
 "@jujulego/event-tree@npm:^4.0.1":
   version: 4.0.1
