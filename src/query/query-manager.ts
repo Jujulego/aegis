@@ -5,10 +5,10 @@ import { WeakStore } from '../utils/index.js';
 import { Fetcher, QRef, Strategy } from './q-ref.js';
 
 // Types
-export type ManagerEventMap<D, K extends KeyPart = KeyPart> = ListenEventRecord<K, QRef<D>>;
+export type QueryManagerEventMap<D, K extends KeyPart = KeyPart> = ListenEventRecord<K, QRef<D>>;
 
 // Class
-export class Manager<D, K extends KeyPart = KeyPart> implements IListenable<ManagerEventMap<D, K>> {
+export class QueryManager<D, K extends KeyPart = KeyPart> implements IListenable<QueryManagerEventMap<D, K>> {
   // Attributes
   private readonly _refs = new WeakStore<K, QRef<D>>();
   private readonly _events = multiplexerMap((key: K) => this.ref(key));
