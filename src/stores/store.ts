@@ -1,7 +1,7 @@
 import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
 
 import { DRef } from '../refs/index.js';
-import { WeakStore } from '../utils/index.js';
+import { WeakStore } from '../utils/weak-store.js';
 
 // Types
 export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;

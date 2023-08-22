@@ -1,6 +1,6 @@
 import { IListenable, KeyPart, ListenEventRecord, multiplexerMap } from '@jujulego/event-tree';
 
-import { WeakStore } from './utils/index.js';
+import { WeakStore } from './utils/weak-store.js';
 
 import { Fetcher, QRef, Strategy } from './refs/q-ref.js';
 
