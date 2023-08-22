@@ -1,8 +1,6 @@
 import { source, waitFor } from '@jujulego/event-tree';
 
-import { Ref } from '../defs/index.js';
-
-import { DataAccessor } from './types.js';
+import { DataAccessor, Ref } from '../defs/index.js';
 
 // Class
 export class DRef<D = unknown> implements Ref<D> {
