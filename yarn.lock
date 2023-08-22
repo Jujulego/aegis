@@ -400,20 +400,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jujulego/event-tree@npm:>=2.6.0, @jujulego/event-tree@npm:^4.0.1":
+"@jujulego/event-tree@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "@jujulego/event-tree@npm:2.7.0"
+  checksum: 97a325a03ef4c353f5482f475b8d966e33b0a090f31db3c6bff9a83627aa4d387a0810324690ad7b66be4984cab0886dd1d6ddabe3f012c13fe8e2d628bc7c99
+  languageName: node
+  linkType: hard
+
+"@jujulego/event-tree@npm:^3.0.0":
+  version: 3.1.2
+  resolution: "@jujulego/event-tree@npm:3.1.2"
+  checksum: 9a7ca8a23c2bd9a463a7223088269e04bdb752c73eed4825f8176bcfe6ccac0cf927fc4a5eae42bf5a59a5e8610b382ce13f491d6c9b9742e87454870b3b677c
+  languageName: node
+  linkType: hard
+
+"@jujulego/event-tree@npm:^4.0.1":
   version: 4.0.1
   resolution: "@jujulego/event-tree@npm:4.0.1"
   dependenciesMeta:
     vitest@0.34.1:
       unplugged: true
   checksum: cd1303412ed2f24758edd724adb0683216124550a45c6ffe64a2ab3847c5af22003c1c04782000666309ea18058a6f7df711a4d283a9b10fba33386f9e1b442d
-  languageName: node
-  linkType: hard
-
-"@jujulego/event-tree@npm:^2.7.0":
-  version: 2.7.0
-  resolution: "@jujulego/event-tree@npm:2.7.0"
-  checksum: 97a325a03ef4c353f5482f475b8d966e33b0a090f31db3c6bff9a83627aa4d387a0810324690ad7b66be4984cab0886dd1d6ddabe3f012c13fe8e2d628bc7c99
   languageName: node
   linkType: hard
 
@@ -461,11 +468,11 @@ __metadata:
   linkType: hard
 
 "@jujulego/utils@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "@jujulego/utils@npm:1.4.2"
+  version: 1.4.5
+  resolution: "@jujulego/utils@npm:1.4.5"
   dependencies:
-    "@jujulego/event-tree": ">=2.6.0"
-  checksum: 9bcea3dbd055a4f65d14a69335df0172b564f2712603b5e7ca83d477997253bcd86a459f5d14b31747fd23f95b8d612c1b68ff9f612b6657e8c784bc2574058f
+    "@jujulego/event-tree": ^3.0.0
+  checksum: 9fd68326bb32a78a360c557b00a71816274ab77a9abd555ee6a88b4f55de0f88a6a99c39402f6f197aae4420824115822d1b45f5d2cd2144d97d462e145dd6a0
   languageName: node
   linkType: hard
 
