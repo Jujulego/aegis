@@ -40,6 +40,15 @@ describe('aegis', () => {
         data: 'life'
       });
     });
+
+    it('should return if aegis has a result', async () => {
+      await ref.refresh(42);
+
+      await expect(ref.read()).resolves.toEqual({
+        id: 42,
+        data: 'life'
+      });
+    });
   });
 
   describe('aegis.data', () => {
