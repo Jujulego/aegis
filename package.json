@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@jujulego/event-tree": "^2.7.0",
-    "@jujulego/utils": "^1.4.2"
+    "@jujulego/utils": "^2.0.0"
   },
   "devDependencies": {
     "@jujulego/jill": "2.3.1",
