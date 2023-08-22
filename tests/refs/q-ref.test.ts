@@ -2,7 +2,7 @@ import { Listener } from '@jujulego/event-tree';
 import { Query } from '@jujulego/utils';
 import { vi } from 'vitest';
 
-import { QRef } from '@/src/query/q-ref.js';
+import { QRef } from '@/src/refs/q-ref.js';
 
 // Setup
 let qref: QRef<number>;

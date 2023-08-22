@@ -1,8 +1,8 @@
 import { IListenable, KeyPart, ListenEventRecord, multiplexerMap } from '@jujulego/event-tree';
 
-import { WeakStore } from '../utils/index.js';
+import { WeakStore } from './utils/index.js';
 
-import { Fetcher, QRef, Strategy } from './q-ref.js';
+import { Fetcher, QRef, Strategy } from './refs/q-ref.js';
 
 // Types
 export type QueryManagerEventMap<D, K extends KeyPart = KeyPart> = ListenEventRecord<K, QRef<D>>;

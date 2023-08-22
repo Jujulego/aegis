@@ -1,4 +1,4 @@
-import { DVar } from '@/src/data/d-var.js';
+import { DVar } from '@/src/refs/d-var.js';
 
 // Tests
 describe('DVar', () => {

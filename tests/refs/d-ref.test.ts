@@ -1,8 +1,7 @@
 import { Listener } from '@jujulego/event-tree';
 import { vi } from 'vitest';
 
-import { DRef } from '@/src/data/d-ref.js';
-import { DataAccessor } from '@/src/defs/index.js';
+import { DataAccessor, DRef } from '@/src/index.js';
 
 // Setup
 let dref: DRef<number>;

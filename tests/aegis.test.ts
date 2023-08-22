@@ -1,5 +1,6 @@
-import { Aegis, aegis } from '@/src/aegis.js';
-import { beforeEach, describe, expect, vi } from 'vitest';
+import { vi } from 'vitest';
+
+import { Aegis, aegis } from '@/src/index.js';
 
 // Types
 interface TestData {

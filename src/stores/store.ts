@@ -1,6 +1,6 @@
 import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
 
-import { DRef } from '../data/index.js';
+import { DRef } from '../refs/index.js';
 import { WeakStore } from '../utils/index.js';
 
 // Types
