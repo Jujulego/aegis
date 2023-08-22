@@ -45,7 +45,7 @@ export class Aegis<D, A extends unknown[]> implements ReadonlyRef<D> {
     // Refresh
     this._args = args;
     this._data = await this.blade(...args);
-    this._events.emit(this._data);
+    this._events.next(this._data);
 
     return this._data;
   }
