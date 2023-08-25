@@ -1,11 +1,11 @@
 import { source, waitFor } from '@jujulego/event-tree';
 
-import { DataAccessor, Ref } from '../defs/index.js';
+import { DataAccessor, OldRef } from '../defs/index.js';
 
 /**
  * Reference on locally stored data.
  */
-export class DRef<D = unknown> implements Ref<D> {
+export class DRef<D = unknown> implements OldRef<D> {
   // Attributes
   private readonly _events = source<D>();
 
