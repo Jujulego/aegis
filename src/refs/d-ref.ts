@@ -2,7 +2,9 @@ import { source, waitFor } from '@jujulego/event-tree';
 
 import { DataAccessor, Ref } from '../defs/index.js';
 
-// Class
+/**
+ * Reference on locally stored data.
+ */
 export class DRef<D = unknown> implements Ref<D> {
   // Attributes
   private readonly _events = source<D>();
@@ -17,6 +19,9 @@ export class DRef<D = unknown> implements Ref<D> {
   readonly unsubscribe = this._events.unsubscribe;
   readonly clear = this._events.clear;
 
+  /**
+   * Resolves to the stored data. If no data is stored, waits for the next update.
+   */
   async read(): Promise<D> {
     const data = this.data;
 

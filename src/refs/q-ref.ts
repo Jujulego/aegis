@@ -22,7 +22,7 @@ export type QRefEventMap<D> = {
 };
 
 /**
- * Reference on data received by query
+ * Reference on data received by query.
  */
 export class QRef<D = unknown> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
   // Attributes

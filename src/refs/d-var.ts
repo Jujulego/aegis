@@ -1,6 +1,8 @@
 import { DRef } from './d-ref.js';
 
-// Class
+/**
+ * DRef storing its data inside itself
+ */
 export class DVar<D = unknown> extends DRef<D> {
   // Attributes
   private _data: D | undefined;
