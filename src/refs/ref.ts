@@ -4,42 +4,42 @@ import { Awaitable } from '@jujulego/utils';
 import { AsyncMutableRef, AsyncRef, MutableRef, Ref, SyncMutableRef, SyncRef } from '../defs/index.js';
 
 // Types
-export type SyncRefFn<T> = () => T;
-export type AsyncRefFn<T> = () => PromiseLike<T>;
-export type RefFn<T> = () => Awaitable<T>;
+export type SyncRefFn<T = unknown> = () => T;
+export type AsyncRefFn<T = unknown> = () => PromiseLike<T>;
+export type RefFn<T = unknown> = () => Awaitable<T>;
 
-export interface SyncRefOpts<T> {
+export interface SyncRefOpts<T = unknown> {
   read: SyncRefFn<T>;
 }
 
-export interface SyncMutableRefOpts<T> extends SyncRefOpts<T> {
-  mutate(value: T): T;
+export interface SyncMutableRefOpts<T = unknown, M = T> extends SyncRefOpts<T> {
+  mutate(value: M): T;
 }
 
-export interface AsyncRefOpts<T> {
+export interface AsyncRefOpts<T = unknown> {
   read: AsyncRefFn<T>;
 }
 
-export interface AsyncMutableRefOpts<T> extends AsyncRefOpts<T> {
-  mutate(value: T): PromiseLike<T>;
+export interface AsyncMutableRefOpts<T = unknown, M = T> extends AsyncRefOpts<T> {
+  mutate(value: M): PromiseLike<T>;
 }
 
-export interface RefOpts<T> {
+export interface RefOpts<T = unknown> {
   read: RefFn<T>;
 }
 
-export interface MutableRefOpts<T> extends RefOpts<T> {
-  mutate(value: T): Awaitable<T>;
+export interface MutableRefOpts<T = unknown, M = T> extends RefOpts<T> {
+  mutate(value: M): Awaitable<T>;
 }
 
-type RefArg<T> = RefFn<T> | RefOpts<T> | MutableRefOpts<T>;
+type RefArg<T, M = T> = RefFn<T> | RefOpts<T> | MutableRefOpts<T, M>;
 
 // Utils
 export function isPromise<T>(obj: Awaitable<T>): obj is PromiseLike<T> {
   return typeof obj === 'object' && obj !== null && 'then' in obj;
 }
 
-function parseArg<T>(arg: RefFn<T> | RefOpts<T> | RefOpts<T> & MutableRefOpts<T>): RefOpts<T> | MutableRefOpts<T> {
+function parseArg<T, M = T>(arg: RefArg<T, M>): RefOpts<T> | MutableRefOpts<T, M> {
   if (typeof arg === 'function') {
     return { read: arg };
   }
@@ -50,28 +50,23 @@ function parseArg<T>(arg: RefFn<T> | RefOpts<T> | RefOpts<T> & MutableRefOpts<T>
 // Builder
 export function ref$<T>(fn: AsyncRefFn<T>): AsyncRef<T>;
 export function ref$<T>(opts: AsyncRefOpts<T>): AsyncRef<T>;
-export function ref$<T>(opts: AsyncMutableRefOpts<T>): AsyncMutableRef<T>;
+export function ref$<T, M = T>(opts: AsyncMutableRefOpts<T, M>): AsyncMutableRef<T, M>;
 
 export function ref$<T>(fn: SyncRefFn<T>): SyncRef<T>;
 export function ref$<T>(opts: SyncRefOpts<T>): SyncRef<T>;
-export function ref$<T>(opts: SyncMutableRefOpts<T>): SyncMutableRef<T>;
+export function ref$<T, M = T>(opts: SyncMutableRefOpts<T, M>): SyncMutableRef<T, M>;
 
 export function ref$<T>(fn: RefFn<T>): Ref<T>;
 export function ref$<T>(opts: RefOpts<T>): Ref<T>;
-export function ref$<T>(opts: RefOpts<T> & MutableRefOpts<T>): MutableRef<T>;
+export function ref$<T, M = T>(opts: MutableRefOpts<T, M>): MutableRef<T, M>;
 
-export function ref$<T>(arg: RefArg<T>): Ref<T> | MutableRef<T> {
+export function ref$<T, M = T>(arg: RefArg<T, M>): Ref<T> | MutableRef<T, M> {
   const opts = parseArg(arg);
 
-  let last: T | undefined;
   const events = source<T>();
 
   function emit(res: T) {
-    if (res !== last) {
-      last = res;
-      events.next(res);
-    }
-
+    events.next(res);
     return res;
   }
 
@@ -95,7 +90,7 @@ export function ref$<T>(arg: RefArg<T>): Ref<T> | MutableRef<T> {
 
   if ('mutate' in opts) {
     return Object.assign(ref, {
-      mutate(value: T) {
+      mutate(value: M) {
         const res = opts.mutate!(value);
 
         if (isPromise(res)) {

@@ -62,17 +62,31 @@ describe('ref$', () => {
   });
 
   it('should emit each new result', () => {
-    const fn = vi.fn(() => 42);
     const spy = vi.fn();
 
-    const fn$ = ref$(fn);
+    const fn$ = ref$(() => 42);
     fn$.subscribe(spy);
 
     expect(fn$.read()).toBe(42);
-    expect(fn$.read()).toBe(42);
 
-    expect(fn).toHaveBeenCalledTimes(2);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(42);
+  });
+
+  it('should emit after mutation', () => {
+    const spy = vi.fn();
+
+    const fn$ = ref$({
+      read: () => 42,
+      mutate: (v: string) => parseInt(v) + 1,
+    });
+    fn$.subscribe(spy);
+
+    expect(fn$.read()).toBe(42);
+    expect(fn$.mutate('1')).toBe(2);
+
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(42);
+    expect(spy).toHaveBeenCalledWith(2);
   });
 });

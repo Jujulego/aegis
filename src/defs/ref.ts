@@ -25,37 +25,37 @@ export interface Ref<T = unknown> extends IObservable<T> {
 /**
  * Synchronous observable reference.
  */
-export interface SyncRef<T = unknown> extends Ref {
+export interface SyncRef<T = unknown> extends Ref<T> {
   read(): T;
 }
 
 /**
  * Asynchronous observable reference.
  */
-export interface AsyncRef<T = unknown> extends Ref {
+export interface AsyncRef<T = unknown> extends Ref<T> {
   read(): PromiseLike<T>;
 }
 
 /**
  * Observable mutable reference.
  */
-export interface MutableRef<T = unknown> extends Ref<T> {
+export interface MutableRef<T = unknown, M = T> extends Ref<T> {
   /**
    * Updates value "pointed" by reference, returns updated value.
    */
-  mutate(val: T): Awaitable<T>;
+  mutate(val: M): Awaitable<T>;
 }
 
 /**
  * Synchronous mutable reference.
  */
-export interface SyncMutableRef<T = unknown> extends MutableRef {
+export interface SyncMutableRef<T = unknown, M = T> extends MutableRef<T, M> {
   read(): T;
 }
 
 /**
  * Asynchronous mutable reference.
  */
-export interface AsyncMutableRef<T = unknown> extends MutableRef {
+export interface AsyncMutableRef<T = unknown, M = T> extends MutableRef<T, M> {
   read(): PromiseLike<T>;
 }
