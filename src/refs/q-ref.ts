@@ -23,6 +23,7 @@ export type QRefEventMap<D> = {
 
 /**
  * Reference on data received by query.
+ * @deprecated use query instead
  */
 export class QRef<D = unknown> implements ReadonlyRef<D>, IListenable<QRefEventMap<D>> {
   // Attributes
