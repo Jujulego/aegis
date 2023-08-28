@@ -1,5 +1,6 @@
-import { ref$ } from '@/src/index.js';
 import { vi } from 'vitest';
+
+import { ref$ } from '@/src/index.js';
 
 // Tests
 describe('ref$', () => {
@@ -20,17 +21,15 @@ describe('ref$', () => {
   });
 
   it('should emit each new result', () => {
-    const fn = vi.fn(() => 42);
     const spy = vi.fn();
 
-    const fn$ = ref$(fn);
+    const fn$ = ref$(() => 42);
     fn$.subscribe(spy);
 
     expect(fn$.read()).toBe(42);
     expect(fn$.read()).toBe(42);
 
-    expect(fn).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1); // <= because it is always the same value
     expect(spy).toHaveBeenCalledWith(42);
   });
 

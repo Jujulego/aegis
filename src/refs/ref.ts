@@ -2,16 +2,12 @@ import { source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import { AsyncRef, Ref, SyncRef } from '../defs/index.js';
+import { isPromise } from '../utils/promise.js';
 
 // Types
+export type RefFn<T = unknown> = () => Awaitable<T>;
 export type SyncRefFn<T = unknown> = () => T;
 export type AsyncRefFn<T = unknown> = () => PromiseLike<T>;
-export type RefFn<T = unknown> = () => Awaitable<T>;
-
-// Utils
-export function isPromise<T>(obj: Awaitable<T>): obj is PromiseLike<T> {
-  return typeof obj === 'object' && obj !== null && 'then' in obj;
-}
 
 // Builder
 export function ref$<T>(fn: AsyncRefFn<T>): AsyncRef<T>;
