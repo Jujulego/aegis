@@ -1,4 +1,4 @@
-import { IObservable } from '@jujulego/event-tree';
+import { IEmitter, IObservable } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import { ReadonlyRef } from './readonly-ref.js';
@@ -15,11 +15,17 @@ export interface OldRef<D = unknown> extends ReadonlyRef<D> {
 /**
  * Generic observable reference.
  */
-export interface Ref<T = unknown> extends IObservable<T> {
+export interface Ref<T = unknown> extends IEmitter<T>, IObservable<T> {
   /**
    * Return current value "pointed" by reference.
    */
   read(): Awaitable<T>;
+
+  /**
+   * Triggers listeners, to notify data changes.
+   * @param data new value
+   */
+  next(data: T): void;
 }
 
 /**
