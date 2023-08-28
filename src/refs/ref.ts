@@ -21,7 +21,7 @@ export function ref$<T>(fn: RefFn<T>): Ref<T> {
   let last: T | undefined;
 
   function emit(val: T) {
-    if (last !== val) {
+    if (val !== last && val !== undefined) {
       last = val;
       events.next(val);
     }

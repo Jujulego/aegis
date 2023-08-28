@@ -4,6 +4,7 @@ import { DataAccessor, OldRef } from '../defs/index.js';
 
 /**
  * Reference on locally stored data.
+ * @deprecated use mutable$ instead
  */
 export class DRef<D = unknown> implements OldRef<D> {
   // Attributes

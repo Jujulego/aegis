@@ -2,6 +2,7 @@ import { DRef } from './d-ref.js';
 
 /**
  * DRef storing its data inside itself
+ * @deprecated use var$ instead
  */
 export class DVar<D = unknown> extends DRef<D> {
   // Attributes
