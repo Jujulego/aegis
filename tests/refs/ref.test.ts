@@ -3,20 +3,62 @@ import { vi } from 'vitest';
 
 // Tests
 describe('ref$', () => {
-  it('should call fn and return its result', () => {
-    const fn = vi.fn(() => 42);
-    const fn$ = ref$(fn);
+  describe('synchronous', () => {
+    it('should call fn and return its result', () => {
+      const fn = vi.fn(() => 42);
+      const fn$ = ref$(fn);
 
-    expect(fn$.read()).toBe(42);
-    expect(fn).toHaveBeenCalled();
+      expect(fn$.read()).toBe(42);
+      expect(fn).toHaveBeenCalled();
+    });
+
+    it('should call read and return its result', () => {
+      const read = vi.fn(() => 42);
+      const fn$ = ref$({ read });
+
+      expect(fn$.read()).toBe(42);
+      expect(read).toHaveBeenCalled();
+    });
+
+    it('should call mutate and return its result', () => {
+      const mutate = vi.fn((v) => v);
+      const fn$ = ref$({
+        read: () => 42,
+        mutate
+      });
+
+      expect(fn$.mutate(42)).toBe(42);
+      expect(mutate).toHaveBeenCalledWith(42);
+    });
   });
 
-  it('should call fn and resolve its result', async () => {
-    const fn = vi.fn(async () => 42);
-    const fn$ = ref$(fn);
+  describe('asynchronous', () => {
+    it('should call fn and resolve to its result', async () => {
+      const fn = vi.fn(async () => 42);
+      const fn$ = ref$(fn);
 
-    await expect(fn$.read()).resolves.toBe(42);
-    expect(fn).toHaveBeenCalled();
+      await expect(fn$.read()).resolves.toBe(42);
+      expect(fn).toHaveBeenCalled();
+    });
+
+    it('should call read and resolve to its result', async () => {
+      const read = vi.fn(async () => 42);
+      const fn$ = ref$({ read });
+
+      await expect(fn$.read()).resolves.toBe(42);
+      expect(read).toHaveBeenCalled();
+    });
+
+    it('should call mutate and resolve to its result', async () => {
+      const mutate = vi.fn(async (v) => v);
+      const fn$ = ref$({
+        read: async () => 42,
+        mutate
+      });
+
+      await expect(fn$.mutate(42)).resolves.toBe(42);
+      expect(mutate).toHaveBeenCalledWith(42);
+    });
   });
 
   it('should emit each new result', () => {
