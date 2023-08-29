@@ -1,5 +1,4 @@
-import { SyncMutableRef } from '../defs/index.js';
-import { mutable$ } from './mutable.js';
+import { mutable$, SyncMutableRef } from './mutable.js';
 
 // Builder
 export function var$<T>(): SyncMutableRef<T | undefined, T>;

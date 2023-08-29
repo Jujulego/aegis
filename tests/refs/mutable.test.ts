@@ -33,7 +33,7 @@ describe('mutable$', () => {
   describe('asynchronous', () => {
     it('should call read and resolve to its result', async () => {
       const read = vi.fn(async () => 42);
-      const mutate = vi.fn(async (v: string) => parseInt(v) + 1);
+      const mutate = vi.fn((v: string) => parseInt(v) + 1);
 
       const fn$ = mutable$({ read, mutate });
 
@@ -44,7 +44,7 @@ describe('mutable$', () => {
     });
 
     it('should call mutate and resolve to its result', async () => {
-      const read = vi.fn(async () => 42);
+      const read = vi.fn(() => 42);
       const mutate = vi.fn(async (v: string) => parseInt(v) + 1);
 
       const fn$ = mutable$({ read, mutate });
