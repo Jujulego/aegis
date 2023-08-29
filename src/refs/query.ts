@@ -1,7 +1,7 @@
 import { EventKey, IListenable, Listener, multiplexer, OffFn, offGroup, once, source } from '@jujulego/event-tree';
 import { Query, queryfy, QueryState } from '@jujulego/utils';
 
-import { AsyncRef } from '../defs/index.js';
+import { AsyncRef } from './ref.js';
 
 // Types
 export type QueryFetcher<T> = () => PromiseLike<T>;
