@@ -2,10 +2,10 @@ import { KeyPart } from '@jujulego/event-tree';
 
 import { WeakStore } from '../utils/weak-store.js';
 
-import { Store } from './store.js';
+import { OldStore } from './store.js';
 
 // Repository
-export class StorageStore<D, K extends KeyPart = KeyPart> extends Store<D, K> {
+export class StorageStore<D, K extends KeyPart = KeyPart> extends OldStore<D, K> {
   // Attributes
   private readonly _cache = new WeakStore<K, D & object>();
 

@@ -1,9 +1,9 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { Store } from './store.js';
+import { OldStore } from './store.js';
 
 // Repository
-export class MemoryStore<D, K extends KeyPart = KeyPart> extends Store<D, K> {
+export class MemoryStore<D, K extends KeyPart = KeyPart> extends OldStore<D, K> {
   // Attributes
   protected readonly _map = new Map<K, D>();
 

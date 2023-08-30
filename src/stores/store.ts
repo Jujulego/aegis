@@ -1,13 +1,56 @@
 import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
+import { Awaitable } from '@jujulego/utils';
 
-import { DRef } from '../refs/index.js';
+import { DRef, mutable$, MutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
+import { Indexable } from '../defs/index.js';
 
 // Types
 export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;
 
+export interface StoreOpts<D, A = D, K extends KeyPart = KeyPart> {
+  read(key: K): Awaitable<D>;
+  mutate(key: K, arg: A): Awaitable<D>;
+}
+
+export interface Store<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> extends Indexable<D, K, R>, IListenable<StoreEventMap<D, K>> {
+  mutate(key: K, arg: A): R;
+}
+
+// Builder
+export function store$<D, A = D, K extends KeyPart = KeyPart>(opts: StoreOpts<D, A, K>): Store<D, A, K> {
+  // Ref management
+  const refs = new WeakStore<K, MutableRef<D, A>>();
+
+  function ref(key: K): MutableRef<D, A> {
+    return refs.getOrCreate(key, () => mutable$<D, A>({
+      read: () => opts.read(key),
+      mutate(arg: A): Awaitable<D> {
+        return opts.mutate(key, arg);
+      }
+    }));
+  }
+
+  // Store
+  const events = multiplexerMap(ref);
+
+  return {
+    on: events.on,
+    off: events.off,
+    clear: events.clear,
+
+    ref,
+    mutate(key: K, arg: A): MutableRef<D, A> {
+      const r = ref(key);
+      r.mutate(arg);
+
+      return r;
+    }
+  };
+}
+
 // Class
-export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenable<StoreEventMap<D, K>> {
+export abstract class OldStore<D, K extends KeyPart = KeyPart> implements IListenable<StoreEventMap<D, K>> {
   // Attributes
   private readonly _refs = new WeakStore<K, DRef<D>>();
   private readonly _events = multiplexerMap((key: K) => this.ref(key));
