@@ -9,10 +9,30 @@ export type StoreEventMap<K extends KeyPart, D> = Record<K, D>;
 export type StoreFn<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
 
 export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<K, D>> {
+  /**
+   * Returns a reference on the "key" element.
+   *
+   * @param key
+   */
   ref(key: K): R;
 
-  mutate(key: K, arg: A, opts?: { lazy?: false }): R;
-  mutate(key: K, arg: A, opts: { lazy: true }): R | undefined;
+  /**
+   * Mutates the "key" element, using the given arg.
+   * Return a reference on the mutated element.
+   *
+   * @param key
+   * @param arg
+   */
+  mutate(key: K, arg: A): R;
+
+  /**
+   * Triggers listeners and references pointing "key" element, indicating the stored value has changed.
+   * The trigger is automatic in case of mutation using the "mutate" method.
+   *
+   * @param key
+   * @param data
+   */
+  trigger(key: K, data: D): void;
 }
 
 // Builder
@@ -33,19 +53,18 @@ export function store$<K extends KeyPart, D, A = D, R extends MutableRef<D, A> =
     clear: events.clear,
 
     ref: getRef,
-    mutate(key: K, arg: A, opts: { lazy?: boolean } = {}): R | undefined {
-      let ref = refs.get(key);
-
-      if (!ref && !opts.lazy) {
-        ref = fn(key);
-        refs.set(key, ref);
-      }
-
-      if (ref) {
-        ref.mutate(arg);
-      }
+    mutate(key: K, arg: A): R {
+      const ref = getRef(key);
+      ref.mutate(arg);
 
       return ref;
+    },
+    trigger(key: K, data: D): void {
+      const ref = refs.get(key);
+
+      if (ref) {
+        ref.next(data);
+      }
     }
-  } as Store<K, D, A, R>;
+  };
 }

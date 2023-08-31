@@ -37,11 +37,11 @@ export function storage$<K extends KeyPart, D extends object>(storage: Storage, 
 
       return data;
     },
-    mutate(arg: D): D {
-      storage.setItem(storageKey(key), JSON.stringify(arg));
-      cache.set(key, arg);
+    mutate(data: D): D {
+      storage.setItem(storageKey(key), JSON.stringify(data));
+      cache.set(key, data);
 
-      return arg;
+      return data;
     }
   }));
 
@@ -56,7 +56,10 @@ export function storage$<K extends KeyPart, D extends object>(storage: Storage, 
       const key = event.key.slice(prefix.length + 1) as K;
 
       if (event.newValue) {
-        store.mutate(key, JSON.parse(event.newValue), { lazy: true });
+        const data = JSON.parse(event.newValue);
+
+        cache.set(key, data);
+        store.trigger(key, data);
       }
     }
   });
