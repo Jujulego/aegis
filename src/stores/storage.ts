@@ -45,7 +45,7 @@ export function storage$<K extends KeyPart, D extends object>(storage: Storage, 
     }
   }));
 
-  // Listen to windows events
+  // Listen to window events
   window.addEventListener('storage', (event) => {
     if (event.storageArea === storage && event.key) {
       if (!event.key.startsWith(prefix)) {
