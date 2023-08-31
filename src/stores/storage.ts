@@ -6,10 +6,10 @@ import { WeakStore } from '../utils/weak-store.js';
 
 // Types
 export type StorageRef<D extends object> = SyncMutableRef<D | undefined, D>;
-export type StorageStore<D extends object, K extends KeyPart = KeyPart> = Store<D | undefined, D, K, StorageRef<D>>;
+export type StorageStore<K extends KeyPart, D extends object> = Store<K, D | undefined, D, StorageRef<D>>;
 
 // Builder
-export function storage$<D extends object, K extends KeyPart = KeyPart>(storage: Storage, prefix: string): StorageStore<D, K> {
+export function storage$<K extends KeyPart, D extends object>(storage: Storage, prefix: string): StorageStore<K, D> {
   const cache = new WeakStore<K, D>();
 
   // Utils
@@ -18,7 +18,7 @@ export function storage$<D extends object, K extends KeyPart = KeyPart>(storage:
   }
 
   // Store
-  const store = store$<D | undefined, D, K, StorageRef<D>>((key: K) => mutable$({
+  const store: StorageStore<K, D> = store$((key: K) => mutable$({
     read(): D | undefined {
       // Use cache
       const cached = cache.get(key);

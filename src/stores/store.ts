@@ -4,11 +4,11 @@ import { MutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
 
 // Types
-export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;
+export type StoreEventMap<K extends KeyPart, D> = Record<K, D>;
 
-export type StoreFn<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
+export type StoreFn<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
 
-export interface Store<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<D, K>> {
+export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<K, D>> {
   ref(key: K): R;
 
   mutate(key: K, arg: A, opts?: { lazy?: false }): R;
@@ -16,7 +16,7 @@ export interface Store<D, A = D, K extends KeyPart = KeyPart, R extends MutableR
 }
 
 // Builder
-export function store$<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>>(fn: StoreFn<D, A, K, R>): Store<D, A, K, R> {
+export function store$<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>>(fn: StoreFn<K, D, A, R>): Store<K, D, A, R> {
   // Ref management
   const refs = new WeakStore<K, R>();
 
@@ -47,5 +47,5 @@ export function store$<D, A = D, K extends KeyPart = KeyPart, R extends MutableR
 
       return ref;
     }
-  } as Store<D, A, K, R>;
+  } as Store<K, D, A, R>;
 }
