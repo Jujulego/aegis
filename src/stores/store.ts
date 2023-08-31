@@ -1,6 +1,5 @@
 import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
 
-import { Indexable } from '../defs/index.js';
 import { MutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
 
@@ -9,7 +8,9 @@ export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;
 
 export type StoreFn<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
 
-export interface Store<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> extends Indexable<D, K, R>, IListenable<StoreEventMap<D, K>> {
+export interface Store<D, A = D, K extends KeyPart = KeyPart, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<D, K>> {
+  ref(key: K): R;
+
   mutate(key: K, arg: A, opts?: { lazy?: false }): R;
   mutate(key: K, arg: A, opts: { lazy: true }): R | undefined;
 }
