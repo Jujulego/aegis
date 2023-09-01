@@ -4,6 +4,7 @@ import { query$, QueryRef, QueryStrategy } from './refs/index.js';
 import { WeakStore } from './utils/weak-store.js';
 
 // Types
+export type ManagerFetcher<K extends KeyPart, D> = (key: K) => PromiseLike<D>;
 export type ManagerEventMap<K extends KeyPart, D> = ListenEventRecord<K, QueryRef<D>>;
 
 export interface Manager<K extends KeyPart, D> extends IListenable<ManagerEventMap<K, D>> {
@@ -24,7 +25,7 @@ export interface Manager<K extends KeyPart, D> extends IListenable<ManagerEventM
 }
 
 // Builder
-export function manager$<K extends KeyPart, D>(fetcher: (key: K) => PromiseLike<D>): Manager<K, D> {
+export function manager$<K extends KeyPart, D>(fetcher: ManagerFetcher<K, D>): Manager<K, D> {
   // Ref management
   const refs = new WeakStore<K, QueryRef<D>>();
 
