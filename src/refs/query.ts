@@ -4,19 +4,19 @@ import { Query, queryfy, QueryState } from '@jujulego/utils';
 import { AsyncRef } from './ref.js';
 
 // Types
-export type QueryFetcher<T> = () => PromiseLike<T>;
+export type QueryFetcher<D> = () => PromiseLike<D>;
 export type QueryStrategy = 'keep' | 'replace';
 
-export type QueryRefEventMap<T> = {
+export type QueryRefEventMap<D> = {
   pending: true;
-  done: T;
+  done: D;
   failed: Error;
 };
 
-export interface QueryRef<T> extends AsyncRef<T>, IListenable<QueryRefEventMap<T>> {
+export interface QueryRef<D> extends AsyncRef<D>, IListenable<QueryRefEventMap<D>> {
   // Attributes
-  readonly data: T | undefined;
-  readonly query: Query<T> | undefined;
+  readonly data: D | undefined;
+  readonly query: Query<D> | undefined;
 
   // Methods
   /**
@@ -30,7 +30,7 @@ export interface QueryRef<T> extends AsyncRef<T>, IListenable<QueryRefEventMap<T
    * @param strategy
    * @return Query the current pending query
    */
-  refresh(strategy: QueryStrategy): Query<T>;
+  refresh(strategy: QueryStrategy): Query<D>;
 
   /*
    * Cancels current pending query
@@ -41,18 +41,18 @@ export interface QueryRef<T> extends AsyncRef<T>, IListenable<QueryRefEventMap<T
    * Unregister all listeners, or only "key" listeners if given
    * @param key
    */
-  clear(key?: EventKey<QueryRefEventMap<T>>): void;
+  clear(key?: EventKey<QueryRefEventMap<D>>): void;
 }
 
 // Builder
-export function query$<T>(fetcher: QueryFetcher<T>): QueryRef<T> {
+export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
   const events = multiplexer({
     'pending': source<true>(),
-    'done': source<T>(),
+    'done': source<D>(),
     'failed': source<Error>(),
   });
 
-  let query: Query<T> | undefined;
+  let query: Query<D> | undefined;
   let queryOff: OffFn | undefined;
 
   function cancel() {
@@ -66,7 +66,7 @@ export function query$<T>(fetcher: QueryFetcher<T>): QueryRef<T> {
     }
   }
 
-  function emit(state: QueryState<T>) {
+  function emit(state: QueryState<D>) {
     if (state.status === 'pending') {
       events.emit('pending', true);
     } else if (state.status === 'done') {
@@ -82,18 +82,18 @@ export function query$<T>(fetcher: QueryFetcher<T>): QueryRef<T> {
     off: events.off,
     clear: events.clear,
 
-    subscribe: (listener: Listener<T>) => events.on('done', listener),
-    unsubscribe: (listener: Listener<T>) => events.off('done', listener),
+    subscribe: (listener: Listener<D>) => events.on('done', listener),
+    unsubscribe: (listener: Listener<D>) => events.off('done', listener),
 
     // References
-    next(data: T) {
+    next(data: D) {
       events.emit('done', data);
     },
     async read() {
       const state = query?.state;
 
       if (state?.status !== 'done') {
-        return new Promise<T>((resolve, reject) => {
+        return new Promise<D>((resolve, reject) => {
           const off = offGroup();
 
           once(events, 'done', resolve, { off });

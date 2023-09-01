@@ -1,15 +1,15 @@
 import { mutable$, SyncMutableRef } from './mutable.js';
 
 // Builder
-export function var$<T>(): SyncMutableRef<T | undefined, T>;
-export function var$<T>(initial: T): SyncMutableRef<T, T>;
-export function var$<T>(initial?: T): SyncMutableRef<T | undefined, T>;
+export function var$<D>(): SyncMutableRef<D | undefined, D>;
+export function var$<D>(initial: D): SyncMutableRef<D, D>;
+export function var$<D>(initial?: D): SyncMutableRef<D | undefined, D>;
 
-export function var$<T>(initial?: T): SyncMutableRef<T | undefined, T> {
+export function var$<D>(initial?: D): SyncMutableRef<D | undefined, D> {
   let data = initial;
 
   return mutable$({
     read: () => data,
-    mutate: (val: T) => data = val,
+    mutate: (val: D) => data = val,
   });
 }
