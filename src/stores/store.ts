@@ -1,21 +1,12 @@
-import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
+import { KeyPart } from '@jujulego/event-tree';
 
 import { MutableRef } from '../refs/index.js';
-import { WeakStore } from '../utils/weak-store.js';
+import { Registry, registry$, RegistryFn } from '../registry.js';
 
 // Types
-export type StoreEventMap<K extends KeyPart, D> = Record<K, D>;
+export type StoreFn<K extends KeyPart, R extends MutableRef<unknown, unknown>> = RegistryFn<K, R>;
 
-export type StoreFn<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
-
-export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<K, D>> {
-  /**
-   * Returns a reference on the "key" element.
-   *
-   * @param key
-   */
-  ref(key: K): R;
-
+export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends Registry<K, R> {
   /**
    * Mutates the "key" element, using the given arg.
    * Return a reference on the mutated element.
@@ -36,35 +27,22 @@ export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> =
 }
 
 // Builder
-export function store$<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>>(fn: StoreFn<K, D, A, R>): Store<K, D, A, R> {
-  // Ref management
-  const refs = new WeakStore<K, R>();
+export function store$<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>>(fn: StoreFn<K, R>): Store<K, D, A, R> {
+  const registry = registry$(fn);
 
-  function getRef(key: K): R {
-    return refs.getOrCreate(key, () => fn(key));
-  }
-
-  // Store
-  const events = multiplexerMap(getRef);
-
-  return {
-    on: events.on,
-    off: events.off,
-    clear: events.clear,
-
-    ref: getRef,
+  return Object.assign(registry, {
     mutate(key: K, arg: A): R {
-      const ref = getRef(key);
+      const ref = registry.ref(key);
       ref.mutate(arg);
 
       return ref;
     },
     trigger(key: K, data: D): void {
-      const ref = refs.get(key);
+      const ref = registry.ref(key, true);
 
       if (ref) {
         ref.next(data);
       }
     }
-  };
+  });
 }

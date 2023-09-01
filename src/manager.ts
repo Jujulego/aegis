@@ -1,13 +1,12 @@
-import { IListenable, KeyPart, ListenEventRecord, multiplexerMap } from '@jujulego/event-tree';
+import { KeyPart } from '@jujulego/event-tree';
 
 import { query$, QueryRef, QueryStrategy } from './refs/index.js';
-import { WeakStore } from './utils/weak-store.js';
+import { Registry, registry$ } from './registry.js';
 
 // Types
 export type ManagerFetcher<K extends KeyPart, D> = (key: K) => PromiseLike<D>;
-export type ManagerEventMap<K extends KeyPart, D> = ListenEventRecord<K, QueryRef<D>>;
 
-export interface Manager<K extends KeyPart, D> extends IListenable<ManagerEventMap<K, D>> {
+export interface Manager<K extends KeyPart, D> extends Registry<K, QueryRef<D>> {
   /**
    * Returns a reference on the "key" element.
    *
@@ -26,27 +25,14 @@ export interface Manager<K extends KeyPart, D> extends IListenable<ManagerEventM
 
 // Builder
 export function manager$<K extends KeyPart, D>(fetcher: ManagerFetcher<K, D>): Manager<K, D> {
-  // Ref management
-  const refs = new WeakStore<K, QueryRef<D>>();
+  const registry = registry$<K, QueryRef<D>>((key) => query$(() => fetcher(key)));
 
-  function getRef(key: K): QueryRef<D> {
-    return refs.getOrCreate(key, () => query$(() => fetcher(key)));
-  }
-
-  // Store
-  const events = multiplexerMap(getRef);
-
-  return {
-    on: events.on,
-    off: events.off,
-    clear: events.clear,
-
-    ref: getRef,
+  return Object.assign(registry, {
     refresh(key: K, strategy: QueryStrategy): QueryRef<D> {
-      const ref = getRef(key);
+      const ref = registry.ref(key);
       ref.refresh(strategy);
 
       return ref;
     }
-  };
+  });
 }
