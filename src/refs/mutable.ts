@@ -1,26 +1,26 @@
-import { IAsyncMutable, IAsyncReadable, IMutable, IReadable, ISyncMutable, ISyncReadable } from '../defs/index.js';
+import { AsyncMutable, AsyncReadable, Mutable, Readable, SyncMutable, SyncReadable } from '../defs/index.js';
 import { isPromise } from '../utils/promise.js';
 import { Ref, ref$ } from './ref.js';
 
 // Types
-export type MutableRef<D, A = D, R extends IReadable<D> = IReadable<D>, M extends IMutable<D, A> = IMutable<D, A>> = Ref<D, R> & M;
-export type SyncMutableRef<D, A = D> = MutableRef<D, A, ISyncReadable<D>, ISyncMutable<D, A>>;
-export type AsyncMutableRef<D, A = D> = MutableRef<D, A, IAsyncReadable<D>, IAsyncMutable<D, A>>;
+export type MutableRef<D, A = D, R extends Readable<D> = Readable<D>, M extends Mutable<D, A> = Mutable<D, A>> = Ref<D, R> & M;
+export type SyncMutableRef<D, A = D> = MutableRef<D, A, SyncReadable<D>, SyncMutable<D, A>>;
+export type AsyncMutableRef<D, A = D> = MutableRef<D, A, AsyncReadable<D>, AsyncMutable<D, A>>;
 
 // Builder
-export function mutable$<D, A = D>(opts: IAsyncReadable<D> & IAsyncMutable<D, A>): AsyncMutableRef<D, A>;
-export function mutable$<D, A = D>(opts: IAsyncReadable<D> & ISyncMutable<D, A>): MutableRef<D, A, IAsyncReadable<D>, ISyncMutable<D, A>>;
-export function mutable$<D, A = D>(opts: IAsyncReadable<D> & IMutable<D, A>): MutableRef<D, A, IAsyncReadable<D>, IMutable<D, A>>;
+export function mutable$<D, A = D>(opts: AsyncReadable<D> & AsyncMutable<D, A>): AsyncMutableRef<D, A>;
+export function mutable$<D, A = D>(opts: AsyncReadable<D> & SyncMutable<D, A>): MutableRef<D, A, AsyncReadable<D>, SyncMutable<D, A>>;
+export function mutable$<D, A = D>(opts: AsyncReadable<D> & Mutable<D, A>): MutableRef<D, A, AsyncReadable<D>, Mutable<D, A>>;
 
-export function mutable$<D, A = D>(opts: ISyncReadable<D> & IAsyncMutable<D, A>): MutableRef<D, A, ISyncReadable<D>, IAsyncMutable<D, A>>;
-export function mutable$<D, A = D>(opts: ISyncReadable<D> & ISyncMutable<D, A>): SyncMutableRef<D, A>;
-export function mutable$<D, A = D>(opts: ISyncReadable<D> & IMutable<D, A>): MutableRef<D, A, ISyncReadable<D>, IMutable<D, A>>;
+export function mutable$<D, A = D>(opts: SyncReadable<D> & AsyncMutable<D, A>): MutableRef<D, A, SyncReadable<D>, AsyncMutable<D, A>>;
+export function mutable$<D, A = D>(opts: SyncReadable<D> & SyncMutable<D, A>): SyncMutableRef<D, A>;
+export function mutable$<D, A = D>(opts: SyncReadable<D> & Mutable<D, A>): MutableRef<D, A, SyncReadable<D>, Mutable<D, A>>;
 
-export function mutable$<D, A = D>(opts: IReadable<D> & IAsyncMutable<D, A>): MutableRef<D, A, IReadable<D>, IAsyncMutable<D, A>>;
-export function mutable$<D, A = D>(opts: IReadable<D> & ISyncMutable<D, A>): MutableRef<D, A, IReadable<D>, ISyncMutable<D, A>>;
-export function mutable$<D, A = D>(opts: IReadable<D> & IMutable<D, A>): MutableRef<D, A>;
+export function mutable$<D, A = D>(opts: Readable<D> & AsyncMutable<D, A>): MutableRef<D, A, Readable<D>, AsyncMutable<D, A>>;
+export function mutable$<D, A = D>(opts: Readable<D> & SyncMutable<D, A>): MutableRef<D, A, Readable<D>, SyncMutable<D, A>>;
+export function mutable$<D, A = D>(opts: Readable<D> & Mutable<D, A>): MutableRef<D, A>;
 
-export function mutable$<D, A = D>(opts: IReadable<D> & IMutable<D, A>): MutableRef<D, A> {
+export function mutable$<D, A = D>(opts: Readable<D> & Mutable<D, A>): MutableRef<D, A> {
   const ref = ref$<D>(opts.read);
 
   function emit(val: D) {

@@ -1,3 +1,3 @@
-export * from './memory.store.js';
-export * from './storage.store.js';
+export * from './map.js';
+export * from './storage.js';
 export * from './store.js';

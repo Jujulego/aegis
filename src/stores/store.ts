@@ -1,50 +1,70 @@
 import { IListenable, KeyPart, multiplexerMap } from '@jujulego/event-tree';
 
-import { DRef } from '../refs/index.js';
+import { MutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
 
 // Types
-export type StoreEventMap<D, K extends KeyPart = KeyPart> = Record<K, D>;
+export type StoreEventMap<K extends KeyPart, D> = Record<K, D>;
 
-// Class
-export abstract class Store<D, K extends KeyPart = KeyPart> implements IListenable<StoreEventMap<D, K>> {
-  // Attributes
-  private readonly _refs = new WeakStore<K, DRef<D>>();
-  private readonly _events = multiplexerMap((key: K) => this.ref(key));
+export type StoreFn<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> = (key: K) => R;
 
-  // Methods
-  readonly on = this._events.on;
-  readonly off = this._events.off;
-  readonly clear = this._events.clear;
+export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends IListenable<StoreEventMap<K, D>> {
+  /**
+   * Returns a reference on the "key" element.
+   *
+   * @param key
+   */
+  ref(key: K): R;
 
-  protected abstract get(key: K): D | undefined;
-  protected abstract set(key: K, data: D): void;
+  /**
+   * Mutates the "key" element, using the given arg.
+   * Return a reference on the mutated element.
+   *
+   * @param key
+   * @param arg
+   */
+  mutate(key: K, arg: A): R;
 
-  private _createRef(key: K): DRef<D> {
-    return new DRef<D>({
-      read: () => this.get(key),
-      update: (data: D) => this.set(key, data),
-    });
+  /**
+   * Triggers listeners and references pointing "key" element, indicating the stored value has changed.
+   * The trigger is automatic in case of mutation using the "mutate" method.
+   *
+   * @param key
+   * @param data
+   */
+  trigger(key: K, data: D): void;
+}
+
+// Builder
+export function store$<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>>(fn: StoreFn<K, D, A, R>): Store<K, D, A, R> {
+  // Ref management
+  const refs = new WeakStore<K, R>();
+
+  function getRef(key: K): R {
+    return refs.getOrCreate(key, () => fn(key));
   }
 
-  ref(key: K): DRef<D> {
-    return this._refs.getOrCreate(key, () => this._createRef(key));
-  }
+  // Store
+  const events = multiplexerMap(getRef);
 
-  update(key: K, data: D, opts?: { lazy?: false }): DRef<D>;
-  update(key: K, data: D, opts: { lazy: true }): DRef<D> | undefined;
-  update(key: K, data: D, opts: { lazy?: boolean } = {}): DRef<D> | undefined {
-    let ref = this._refs.get(key);
+  return {
+    on: events.on,
+    off: events.off,
+    clear: events.clear,
 
-    if (!ref && !opts.lazy) {
-      ref = this._createRef(key);
-      this._refs.set(key, ref);
+    ref: getRef,
+    mutate(key: K, arg: A): R {
+      const ref = getRef(key);
+      ref.mutate(arg);
+
+      return ref;
+    },
+    trigger(key: K, data: D): void {
+      const ref = refs.get(key);
+
+      if (ref) {
+        ref.next(data);
+      }
     }
-
-    if (ref) {
-      ref.update(data);
-    }
-
-    return ref;
-  }
+  };
 }
