@@ -392,7 +392,7 @@ __metadata:
     "@typescript-eslint/parser": 6.5.0
     "@vitest/coverage-v8": 0.34.3
     eslint: 8.48.0
-    eslint-plugin-vitest: 0.3.0
+    eslint-plugin-vitest: 0.3.1
     jsdom: 22.1.0
     rollup-plugin-swc3: 0.10.1
     shx: 0.3.4
@@ -2110,9 +2110,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vitest@npm:0.3.0":
-  version: 0.3.0
-  resolution: "eslint-plugin-vitest@npm:0.3.0"
+"eslint-plugin-vitest@npm:0.3.1":
+  version: 0.3.1
+  resolution: "eslint-plugin-vitest@npm:0.3.1"
   dependencies:
     "@typescript-eslint/utils": ^6.5.0
     typescript: ^5.2.2
@@ -2122,7 +2122,7 @@ __metadata:
   peerDependenciesMeta:
     "@typescript-eslint/eslint-plugin":
       optional: true
-  checksum: 26fbd0b1f0b4751223e327a5ec5621017c95b093142d18bf795c3ce8b6391bef79fcd73588e16a52209f2bbc199885fb56f726269db250826826692e51345bc1
+  checksum: 8c3302cce54361b2530785202bb3814992db7f9895bc3e350e38a17ba6823802199e066c472393fcd545884fb0037a7f38fe27d12339c0f20dcd949ff791df71
   languageName: node
   linkType: hard
 
