@@ -21,10 +21,14 @@ export function pipe$<A, B>(ref: Ref<A>, op: AsyncPipeOp<A, B>): AsyncPipeRef<B>
 export function pipe$<A, B>(ref: Ref<A>, op: SyncPipeOp<A, B>): SyncPipeRef<B>;
 export function pipe$<A, B>(ref: Ref<A>, op: PipeOp<A, B>): PipeRef<B>;
 
-export function pipe$<A, B>(ref: Ref<A>, op: PipeOp<A, B>): PipeRef<B> {
-  const out = ref$<B>(() => callWithAwaitable<A, B>(ref.read(), op));
+export function pipe$(ref: Ref<unknown>, ...ops: PipeOp<unknown, unknown>[]): PipeRef<unknown> {
+  function apply(arg: unknown) {
+    return ops.reduce((arg, op) => callWithAwaitable(arg, op), arg);
+  }
+
+  const out = ref$(() => callWithAwaitable(ref.read(), apply));
 
   return Object.assign(out, {
-    off: ref.subscribe((data) => callWithAwaitable(op(data), out.next))
+    off: ref.subscribe((data) => callWithAwaitable(apply(data), out.next))
   });
 }
