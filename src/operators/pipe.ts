@@ -1,34 +1,37 @@
-import { Awaitable } from '@jujulego/utils';
+import { offGroup, OffGroup } from '@jujulego/event-tree';
 
-import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
-import { Ref, ref$ } from '../refs/index.js';
-import { awaitedCall } from '../utils/promise.js';
+import { Ref } from '../refs/index.js';
 
 // Types
-export type PipeOp<I, O> = (input: I) => Awaitable<O>;
-export type SyncPipeOp<I, O> = (input: I) => O;
-export type AsyncPipeOp<I, O> = (input: I) => PromiseLike<O>;
+export interface PipeContext {
+  off: OffGroup;
+}
 
-export type PipeRef<D, R extends Readable<D> = Readable<D>> = Ref<D, R> & {
+export type StepRef<D = unknown> = Ref<D>;
+
+export type PipeOperator<A extends StepRef, B extends StepRef> = (arg: A, context: PipeContext) => B;
+export type PipeRef<R extends StepRef> = R & {
   off(): void;
 }
 
-export type SyncPipeRef<D> = PipeRef<D, SyncReadable<D>>;
-export type AsyncPipeRef<D> = PipeRef<D, AsyncReadable<D>>;
+// Builder
+type SR = StepRef;
+type PO<A extends SR, B extends SR> = PipeOperator<A, B>;
 
-// Operator
-export function pipe$<A, B>(ref: Ref<A>, op: AsyncPipeOp<A, B>): AsyncPipeRef<B>;
-export function pipe$<A, B>(ref: Ref<A>, op: SyncPipeOp<A, B>): SyncPipeRef<B>;
-export function pipe$<A, B>(ref: Ref<A>, op: PipeOp<A, B>): PipeRef<B>;
+export function pipe$<A extends SR>(ref: A): PipeRef<A>;
+export function pipe$<A extends SR, B extends SR>(ref: A, opA: PO<A, B>): PipeRef<B>;
+export function pipe$<A extends SR, B extends SR, C extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>): PipeRef<C>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>): PipeRef<D>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>): PipeRef<E>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>): PipeRef<F>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>): PipeRef<G>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>): PipeRef<H>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR, I extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeRef<I>;
+export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR, I extends SR, J extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeRef<J>;
 
-export function pipe$(ref: Ref<unknown>, ...ops: PipeOp<unknown, unknown>[]): PipeRef<unknown> {
-  function apply(arg: unknown) {
-    return ops.reduce((arg, op) => awaitedCall(arg, op), arg);
-  }
+export function pipe$(ref: StepRef, ...ops: PipeOperator<StepRef, StepRef>[]): PipeRef<StepRef> {
+  const off = offGroup();
+  const out = ops.reduce((step, op) => op(step, { off }), ref);
 
-  const out = ref$(() => awaitedCall(ref.read(), apply));
-
-  return Object.assign(out, {
-    off: ref.subscribe((data) => awaitedCall(apply(data), out.next))
-  });
+  return Object.assign(out, { off });
 }
