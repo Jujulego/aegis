@@ -1,11 +1,11 @@
 import { vi } from 'vitest';
 
-import { pipe$, var$ } from '@/src/index.js';
+import { const$, pipe$ } from '@/src/index.js';
 
 describe('pipe$', () => {
   it('should use op to prepare result', () => {
-    const ref = var$('life');
-    const op = vi.fn(() => var$(42));
+    const ref = const$('life');
+    const op = vi.fn(() => const$(42));
 
     const result = pipe$(ref, op);
 

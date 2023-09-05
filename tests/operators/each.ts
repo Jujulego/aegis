@@ -1,11 +1,11 @@
 import { vi } from 'vitest';
 
-import { pipe$, each$, ref$, var$ } from '@/src/index.js';
+import { pipe$, each$, ref$, var$, const$ } from '@/src/index.js';
 
 // Test
-describe('each$', () => {
+describe('map$', () => {
   it('should call fn on read with value read from arg', () => {
-    const arg = ref$(() => 'life');
+    const arg = const$('life');
     const fn = vi.fn(() => 42);
 
     const ref = pipe$(arg, each$(fn));
