@@ -2,16 +2,16 @@ import { IEmitter, IObservable, source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
-import { isPromise } from '../utils/promise.js';
+import { awaitedCall } from '../utils/promise.js';
 
 // Types
 export type RefFn<T = unknown> = () => Awaitable<T>;
 export type SyncRefFn<T = unknown> = () => T;
 export type AsyncRefFn<T = unknown> = () => PromiseLike<T>;
 
-export type Ref<D, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
-export type SyncRef<D> = Ref<D, SyncReadable<D>>;
-export type AsyncRef<D> = Ref<D, AsyncReadable<D>>;
+export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
+export type SyncRef<D = unknown> = Ref<D, SyncReadable<D>>;
+export type AsyncRef<D = unknown> = Ref<D, AsyncReadable<D>>;
 
 // Builder
 export function ref$<T>(fn: AsyncRefFn<T>): AsyncRef<T>;
@@ -41,14 +41,6 @@ export function ref$<T>(fn: RefFn<T>): Ref<T> {
 
     // Reference
     next: (val: T) => void emit(val),
-    read(): Awaitable<T> {
-      const val = fn();
-
-      if (isPromise(val)) {
-        return val.then(emit);
-      } else {
-        return emit(val);
-      }
-    }
+    read: () => awaitedCall(fn(), emit)
   };
 }
