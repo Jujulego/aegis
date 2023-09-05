@@ -1,6 +1,6 @@
 import { OffFn } from '@jujulego/event-tree';
 
-import { Ref } from '../refs/index.js';
+import { Ref } from './refs/index.js';
 
 // Types
 export type WatchCleanUp = () => void;

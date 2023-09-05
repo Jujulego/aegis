@@ -9,9 +9,9 @@ export type RefFn<T = unknown> = () => Awaitable<T>;
 export type SyncRefFn<T = unknown> = () => T;
 export type AsyncRefFn<T = unknown> = () => PromiseLike<T>;
 
-export type Ref<D, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
-export type SyncRef<D> = Ref<D, SyncReadable<D>>;
-export type AsyncRef<D> = Ref<D, AsyncReadable<D>>;
+export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
+export type SyncRef<D = unknown> = Ref<D, SyncReadable<D>>;
+export type AsyncRef<D = unknown> = Ref<D, AsyncReadable<D>>;
 
 // Builder
 export function ref$<T>(fn: AsyncRefFn<T>): AsyncRef<T>;

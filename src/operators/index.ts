@@ -1,1 +1,1 @@
-export * from './watch.js';
+export * from './each.js';

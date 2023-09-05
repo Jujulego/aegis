@@ -7,29 +7,26 @@ export interface PipeContext {
   off: OffGroup;
 }
 
-export type StepRef<D = unknown> = Ref<D>;
-
-export type PipeOperator<A extends StepRef, B extends StepRef> = (arg: A, context: PipeContext) => B;
-export type PipeRef<R extends StepRef> = R & {
+export type PipeOperator<A extends Ref, B extends Ref> = (arg: A, context: PipeContext) => B;
+export type PipeRef<R extends Ref = Ref> = R & {
   off(): void;
 }
 
 // Builder
-type SR = StepRef;
-type PO<A extends SR, B extends SR> = PipeOperator<A, B>;
+type PO<A extends Ref, B extends Ref> = PipeOperator<A, B>;
 
-export function pipe$<A extends SR>(ref: A): PipeRef<A>;
-export function pipe$<A extends SR, B extends SR>(ref: A, opA: PO<A, B>): PipeRef<B>;
-export function pipe$<A extends SR, B extends SR, C extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>): PipeRef<C>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>): PipeRef<D>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>): PipeRef<E>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>): PipeRef<F>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>): PipeRef<G>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>): PipeRef<H>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR, I extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeRef<I>;
-export function pipe$<A extends SR, B extends SR, C extends SR, D extends SR, E extends SR, F extends SR, G extends SR, H extends SR, I extends SR, J extends SR>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeRef<J>;
+export function pipe$<A extends Ref>(ref: A): PipeRef<A>;
+export function pipe$<A extends Ref, B extends Ref>(ref: A, opA: PO<A, B>): PipeRef<B>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>): PipeRef<C>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>): PipeRef<D>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>): PipeRef<E>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref, F extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>): PipeRef<F>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref, F extends Ref, G extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>): PipeRef<G>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref, F extends Ref, G extends Ref, H extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>): PipeRef<H>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref, F extends Ref, G extends Ref, H extends Ref, I extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeRef<I>;
+export function pipe$<A extends Ref, B extends Ref, C extends Ref, D extends Ref, E extends Ref, F extends Ref, G extends Ref, H extends Ref, I extends Ref, J extends Ref>(ref: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeRef<J>;
 
-export function pipe$(ref: StepRef, ...ops: PipeOperator<StepRef, StepRef>[]): PipeRef<StepRef> {
+export function pipe$(ref: Ref, ...ops: PipeOperator<Ref, Ref>[]): PipeRef {
   const off = offGroup();
   const out = ops.reduce((step, op) => op(step, { off }), ref);
 
