@@ -2,7 +2,7 @@ import { Awaitable } from '@jujulego/utils';
 
 import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
 import { Ref, ref$ } from '../refs/index.js';
-import { callWithAwaitable } from '../utils/promise.js';
+import { awaitedCall } from '../utils/promise.js';
 
 // Types
 export type PipeOp<I, O> = (input: I) => Awaitable<O>;
@@ -23,12 +23,12 @@ export function pipe$<A, B>(ref: Ref<A>, op: PipeOp<A, B>): PipeRef<B>;
 
 export function pipe$(ref: Ref<unknown>, ...ops: PipeOp<unknown, unknown>[]): PipeRef<unknown> {
   function apply(arg: unknown) {
-    return ops.reduce((arg, op) => callWithAwaitable(arg, op), arg);
+    return ops.reduce((arg, op) => awaitedCall(arg, op), arg);
   }
 
-  const out = ref$(() => callWithAwaitable(ref.read(), apply));
+  const out = ref$(() => awaitedCall(ref.read(), apply));
 
   return Object.assign(out, {
-    off: ref.subscribe((data) => callWithAwaitable(apply(data), out.next))
+    off: ref.subscribe((data) => awaitedCall(apply(data), out.next))
   });
 }

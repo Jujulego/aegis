@@ -2,7 +2,7 @@ import { IEmitter, IObservable, source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
-import { callWithAwaitable } from '../utils/promise.js';
+import { awaitedCall } from '../utils/promise.js';
 
 // Types
 export type RefFn<T = unknown> = () => Awaitable<T>;
@@ -41,6 +41,6 @@ export function ref$<T>(fn: RefFn<T>): Ref<T> {
 
     // Reference
     next: (val: T) => void emit(val),
-    read: () => callWithAwaitable(fn(), emit)
+    read: () => awaitedCall(fn(), emit)
   };
 }
