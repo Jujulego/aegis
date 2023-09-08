@@ -3,9 +3,9 @@ import { isPromise } from '../utils/promise.js';
 import { Ref, ref$ } from './ref.js';
 
 // Types
-export type MutableRef<D, A = D, R extends Readable<D> = Readable<D>, M extends Mutable<D, A> = Mutable<D, A>> = Ref<D, R> & M;
-export type SyncMutableRef<D, A = D> = MutableRef<D, A, SyncReadable<D>, SyncMutable<D, A>>;
-export type AsyncMutableRef<D, A = D> = MutableRef<D, A, AsyncReadable<D>, AsyncMutable<D, A>>;
+export type MutableRef<D = unknown, A = D, R extends Readable<D> = Readable<D>, M extends Mutable<D, A> = Mutable<D, A>> = Ref<D, R> & M;
+export type SyncMutableRef<D = unknown, A = D> = MutableRef<D, A, SyncReadable<D>, SyncMutable<D, A>>;
+export type AsyncMutableRef<D = unknown, A = D> = MutableRef<D, A, AsyncReadable<D>, AsyncMutable<D, A>>;
 
 // Builder
 export function mutable$<D, A = D>(opts: AsyncReadable<D> & AsyncMutable<D, A>): AsyncMutableRef<D, A>;

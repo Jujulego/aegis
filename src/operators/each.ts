@@ -5,12 +5,12 @@ import { awaitedCall } from '../utils/promise.js';
 import { MapRefValue } from '../refs/types.js';
 
 // Operator
-export function each$<A extends Ref, B>(fn: (val: ReadValue<A>) => PromiseLike<B>): PipeOperator<A, AsyncRef<B>>;
-export function each$<A extends Ref, B>(fn: (val: ReadValue<A>) => B): PipeOperator<A, MapRefValue<A, B>>;
+export function each$<R extends Ref, D>(fn: (val: ReadValue<R>) => PromiseLike<D>): PipeOperator<R, AsyncRef<D>>;
+export function each$<R extends Ref, D>(fn: (val: ReadValue<R>) => D): PipeOperator<R, MapRefValue<R, D>>;
 
-export function each$<A, B>(fn: (val: A) => B): PipeOperator<Ref<A>, Ref<B>> {
-  return (ref: Ref<A>, { off }) => {
-    const out = ref$<B>(() => awaitedCall<A, B>(ref.read(), fn));
+export function each$<DA, DB>(fn: (val: DA) => DB): PipeOperator<Ref<DA>, Ref<DB>> {
+  return (ref: Ref<DA>, { off }) => {
+    const out = ref$<DB>(() => awaitedCall<DA, DB>(ref.read(), fn));
     off.add(ref.subscribe((data) => awaitedCall(fn(data), out.next)));
 
     return out;
