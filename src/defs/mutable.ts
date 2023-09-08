@@ -44,7 +44,7 @@ export type MutateArg<M extends Mutable> =
 /**
  * Build a Mutable type with the same synchronicity and the given value type
  */
-export type MapMutateValue<M extends Mutable, D, A> =
+export type MapMutateArg<M extends Mutable, D, A> =
   M extends AsyncMutable
     ? AsyncMutable<D, A>
     : M extends SyncMutable

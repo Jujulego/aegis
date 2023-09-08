@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 import { pipe$, each$, ref$, var$, const$ } from '@/src/index.js';
 
 // Test
-describe('map$', () => {
+describe('each$', () => {
   it('should call fn on read with value read from arg', () => {
     const arg = const$('life');
     const fn = vi.fn(() => 42);
