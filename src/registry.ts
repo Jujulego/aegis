@@ -4,10 +4,10 @@ import { Ref } from './refs/index.js';
 import { WeakStore } from './utils/weak-store.js';
 
 // Types
-export type RegistryFn<K extends KeyPart, R extends Ref<unknown>> = (key: K) => R;
-export type RegistryEventMap<K extends KeyPart, R extends Ref<unknown>> = ListenEventRecord<K, R>;
+export type RegistryFn<K extends KeyPart, R extends Ref> = (key: K) => R;
+export type RegistryEventMap<K extends KeyPart, R extends Ref> = ListenEventRecord<K, R>;
 
-export interface Registry<K extends KeyPart, R extends Ref<unknown>> extends IListenable<RegistryEventMap<K, R>> {
+export interface Registry<K extends KeyPart, R extends Ref> extends IListenable<RegistryEventMap<K, R>> {
   /**
    * Returns a reference on the "key" element.
    *
@@ -34,7 +34,7 @@ export interface Registry<K extends KeyPart, R extends Ref<unknown>> extends ILi
 }
 
 // Builder
-export function registry$<K extends KeyPart, R extends Ref<unknown>>(fn: RegistryFn<K, R>): Registry<K, R> {
+export function registry$<K extends KeyPart, R extends Ref>(fn: RegistryFn<K, R>): Registry<K, R> {
   // Ref management
   const refs = new WeakStore<K, R>();
 

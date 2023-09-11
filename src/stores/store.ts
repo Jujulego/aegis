@@ -4,7 +4,7 @@ import { MutableRef } from '../refs/index.js';
 import { Registry, registry$, RegistryFn } from '../registry.js';
 
 // Types
-export type StoreFn<K extends KeyPart, R extends MutableRef<unknown, unknown>> = RegistryFn<K, R>;
+export type StoreFn<K extends KeyPart, R extends MutableRef> = RegistryFn<K, R>;
 
 export interface Store<K extends KeyPart, D, A = D, R extends MutableRef<D, A> = MutableRef<D, A>> extends Registry<K, R> {
   /**
