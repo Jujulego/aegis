@@ -1,17 +1,13 @@
-import { IEmitter, IObservable, source } from '@jujulego/event-tree';
+import { source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
-import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
 import { awaitedCall } from '../utils/promise.js';
+import { AsyncRef, Ref, SyncRef } from './types.js';
 
 // Types
 export type RefFn<D = unknown> = () => Awaitable<D>;
 export type SyncRefFn<D = unknown> = () => D;
 export type AsyncRefFn<D = unknown> = () => PromiseLike<D>;
-
-export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
-export type SyncRef<D = unknown> = Ref<D, SyncReadable<D>>;
-export type AsyncRef<D = unknown> = Ref<D, AsyncReadable<D>>;
 
 // Builder
 export function ref$<D>(fn: AsyncRefFn<D>): AsyncRef<D>;
