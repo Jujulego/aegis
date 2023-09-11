@@ -35,10 +35,10 @@ export function transform$<M extends MutableRef, D, A>(opts: TransformReadSync<M
 export function transform$<DA, AA, DB, AB>(opts: { read(val: DA): DB, mutate(arg: AB): AA }): PipeOperator<MutableRef<DA, AA>, MutableRef<DB, AB>> {
   return (ref: MutableRef<DA, AA>, { off }) => {
     const out = mutable$<DB, AB>({
-      read: () => awaitedCall<DA, DB>(ref.read(), opts.read),
-      mutate: (arg: AB) => awaitedCall(awaitedCall(opts.mutate(arg), ref.mutate), opts.read)
+      read: () => awaitedCall<DA, DB>(opts.read, ref.read()),
+      mutate: (arg: AB) => awaitedCall(opts.read, awaitedCall(ref.mutate, opts.mutate(arg)))
     });
-    off.add(ref.subscribe((data) => awaitedCall(opts.read(data), out.next)));
+    off.add(ref.subscribe((data) => awaitedCall(out.next, opts.read(data))));
 
     return out;
   };

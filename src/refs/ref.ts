@@ -41,6 +41,6 @@ export function ref$<D>(fn: RefFn<D>): Ref<D> {
 
     // Reference
     next: (val: D) => void emit(val),
-    read: () => awaitedCall(fn(), emit)
+    read: () => awaitedCall(emit, fn())
   };
 }

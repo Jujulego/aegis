@@ -1,5 +1,5 @@
 import { AsyncMutable, AsyncReadable, Mutable, Readable, SyncMutable, SyncReadable } from '../defs/index.js';
-import { isPromise } from '../utils/promise.js';
+import { awaitedCall } from '../utils/promise.js';
 import { Ref, ref$ } from './ref.js';
 
 // Types
@@ -29,14 +29,6 @@ export function mutable$<D, A = D>(opts: Readable<D> & Mutable<D, A>): MutableRe
   }
 
   return Object.assign(ref, {
-    mutate(arg: A) {
-      const val = opts.mutate(arg);
-
-      if (isPromise(val)) {
-        return val.then(emit);
-      } else {
-        return emit(val);
-      }
-    }
+    mutate: (arg: A) => awaitedCall(emit, opts.mutate(arg))
   });
 }

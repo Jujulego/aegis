@@ -10,8 +10,8 @@ export function each$<R extends Ref, D>(fn: (val: ReadValue<R>) => D): PipeOpera
 
 export function each$<DA, DB>(fn: (val: DA) => DB): PipeOperator<Ref<DA>, Ref<DB>> {
   return (ref: Ref<DA>, { off }) => {
-    const out = ref$<DB>(() => awaitedCall<DA, DB>(ref.read(), fn));
-    off.add(ref.subscribe((data) => awaitedCall(fn(data), out.next)));
+    const out = ref$<DB>(() => awaitedCall<DA, DB>(fn, ref.read()));
+    off.add(ref.subscribe((data) => awaitedCall(out.next, fn(data))));
 
     return out;
   };
