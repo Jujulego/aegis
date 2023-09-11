@@ -1,6 +1,6 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { mutable$, SyncMutableRef } from '../refs/index.js';
+import { ref$, SyncMutableRef } from '../refs/index.js';
 import { Store, store$ } from './store.js';
 
 // Types
@@ -11,7 +11,7 @@ export type MapStore<K extends KeyPart, D> = Store<K, D | undefined, D, MapRef<D
 export function map$<K extends KeyPart, D>(): MapStore<K, D> {
   const map = new Map<K, D>();
 
-  return store$((key: K) => mutable$({
+  return store$((key: K) => ref$({
     read: () => map.get(key),
     mutate(arg: D): D {
       map.set(key, arg);

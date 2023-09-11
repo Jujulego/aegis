@@ -12,7 +12,6 @@ export interface Registry<K extends KeyPart, R extends Ref> extends IListenable<
    * Returns a reference on the "key" element.
    *
    * @param key
-   * @param lazy if true will not create a reference if none exists
    */
   ref(key: K): R;
 

@@ -1,4 +1,5 @@
-import { ref$, SyncRef } from './ref.js';
+import { ref$ } from './ref.js';
+import { SyncRef } from './types.js';
 
 // Builder
 export function const$<D>(value: D): SyncRef<D> {

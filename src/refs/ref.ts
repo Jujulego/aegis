@@ -1,24 +1,45 @@
-import { IEmitter, IObservable, source } from '@jujulego/event-tree';
+import { source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
-import { AsyncReadable, Readable, SyncReadable } from '../defs/index.js';
+import { AsyncMutable, AsyncReadable, Mutable, Readable, SyncMutable, SyncReadable } from '../defs/index.js';
 import { awaitedCall } from '../utils/promise.js';
+import { AsyncMutableRef, AsyncRef, MutableRef, Ref, SyncMutableRef, SyncRef } from './types.js';
 
 // Types
 export type RefFn<D = unknown> = () => Awaitable<D>;
 export type SyncRefFn<D = unknown> = () => D;
 export type AsyncRefFn<D = unknown> = () => PromiseLike<D>;
 
-export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & IEmitter<D> & IObservable<D>;
-export type SyncRef<D = unknown> = Ref<D, SyncReadable<D>>;
-export type AsyncRef<D = unknown> = Ref<D, AsyncReadable<D>>;
+export type RefOpts<D = unknown, A = D> = Readable<D> & Partial<Mutable<D, A>>
+
+// Utils
+export function parseArg<D, A>(arg: RefFn<D> | RefOpts<D, A>): RefOpts<D, A> {
+  return typeof arg === 'function' ? { read: arg } : arg;
+}
 
 // Builder
 export function ref$<D>(fn: AsyncRefFn<D>): AsyncRef<D>;
 export function ref$<D>(fn: SyncRefFn<D>): SyncRef<D>;
 export function ref$<D>(fn: RefFn<D>): Ref<D>;
 
-export function ref$<D>(fn: RefFn<D>): Ref<D> {
+export function ref$<D>(opts: AsyncReadable<D>): AsyncRef<D>;
+export function ref$<D>(opts: SyncReadable<D>): SyncRef<D>;
+export function ref$<D>(opts: Readable<D>): Ref<D>;
+
+export function ref$<D, A = D>(opts: AsyncReadable<D> & AsyncMutable<D, A>): AsyncMutableRef<D, A>;
+export function ref$<D, A = D>(opts: AsyncReadable<D> & SyncMutable<D, A>): MutableRef<D, A, AsyncReadable<D>, SyncMutable<D, A>>;
+export function ref$<D, A = D>(opts: AsyncReadable<D> & Mutable<D, A>): MutableRef<D, A, AsyncReadable<D>, Mutable<D, A>>;
+
+export function ref$<D, A = D>(opts: SyncReadable<D> & AsyncMutable<D, A>): MutableRef<D, A, SyncReadable<D>, AsyncMutable<D, A>>;
+export function ref$<D, A = D>(opts: SyncReadable<D> & SyncMutable<D, A>): SyncMutableRef<D, A>;
+export function ref$<D, A = D>(opts: SyncReadable<D> & Mutable<D, A>): MutableRef<D, A, SyncReadable<D>, Mutable<D, A>>;
+
+export function ref$<D, A = D>(opts: Readable<D> & AsyncMutable<D, A>): MutableRef<D, A, Readable<D>, AsyncMutable<D, A>>;
+export function ref$<D, A = D>(opts: Readable<D> & SyncMutable<D, A>): MutableRef<D, A, Readable<D>, SyncMutable<D, A>>;
+export function ref$<D, A = D>(opts: Readable<D> & Mutable<D, A>): MutableRef<D, A>;
+
+export function ref$<D, A>(arg: RefFn<D> | RefOpts<D, A>): Ref<D> {
+  const opts = parseArg<D, A>(arg);
   const events = source<D>();
 
   // Handle emits
@@ -33,7 +54,7 @@ export function ref$<D>(fn: RefFn<D>): Ref<D> {
     return val;
   }
 
-  return {
+  const ref = {
     // Events
     subscribe: events.subscribe,
     unsubscribe: events.unsubscribe,
@@ -41,6 +62,15 @@ export function ref$<D>(fn: RefFn<D>): Ref<D> {
 
     // Reference
     next: (val: D) => void emit(val),
-    read: () => awaitedCall(fn(), emit)
+    read: () => awaitedCall(emit, opts.read())
   };
+
+  // Add options ;)
+  if ('mutate' in opts) {
+    return Object.assign(ref, {
+      mutate: (arg: A) => awaitedCall(emit, opts.mutate!(arg))
+    });
+  }
+
+  return ref;
 }
