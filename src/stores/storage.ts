@@ -5,12 +5,12 @@ import { mutable$, SyncMutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
 
 // Types
-export type StorageRef<D extends object> = SyncMutableRef<D | undefined, D>;
-export type StorageStore<K extends KeyPart, D extends object> = Store<K, D | undefined, D, StorageRef<D>>;
+export type StorageRef<D> = SyncMutableRef<D | undefined, D>;
+export type StorageStore<K extends KeyPart, D> = Store<K, D | undefined, D, StorageRef<D>>;
 
 // Builder
-export function storage$<K extends KeyPart, D extends object>(storage: Storage, prefix: string): StorageStore<K, D> {
-  const cache = new WeakStore<K, D>();
+export function storage$<K extends KeyPart, D>(storage: Storage, prefix: string): StorageStore<K, D> {
+  const cache = new WeakStore<K, D & object>();
 
   // Utils
   function storageKey(key: K): string {
@@ -31,7 +31,7 @@ export function storage$<K extends KeyPart, D extends object>(storage: Storage, 
       const json = storage.getItem(storageKey(key));
       const data = json === null ? undefined : JSON.parse(json) as D;
 
-      if (data) {
+      if (data && typeof data === 'object') {
         cache.set(key, data);
       }
 
@@ -39,7 +39,10 @@ export function storage$<K extends KeyPart, D extends object>(storage: Storage, 
     },
     mutate(data: D): D {
       storage.setItem(storageKey(key), JSON.stringify(data));
-      cache.set(key, data);
+
+      if (data && typeof data === 'object') {
+        cache.set(key, data);
+      }
 
       return data;
     }

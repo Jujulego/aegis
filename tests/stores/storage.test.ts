@@ -1,7 +1,7 @@
+import { Listener } from '@jujulego/event-tree';
 import { vi } from 'vitest';
 
 import { storage$ } from '@/src/index.js';
-import { Listener } from '@jujulego/event-tree';
 
 // Setup
 // @vitest-environment jsdom
