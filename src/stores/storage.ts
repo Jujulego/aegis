@@ -1,7 +1,7 @@
 import { KeyPart } from '@jujulego/event-tree';
 
 import { Store, store$ } from './store.js';
-import { mutable$, SyncMutableRef } from '../refs/index.js';
+import { ref$, SyncMutableRef } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
 
 // Types
@@ -18,7 +18,7 @@ export function storage$<K extends KeyPart, D>(storage: Storage, prefix: string)
   }
 
   // Store
-  const store: StorageStore<K, D> = store$((key: K) => mutable$({
+  const store: StorageStore<K, D> = store$((key: K) => ref$({
     read(): D | undefined {
       // Use cache
       const cached = cache.get(key);

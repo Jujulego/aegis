@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import { pipe$, var$, transform$, mutable$ } from '@/src/index.js';
+import { pipe$, ref$, transform$, var$ } from '@/src/index.js';
 
 // Test
 describe('transform$', () => {
@@ -18,7 +18,7 @@ describe('transform$', () => {
   });
 
   it('should call opts.read on read with value resolved from arg', async () => {
-    const arg = mutable$({ read: async () => 'life', mutate: () => 'life' });
+    const arg = ref$({ read: async () => 'life', mutate: () => 'life' });
     const opts = {
       read: vi.fn(() => 42),
       mutate: vi.fn((a: string) => `${a} life`)
@@ -47,7 +47,7 @@ describe('transform$', () => {
   });
 
   it('should call opts.mutate on mutate its result should be passed to arg (async)', async () => {
-    const arg = mutable$({ read: () => 'life', mutate: async () => 'life' });
+    const arg = ref$({ read: () => 'life', mutate: async () => 'life' });
     vi.spyOn(arg, 'mutate');
 
     const opts = {

@@ -6,7 +6,7 @@ import {
   ReadValue,
 } from '../defs/index.js';
 import { PipeOperator } from '../pipe.js';
-import { mutable$, MutableRef } from '../refs/index.js';
+import { MutableRef, ref$ } from '../refs/index.js';
 import { awaitedCall } from '../utils/promise.js';
 
 // Types
@@ -34,7 +34,7 @@ export function transform$<M extends MutableRef, D, A>(opts: TransformReadSync<M
 
 export function transform$<DA, AA, DB, AB>(opts: { read(val: DA): DB, mutate(arg: AB): AA }): PipeOperator<MutableRef<DA, AA>, MutableRef<DB, AB>> {
   return (ref: MutableRef<DA, AA>, { off }) => {
-    const out = mutable$<DB, AB>({
+    const out = ref$<DB, AB>({
       read: () => awaitedCall<DA, DB>(opts.read, ref.read()),
       mutate: (arg: AB) => awaitedCall(opts.read, awaitedCall(ref.mutate, opts.mutate(arg)))
     });
