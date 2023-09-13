@@ -18,14 +18,6 @@ export function parseArg<D, A>(arg: RefFn<D> | RefOpts<D, A>): RefOpts<D, A> {
 }
 
 // Builder
-export function ref$<D>(fn: AsyncRefFn<D>): AsyncRef<D>;
-export function ref$<D>(fn: SyncRefFn<D>): SyncRef<D>;
-export function ref$<D>(fn: RefFn<D>): Ref<D>;
-
-export function ref$<D>(opts: AsyncReadable<D>): AsyncRef<D>;
-export function ref$<D>(opts: SyncReadable<D>): SyncRef<D>;
-export function ref$<D>(opts: Readable<D>): Ref<D>;
-
 export function ref$<D, A = D>(opts: AsyncReadable<D> & AsyncMutable<D, A>): AsyncMutableRef<D, A>;
 export function ref$<D, A = D>(opts: AsyncReadable<D> & SyncMutable<D, A>): MutableRef<D, A, AsyncReadable<D>, SyncMutable<D, A>>;
 export function ref$<D, A = D>(opts: AsyncReadable<D> & Mutable<D, A>): MutableRef<D, A, AsyncReadable<D>, Mutable<D, A>>;
@@ -37,6 +29,16 @@ export function ref$<D, A = D>(opts: SyncReadable<D> & Mutable<D, A>): MutableRe
 export function ref$<D, A = D>(opts: Readable<D> & AsyncMutable<D, A>): MutableRef<D, A, Readable<D>, AsyncMutable<D, A>>;
 export function ref$<D, A = D>(opts: Readable<D> & SyncMutable<D, A>): MutableRef<D, A, Readable<D>, SyncMutable<D, A>>;
 export function ref$<D, A = D>(opts: Readable<D> & Mutable<D, A>): MutableRef<D, A>;
+
+export function ref$<D>(opts: AsyncReadable<D>): AsyncRef<D>;
+export function ref$<D>(opts: SyncReadable<D>): SyncRef<D>;
+export function ref$<D>(opts: Readable<D>): Ref<D>;
+
+export function ref$<D>(fn: AsyncRefFn<D>): AsyncRef<D>;
+export function ref$<D>(fn: SyncRefFn<D>): SyncRef<D>;
+export function ref$<D>(fn: RefFn<D>): Ref<D>;
+
+export function ref$<D, A>(opts: RefOpts<D, A>): Ref<D>;
 
 export function ref$<D, A>(arg: RefFn<D> | RefOpts<D, A>): Ref<D> {
   const opts = parseArg<D, A>(arg);
