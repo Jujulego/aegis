@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -52,5 +52,10 @@
     "typescript": "5.2.2",
     "vitest": "0.34.4"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "dependenciesMeta": {
+    "vitest@0.34.4": {
+      "unplugged": true
+    }
+  }
 }

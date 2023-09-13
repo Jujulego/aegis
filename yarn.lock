@@ -398,6 +398,9 @@ __metadata:
     shx: 0.3.4
     typescript: 5.2.2
     vitest: 0.34.4
+  dependenciesMeta:
+    vitest@0.34.4:
+      unplugged: true
   languageName: unknown
   linkType: soft
 
