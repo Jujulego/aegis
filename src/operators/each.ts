@@ -33,7 +33,7 @@ export interface AsyncEachMutate<AA, AB> {
 export type EachOpts<DA, AA, DB, AB> = EachRead<DA, DB> & Partial<EachMutate<AA, AB>>;
 
 // Utils
-export function parseArg<DA, AA, DB, AB>(arg: EachFn<DA, DB> | EachOpts<DA, AA, DB, AB>): EachOpts<DA, AA, DB, AB> {
+function parseArg<DA, AA, DB, AB>(arg: EachFn<DA, DB> | EachOpts<DA, AA, DB, AB>): EachOpts<DA, AA, DB, AB> {
   return typeof arg === 'function' ? { read: arg } : arg;
 }
 

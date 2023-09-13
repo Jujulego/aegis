@@ -13,7 +13,7 @@ export type AsyncRefFn<D = unknown> = () => PromiseLike<D>;
 export type RefOpts<D = unknown, A = D> = Readable<D> & Partial<Mutable<D, A>>
 
 // Utils
-export function parseArg<D, A>(arg: RefFn<D> | RefOpts<D, A>): RefOpts<D, A> {
+function parseArg<D, A>(arg: RefFn<D> | RefOpts<D, A>): RefOpts<D, A> {
   return typeof arg === 'function' ? { read: arg } : arg;
 }
 
