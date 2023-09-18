@@ -32,7 +32,7 @@
     "test:types": "vitest typecheck"
   },
   "dependencies": {
-    "@jujulego/event-tree": "^4.0.1",
+    "@jujulego/event-tree": "^4.1.0",
     "@jujulego/utils": "^2.0.0"
   },
   "devDependencies": {

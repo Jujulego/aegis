@@ -1,4 +1,4 @@
-import { IListenable, KeyPart, ListenEventRecord, multiplexerMap } from '@jujulego/event-tree';
+import { Listenable, KeyPart, ListenEventRecord, multiplexerMap$ } from '@jujulego/event-tree';
 
 import { Ref } from './defs/index.js';
 import { WeakStore } from './utils/weak-store.js';
@@ -7,7 +7,7 @@ import { WeakStore } from './utils/weak-store.js';
 export type RegistryFn<K extends KeyPart, R extends Ref> = (key: K) => R;
 export type RegistryEventMap<K extends KeyPart, R extends Ref> = ListenEventRecord<K, R>;
 
-export interface Registry<K extends KeyPart, R extends Ref> extends IListenable<RegistryEventMap<K, R>> {
+export interface Registry<K extends KeyPart, R extends Ref> extends Listenable<RegistryEventMap<K, R>> {
   /**
    * Returns a reference on the "key" element.
    *
@@ -42,7 +42,7 @@ export function registry$<K extends KeyPart, R extends Ref>(fn: RegistryFn<K, R>
   }
 
   // Store
-  const events = multiplexerMap(getRef);
+  const events = multiplexerMap$(getRef);
 
   return {
     on: events.on,

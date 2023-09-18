@@ -2,10 +2,22 @@
 import { describe, expectTypeOf } from 'vitest';
 
 import { each$, pipe$, ref$, var$ } from '@/src/index.js';
+import { source } from '@jujulego/event-tree';
 
 // Tests
 describe('each$', () => {
   describe('fn based', () => {
+    it('should be a simple source', () => {
+      const ref = pipe$(
+        source<number>(),
+        each$((val) => val.toString())
+      );
+
+      expectTypeOf(ref.next).parameter(0).toBeString();
+      expectTypeOf(ref).not.toHaveProperty('read');
+      expectTypeOf(ref).not.toHaveProperty('mutate');
+    });
+
     it('should be an async readonly reference', () => {
       const ref = pipe$(
         var$(42),
@@ -41,6 +53,17 @@ describe('each$', () => {
   });
 
   describe('opts based', () => {
+    it('should be a simple source', () => {
+      const ref = pipe$(
+        source<number>(),
+        each$({ read: (val) => val.toString() })
+      );
+
+      expectTypeOf(ref.next).parameter(0).toBeString();
+      expectTypeOf(ref).not.toHaveProperty('read');
+      expectTypeOf(ref).not.toHaveProperty('mutate');
+    });
+
     it('should be an async readonly reference', () => {
       const ref = pipe$(
         var$(42),

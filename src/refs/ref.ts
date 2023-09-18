@@ -1,4 +1,4 @@
-import { source } from '@jujulego/event-tree';
+import { source$ } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import {
@@ -49,7 +49,7 @@ export function ref$<D, A>(opts: RefOpts<D, A>): Ref<D>;
 
 export function ref$<D, A>(arg: RefFn<D> | RefOpts<D, A>): Ref<D> {
   const opts = parseArg<D, A>(arg);
-  const events = source<D>();
+  const events = source$<D>();
 
   // Handle emits
   let last: D | undefined;

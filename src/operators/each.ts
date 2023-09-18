@@ -1,3 +1,4 @@
+import { EmitValue, source$, Source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import {
@@ -6,12 +7,11 @@ import {
   MapReadValue, MapRefValue,
   Mutable,
   MutableRef,
-  MutateArg,
+  MutateArg, Readable,
   ReadValue,
   Ref
 } from '../defs/index.js';
 import { PipeOperator } from '../pipe.js';
-import { ref$, RefOpts } from '../refs/index.js';
 import { awaitedCall } from '../utils/promise.js';
 
 // Types
@@ -59,34 +59,36 @@ export function each$<A extends MutableRef, DB, AB>(opts: EachRead<ReadValue<A>,
 export function each$<A extends MutableRef, DB, AB>(opts: EachRead<ReadValue<A>, DB> & SyncEachMutate<MutateArg<A>, AB>): PipeOperator<A, MutableRef<DB, AB>>;
 export function each$<A extends MutableRef, DB, AB>(opts: EachRead<ReadValue<A>, DB> & EachMutate<MutateArg<A>, AB>): PipeOperator<A, MutableRef<DB, AB>>;
 
-export function each$<A extends Ref, DB>(opts: AsyncEachRead<ReadValue<A>, DB>): PipeOperator<A, AsyncRef<DB>>;
-export function each$<A extends Ref, DB>(opts: SyncEachRead<ReadValue<A>, DB>): PipeOperator<A, MapRefValue<A, DB>>;
-export function each$<A extends Ref, DB>(opts: EachRead<ReadValue<A>, DB>): PipeOperator<A, Ref<DB>>;
+export function each$<A extends Source, DB>(opts: AsyncEachRead<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? AsyncRef<DB> : Source<DB>>;
+export function each$<A extends Source, DB>(opts: SyncEachRead<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? MapRefValue<A, DB> : Source<DB>>;
+export function each$<A extends Source, DB>(opts: EachRead<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? Ref<DB> : Source<DB>>;
 
-export function each$<A extends Ref, DB>(fn: AsyncEachFn<ReadValue<A>, DB>): PipeOperator<A, AsyncRef<DB>>;
-export function each$<A extends Ref, DB>(fn: SyncEachFn<ReadValue<A>, DB>): PipeOperator<A, MapRefValue<A, DB>>;
-export function each$<A extends Ref, DB>(fn: EachFn<ReadValue<A>, DB>): PipeOperator<A, Ref<DB>>;
+export function each$<A extends Source, DB>(fn: AsyncEachFn<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? AsyncRef<DB> : Source<DB>>;
+export function each$<A extends Source, DB>(fn: SyncEachFn<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? MapRefValue<A, DB> : Source<DB>>;
+export function each$<A extends Source, DB>(fn: EachFn<EmitValue<A>, DB>): PipeOperator<A, A extends Readable ? Ref<DB> : Source<DB>>;
 
 export function each$<A extends MutableRef, DB, AB>(opts: EachOpts<ReadValue<A>, MutateArg<A>, DB, AB>): PipeOperator<A, MutableRef<DB, AB>>;
 
-export function each$<DA, AA, DB, AB>(arg: EachFn<DA, DB> | EachOpts<DA, AA, DB, AB>): PipeOperator<Ref<DA>, Ref<DB>> {
+export function each$<DA, AA, DB, AB>(arg: EachFn<DA, DB> | EachOpts<DA, AA, DB, AB>): PipeOperator<Source<DA>, Source<DB>> {
   const opts = parseArg<DA, AA, DB, AB>(arg);
 
-  return (ref: Ref<DA>, { off }) => {
-    const outOpts: RefOpts<DB, AB> = {
-      read: () => awaitedCall<DA, DB>(opts.read, ref.read()),
-    };
+  return (src: Source<DA>, { off }) => {
+    const out = source$<DB>();
 
-    if ('mutate' in opts && 'mutate' in ref) {
-      Object.assign(outOpts, {
-        mutate: (arg: AB) => awaitedCall(opts.read, awaitedCall((ref as Mutable<DA, AA>).mutate, opts.mutate!(arg)))
+    if ('read' in src) {
+      Object.assign(out, {
+        read: () => awaitedCall<DA, DB>(opts.read, (src as Readable<DA>).read()),
       });
+
+      if ('mutate' in opts && 'mutate' in src) {
+        Object.assign(out, {
+          mutate: (arg: AB) => awaitedCall(opts.read, awaitedCall((src as Mutable<DA, AA>).mutate, opts.mutate!(arg)))
+        });
+      }
     }
 
-    const out = ref$<DB>(outOpts);
-
     off.add(
-      ref.subscribe((data) => awaitedCall(out.next, opts.read(data)))
+      src.subscribe((data) => awaitedCall(out.next, opts.read(data)))
     );
 
     return out;
