@@ -1,4 +1,4 @@
-import { EventKey, Listenable, Listener, multiplexer, OffFn, offGroup, once, source } from '@jujulego/event-tree';
+import { EventKey, Listenable, Listener, multiplexer$, OffFn, off$, once$, source$ } from '@jujulego/event-tree';
 import { Query, queryfy, QueryState } from '@jujulego/utils';
 
 import { AsyncRef } from '../defs/index.js';
@@ -46,10 +46,10 @@ export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>
 
 // Builder
 export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
-  const events = multiplexer({
-    'pending': source<true>(),
-    'done': source<D>(),
-    'failed': source<Error>(),
+  const events = multiplexer$({
+    'pending': source$<true>(),
+    'done': source$<D>(),
+    'failed': source$<Error>(),
   });
 
   let query: Query<D> | undefined;
@@ -94,10 +94,10 @@ export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
 
       if (state?.status !== 'done') {
         return new Promise<D>((resolve, reject) => {
-          const off = offGroup();
+          const off = off$();
 
-          once(events, 'done', resolve, { off });
-          once(events, 'failed', reject, { off });
+          once$(events, 'done', resolve, { off });
+          once$(events, 'failed', reject, { off });
         });
       }
 
@@ -116,7 +116,7 @@ export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
       emit(query.state);
 
       if (query.status === 'pending') {
-        queryOff = once(query, emit);
+        queryOff = once$(query, emit);
       }
 
       return query;

@@ -1,4 +1,4 @@
-import { Listenable, KeyPart, ListenEventRecord, multiplexerMap } from '@jujulego/event-tree';
+import { Listenable, KeyPart, ListenEventRecord, multiplexerMap$ } from '@jujulego/event-tree';
 
 import { Ref } from './defs/index.js';
 import { WeakStore } from './utils/weak-store.js';
@@ -42,7 +42,7 @@ export function registry$<K extends KeyPart, R extends Ref>(fn: RegistryFn<K, R>
   }
 
   // Store
-  const events = multiplexerMap(getRef);
+  const events = multiplexerMap$(getRef);
 
   return {
     on: events.on,

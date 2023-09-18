@@ -1,4 +1,4 @@
-import { EmitValue, source, Source } from '@jujulego/event-tree';
+import { EmitValue, source$, Source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import {
@@ -73,7 +73,7 @@ export function each$<DA, AA, DB, AB>(arg: EachFn<DA, DB> | EachOpts<DA, AA, DB,
   const opts = parseArg<DA, AA, DB, AB>(arg);
 
   return (src: Source<DA>, { off }) => {
-    const out = source<DB>();
+    const out = source$<DB>();
 
     if ('read' in src) {
       Object.assign(out, {

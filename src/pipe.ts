@@ -1,4 +1,4 @@
-import { offGroup, OffGroup, Source as Src } from '@jujulego/event-tree';
+import { off$, OffGroup, Source as Src } from '@jujulego/event-tree';
 
 // Types
 export interface PipeContext {
@@ -25,7 +25,7 @@ export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src
 export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src, G extends Src, H extends Src, I extends Src, J extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeSource<J>;
 
 export function pipe$(src: Src, ...ops: PipeOperator<Src, Src>[]): PipeSource {
-  const off = offGroup();
+  const off = off$();
   const out = ops.reduce((step, op) => op(step, { off }), src);
 
   return Object.assign(out, { off });
