@@ -1,4 +1,4 @@
-import { offGroup, OffGroup, Source } from '@jujulego/event-tree';
+import { offGroup, OffGroup, Source as Src } from '@jujulego/event-tree';
 
 // Types
 export interface PipeContext {
@@ -11,7 +11,6 @@ export type PipeSource<R extends Src = Src> = R & {
 }
 
 // Builder
-type Src = Source<unknown>;
 type PO<A extends Src, B extends Src> = PipeOperator<A, B>;
 
 export function pipe$<A extends Src>(src: A): PipeSource<A>;
