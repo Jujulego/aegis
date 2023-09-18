@@ -1,9 +1,16 @@
 import { source } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
-import { AsyncMutable, AsyncReadable, Mutable, Readable, SyncMutable, SyncReadable } from '../defs/index.js';
+import {
+  AsyncMutable,
+  AsyncMutableRef,
+  AsyncReadable, AsyncRef,
+  Mutable, MutableRef,
+  Readable, Ref,
+  SyncMutable, SyncMutableRef,
+  SyncReadable, SyncRef
+} from '../defs/index.js';
 import { awaitedCall } from '../utils/promise.js';
-import { AsyncMutableRef, AsyncRef, MutableRef, Ref, SyncMutableRef, SyncRef } from './types.js';
 
 // Types
 export type RefFn<D = unknown> = () => Awaitable<D>;

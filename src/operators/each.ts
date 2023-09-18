@@ -1,8 +1,17 @@
 import { Awaitable } from '@jujulego/utils';
 
-import { AsyncMutable, MapMutateArg, MapReadValue, Mutable, MutateArg, ReadValue } from '../defs/index.js';
+import {
+  AsyncMutable, AsyncMutableRef, AsyncRef,
+  MapMutateArg,
+  MapReadValue, MapRefValue,
+  Mutable,
+  MutableRef,
+  MutateArg,
+  ReadValue,
+  Ref
+} from '../defs/index.js';
 import { PipeOperator } from '../pipe.js';
-import { AsyncMutableRef, AsyncRef, MapRefValue, MutableRef, Ref, ref$, RefOpts } from '../refs/index.js';
+import { ref$, RefOpts } from '../refs/index.js';
 import { awaitedCall } from '../utils/promise.js';
 
 // Types

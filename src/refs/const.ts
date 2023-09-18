@@ -1,5 +1,5 @@
 import { ref$ } from './ref.js';
-import { SyncRef } from './types.js';
+import { SyncRef } from '../defs/index.js';
 
 // Builder
 export function const$<D>(value: D): SyncRef<D> {

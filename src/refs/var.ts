@@ -1,5 +1,5 @@
+import { SyncMutableRef } from '../defs/index.js';
 import { ref$ } from './ref.js';
-import { SyncMutableRef } from './types.js';
 
 // Builder
 export function var$<D>(): SyncMutableRef<D | undefined, D>;

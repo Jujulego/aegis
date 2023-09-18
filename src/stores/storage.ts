@@ -1,8 +1,9 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { Store, store$ } from './store.js';
-import { ref$, SyncMutableRef } from '../refs/index.js';
+import { SyncMutableRef } from '../defs/index.js';
+import { ref$ } from '../refs/index.js';
 import { WeakStore } from '../utils/weak-store.js';
+import { Store, store$ } from './store.js';
 
 // Types
 export type StorageRef<D> = SyncMutableRef<D | undefined, D>;

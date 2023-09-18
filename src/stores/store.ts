@@ -1,6 +1,6 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { MutableRef } from '../refs/index.js';
+import { MutableRef } from '../defs/index.js';
 import { Registry, registry$, RegistryFn } from '../registry.js';
 
 // Types

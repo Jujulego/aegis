@@ -1,6 +1,7 @@
 import { KeyPart } from '@jujulego/event-tree';
 
-import { ref$, SyncMutableRef } from '../refs/index.js';
+import { SyncMutableRef } from '../defs/index.js';
+import { ref$ } from '../refs/index.js';
 import { Store, store$ } from './store.js';
 
 // Types

@@ -1,6 +1,6 @@
 import { offGroup, OffGroup } from '@jujulego/event-tree';
 
-import { Ref } from './refs/index.js';
+import { Ref } from './defs/index.js';
 
 // Types
 export interface PipeContext {
