@@ -1,4 +1,4 @@
-import { EventKey, IListenable, Listener, multiplexer, OffFn, offGroup, once, source } from '@jujulego/event-tree';
+import { EventKey, Listenable, Listener, multiplexer, OffFn, offGroup, once, source } from '@jujulego/event-tree';
 import { Query, queryfy, QueryState } from '@jujulego/utils';
 
 import { AsyncRef } from '../defs/index.js';
@@ -13,7 +13,7 @@ export type QueryRefEventMap<D> = {
   failed: Error;
 };
 
-export interface QueryRef<D> extends AsyncRef<D>, IListenable<QueryRefEventMap<D>> {
+export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>> {
   // Attributes
   readonly data: D | undefined;
   readonly query: Query<D> | undefined;

@@ -1,16 +1,11 @@
-import { IEmitter, IObservable } from '@jujulego/event-tree';
+import { Source } from '@jujulego/event-tree';
 
 import { AsyncReadable, MapReadValue, Readable, SyncReadable } from './readable.js';
 
 /**
- * Reference events
- */
-export type RefEvents<D = unknown> = IEmitter<D> & IObservable<D>;
-
-/**
  * Readonly reference
  */
-export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & RefEvents<D>;
+export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & Source<D>;
 
 /**
  * Readonly synchronous reference
