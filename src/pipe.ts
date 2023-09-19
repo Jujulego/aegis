@@ -1,32 +1,32 @@
-import { off$, OffGroup, Source as Src } from '@jujulego/event-tree';
+import { off$, OffGroup, Observable as Obs } from '@jujulego/event-tree';
 
 // Types
 export interface PipeContext {
   off: OffGroup;
 }
 
-export type PipeOperator<A extends Src, B extends Src> = (arg: A, context: PipeContext) => B;
-export type PipeSource<R extends Src = Src> = R & {
+export type PipeOperator<A extends Obs, B extends Obs> = (arg: A, context: PipeContext) => B;
+export type PipeOff<R extends Obs = Obs> = R & {
   off(): void;
 }
 
 // Builder
-type PO<A extends Src, B extends Src> = PipeOperator<A, B>;
+type PO<A extends Obs, B extends Obs> = PipeOperator<A, B>;
 
-export function pipe$<A extends Src>(src: A): PipeSource<A>;
-export function pipe$<A extends Src, B extends Src>(src: A, opA: PO<A, B>): PipeSource<B>;
-export function pipe$<A extends Src, B extends Src, C extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>): PipeSource<C>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>): PipeSource<D>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>): PipeSource<E>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>): PipeSource<F>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src, G extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>): PipeSource<G>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src, G extends Src, H extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>): PipeSource<H>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src, G extends Src, H extends Src, I extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeSource<I>;
-export function pipe$<A extends Src, B extends Src, C extends Src, D extends Src, E extends Src, F extends Src, G extends Src, H extends Src, I extends Src, J extends Src>(src: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeSource<J>;
+export function pipe$<A extends Obs>(obs: A): PipeOff<A>;
+export function pipe$<A extends Obs, B extends Obs>(obs: A, opA: PO<A, B>): PipeOff<B>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>): PipeOff<C>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>): PipeOff<D>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>): PipeOff<E>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>): PipeOff<F>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>): PipeOff<G>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs, H extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>): PipeOff<H>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs, H extends Obs, I extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeOff<I>;
+export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs, H extends Obs, I extends Obs, J extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeOff<J>;
 
-export function pipe$(src: Src, ...ops: PipeOperator<Src, Src>[]): PipeSource {
+export function pipe$(obs: Obs, ...ops: PipeOperator<Obs, Obs>[]): PipeOff {
   const off = off$();
-  const out = ops.reduce((step, op) => op(step, { off }), src);
+  const out = ops.reduce((step, op) => op(step, { off }), obs);
 
   return Object.assign(out, { off });
 }

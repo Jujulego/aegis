@@ -20,4 +20,4 @@ export type AsyncRef<D = unknown> = Ref<D, AsyncReadable<D>>;
 /**
  * Build a Ref type with the same synchronicity and the given value type
  */
-export type MapRefValue<R extends Ref, D> = Ref<D, MapReadValue<R, D>>;
+export type MapRefValue<R extends Readable, D> = Ref<D, MapReadValue<R, D>>;

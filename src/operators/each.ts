@@ -1,4 +1,4 @@
-import { EmitValue, source$, Source } from '@jujulego/event-tree';
+import { source$, Observable as Obs, Source, ObservedValue } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import {
@@ -19,21 +19,21 @@ export type SyncEachFn<DA, DB> = (arg: DA) => DB;
 export type AsyncEachFn<DA, DB> = (arg: DA) => PromiseLike<DB>;
 
 /** Builds an async source type, with same features than A, but a different data type DB */
-export type EachAsyncSource<A extends Source, DB> = A extends Readable
+export type EachAsyncSource<A extends Obs, DB> = A extends Ref
   ? A extends Mutable<infer AA>
     ? AsyncMutableRef<DB, AA>
     : AsyncRef<DB>
   : Source<DB>;
 
 /** Builds a source type, with same features and synchronicity than A, but a different data type DB */
-export type EachSyncSource<A extends Source, DB> = A extends Readable
+export type EachSyncSource<A extends Obs, DB> = A extends Ref
   ? A extends Mutable<infer AA>
     ? MutableRef<DB, AA, MapReadValue<A, DB>, MapMutateArg<A, DB, AA>>
     : MapRefValue<A, DB>
   : Source<DB>;
 
 /** Builds an awaitable source type, with same features than A, but a different data type DB */
-export type EachSource<A extends Source, DB> = A extends Readable
+export type EachSource<A extends Obs, DB> = A extends Ref
   ? A extends Mutable<infer AA>
     ? MutableRef<DB, AA>
     : Ref<DB>
@@ -48,7 +48,7 @@ export type EachSource<A extends Source, DB> = A extends Readable
  *
  * @param fn
  */
-export function each$<A extends Source, DB>(fn: AsyncEachFn<EmitValue<A>, DB>): PipeOperator<A, EachAsyncSource<A, DB>>;
+export function each$<A extends Obs, DB>(fn: AsyncEachFn<ObservedValue<A>, DB>): PipeOperator<A, EachAsyncSource<A, DB>>;
 
 /**
  * Applies fn to each emitted value, read result and mutate result.
@@ -56,33 +56,33 @@ export function each$<A extends Source, DB>(fn: AsyncEachFn<EmitValue<A>, DB>): 
  *
  * @param fn
  */
-export function each$<A extends Source, DB>(fn: SyncEachFn<EmitValue<A>, DB>): PipeOperator<A, EachSyncSource<A, DB>>;
+export function each$<A extends Obs, DB>(fn: SyncEachFn<ObservedValue<A>, DB>): PipeOperator<A, EachSyncSource<A, DB>>;
 
 /**
  * Applies fn to each emitted value, read result and mutate result.
  *
  * @param fn
  */
-export function each$<A extends Source, DB>(fn: EachFn<EmitValue<A>, DB>): PipeOperator<A, EachSource<A, DB>>;
+export function each$<A extends Obs, DB>(fn: EachFn<ObservedValue<A>, DB>): PipeOperator<A, EachSource<A, DB>>;
 
-export function each$<DA, AA, DB>(fn: EachFn<DA, DB>): PipeOperator<Source<DA>, Source<DB>> {
-  return (src: Source<DA>, { off }) => {
+export function each$<DA, AA, DB>(fn: EachFn<DA, DB>): PipeOperator<Obs<DA>, Obs<DB>> {
+  return (obs: Obs<DA>, { off }) => {
     const out = source$<DB>();
 
-    if ('read' in src) {
+    if ('read' in obs) {
       Object.assign(out, {
-        read: () => awaitedCall<DA, DB>(fn, (src as Readable<DA>).read()),
+        read: () => awaitedCall<DA, DB>(fn, (obs as Readable<DA>).read()),
       });
 
-      if ('mutate' in src) {
+      if ('mutate' in obs) {
         Object.assign(out, {
-          mutate: (arg: AA) => awaitedCall(fn, awaitedCall((src as Mutable<DA, AA>).mutate, arg))
+          mutate: (arg: AA) => awaitedCall(fn, awaitedCall((obs as Mutable<DA, AA>).mutate, arg))
         });
       }
     }
 
     off.add(
-      src.subscribe((data) => awaitedCall(out.next, fn(data)))
+      obs.subscribe((data) => awaitedCall(out.next, fn(data)))
     );
 
     return out;
