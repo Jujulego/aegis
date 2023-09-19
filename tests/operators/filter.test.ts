@@ -1,7 +1,7 @@
+import { source$ } from '@jujulego/event-tree';
 import { describe, vi } from 'vitest';
 
 import { filter$, pipe$ } from '@/src/index.js';
-import { source$ } from '@jujulego/event-tree';
 
 // Test
 describe('filter$', () => {
