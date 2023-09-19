@@ -1,4 +1,4 @@
-import { source$, Observable as Obs, Source, ObservedValue } from '@jujulego/event-tree';
+import { Observable as Obs, Source, ObservedValue, source$ } from '@jujulego/event-tree';
 import { Awaitable } from '@jujulego/utils';
 
 import {
