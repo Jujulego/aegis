@@ -382,7 +382,7 @@ __metadata:
   resolution: "@jujulego/aegis@workspace:."
   dependencies:
     "@jujulego/event-tree": ^4.1.0
-    "@jujulego/jill": 2.3.1
+    "@jujulego/jill": 2.3.2
     "@jujulego/utils": ^2.0.0
     "@microsoft/eslint-formatter-sarif": 3.0.0
     "@swc/cli": 0.1.62
@@ -404,7 +404,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jujulego/event-tree@npm:^4.0.1, @jujulego/event-tree@npm:^4.1.0":
+"@jujulego/event-tree@npm:^4.1.0":
   version: 4.1.0
   resolution: "@jujulego/event-tree@npm:4.1.0"
   dependenciesMeta:
@@ -414,13 +414,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/jill@npm:2.3.1":
-  version: 2.3.1
-  resolution: "@jujulego/jill@npm:2.3.1"
+"@jujulego/jill@npm:2.3.2":
+  version: 2.3.2
+  resolution: "@jujulego/jill@npm:2.3.2"
   dependencies:
-    "@jujulego/event-tree": ^4.0.1
-    "@jujulego/tasks": ^2.0.0
-    "@jujulego/utils": ^2.0.0
+    "@jujulego/event-tree": ^4.1.0
+    "@jujulego/tasks": ^2.0.1
+    "@jujulego/utils": ^2.0.1
     ajv: ^8.12.0
     chalk: ^5.3.0
     cosmiconfig: ^8.2.0
@@ -430,7 +430,7 @@ __metadata:
     inversify-inject-decorators: ^3.1.0
     log-symbols: ^5.1.0
     moo: ^0.5.2
-    normalize-package-data: ^5.0.0
+    normalize-package-data: ^6.0.0
     pretty-ms: ^8.0.0
     react: ^18.2.0
     reflect-metadata: ^0.1.13
@@ -442,27 +442,27 @@ __metadata:
     yargs: ^17.7.2
   bin:
     jill: ./bin/jill.mjs
-  checksum: dd678b3dfecd4bf9b1486a65b0cd5683eec7109ac50bd4abb36dae7b15bbd74aa0aa37a53edf5c5038b5809010377fa923e12931ffb6abdc068afdfc043a7fd6
+  checksum: f2e6a13500153bd500afc7255f1469815732a791537bfa29a8d0ccad38951f614f9e18640617810e37c6a654e13ce3815773a57beab1fcc53e16ab2dff7a88a7
   languageName: node
   linkType: hard
 
-"@jujulego/tasks@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@jujulego/tasks@npm:2.0.0"
+"@jujulego/tasks@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@jujulego/tasks@npm:2.0.1"
   dependencies:
-    "@jujulego/event-tree": ^4.0.1
+    "@jujulego/event-tree": ^4.1.0
     "@jujulego/utils": ^2.0.0
     tree-kill: ^1.2.2
-  checksum: 89115bc86eb32bd61a887d33b4ba1116fa4d2b4197b69e07517dead3644044b5d5dc93cea553a5cca15c37162b40f6145809ec10c76618741dd6aa98bc6b8233
+  checksum: ecdc2134c9e138e75819567d3aeb15ce1bfb12061a2bdebc2c69d37122612486518e383aeb7084259964133f836158332a47fa9c6e4994e172650b2a5d3c903e
   languageName: node
   linkType: hard
 
-"@jujulego/utils@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@jujulego/utils@npm:2.0.0"
+"@jujulego/utils@npm:^2.0.0, @jujulego/utils@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@jujulego/utils@npm:2.0.1"
   dependencies:
-    "@jujulego/event-tree": ^4.0.1
-  checksum: 7f0674aed8f0cd176147d71f9fee6652256578898027ba00e0aadc4d4eebafe351c391ba2de4a46ea3b48a1d0faeb4836409ad6962ffbe2e0448ad97139b231f
+    "@jujulego/event-tree": ^4.1.0
+  checksum: 6aa5986e933dff12d8834a57a65480feb4654db90ad30496d902b7f9305a387b2ab4f1debda5116f88dc728a9e0a1cf672ff39d74134b951366cb7833f3233cb
   languageName: node
   linkType: hard
 
@@ -2703,12 +2703,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^6.0.0":
-  version: 6.1.1
-  resolution: "hosted-git-info@npm:6.1.1"
+"hosted-git-info@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "hosted-git-info@npm:7.0.1"
   dependencies:
-    lru-cache: ^7.5.1
-  checksum: fcd3ca2eaa05f3201425ccbb8aa47f88cdda4a3a6d79453f8e269f7171356278bd1db08f059d8439eb5eaa91c6a8a20800fc49cca6e9e4e899b202a332d5ba6b
+    lru-cache: ^10.0.1
+  checksum: be5280f0a20d6153b47e1ab578e09f5ae8ad734301b3ed7e547dc88a6814d7347a4888db1b4f9635cc738e3c0ef1fbff02272aba7d07c75d4c5a50ff8d618db6
   languageName: node
   linkType: hard
 
@@ -3343,6 +3343,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "lru-cache@npm:10.0.1"
+  checksum: 06f8d0e1ceabd76bb6f644a26dbb0b4c471b79c7b514c13c6856113879b3bf369eb7b497dad4ff2b7e2636db202412394865b33c332100876d838ad1372f0181
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^4.0.1":
   version: 4.1.5
   resolution: "lru-cache@npm:4.1.5"
@@ -3362,7 +3369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^7.5.1, lru-cache@npm:^7.7.1":
+"lru-cache@npm:^7.7.1":
   version: 7.18.3
   resolution: "lru-cache@npm:7.18.3"
   checksum: e550d772384709deea3f141af34b6d4fa392e2e418c1498c078de0ee63670f1f46f5eee746e8ef7e69e1c895af0d4224e62ee33e66a543a14763b0f2e74c1356
@@ -3663,15 +3670,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"normalize-package-data@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "normalize-package-data@npm:5.0.0"
+"normalize-package-data@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "normalize-package-data@npm:6.0.0"
   dependencies:
-    hosted-git-info: ^6.0.0
+    hosted-git-info: ^7.0.0
     is-core-module: ^2.8.1
     semver: ^7.3.5
     validate-npm-package-license: ^3.0.4
-  checksum: a459f05eaf7c2b643c61234177f08e28064fde97da15800e3d3ac0404e28450d43ac46fc95fbf6407a9bf20af4c58505ad73458a912dc1517f8c1687b1d68c27
+  checksum: 741211a4354ba6d618caffa98f64e0e5ec9e5575bf3aefe47f4b68e662d65f9ba1b6b2d10640c16254763ed0879288155566138b5ffe384172352f6e969c1752
   languageName: node
   linkType: hard
 
