@@ -7,7 +7,7 @@ import {
   MapReadValue, MapRefValue,
   Mutable,
   MutableRef,
-  MutateArg, Readable,
+  Readable,
   Ref
 } from '../defs/index.js';
 import { PipeOperator } from '../pipe.js';
@@ -20,22 +20,22 @@ export type AsyncEachFn<DA, DB> = (arg: DA) => PromiseLike<DB>;
 
 /** Builds an async source type, with same features than A, but a different data type DB */
 export type EachAsyncSource<A extends Source, DB> = A extends Readable
-  ? A extends Mutable
-    ? AsyncMutableRef<DB, MutateArg<A>>
+  ? A extends Mutable<infer AA>
+    ? AsyncMutableRef<DB, AA>
     : AsyncRef<DB>
   : Source<DB>;
 
 /** Builds a source type, with same features and synchronicity than A, but a different data type DB */
 export type EachSyncSource<A extends Source, DB> = A extends Readable
-  ? A extends Mutable
-    ? MutableRef<DB, MutateArg<A>, MapReadValue<A, DB>, MapMutateArg<A, DB, MutateArg<A>>>
+  ? A extends Mutable<infer AA>
+    ? MutableRef<DB, AA, MapReadValue<A, DB>, MapMutateArg<A, DB, AA>>
     : MapRefValue<A, DB>
   : Source<DB>;
 
 /** Builds an awaitable source type, with same features than A, but a different data type DB */
 export type EachSource<A extends Source, DB> = A extends Readable
-  ? A extends Mutable
-    ? MutableRef<DB, MutateArg<A>>
+  ? A extends Mutable<infer AA>
+    ? MutableRef<DB, AA>
     : Ref<DB>
   : Source<DB>;
 

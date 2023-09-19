@@ -36,6 +36,7 @@ describe('each$', () => {
 
     expectTypeOf(ref.next).parameter(0).toBeString();
     expectTypeOf(ref.read).returns.toBeString();
+    expectTypeOf(ref.mutate).parameter(0).toBeNumber();
     expectTypeOf(ref.mutate).returns.toBeString();
   });
 
@@ -47,6 +48,7 @@ describe('each$', () => {
 
     expectTypeOf(ref.next).parameter(0).toBeString();
     expectTypeOf(ref.read).returns.resolves.toBeString();
+    expectTypeOf(ref.mutate).parameter(0).toBeNumber();
     expectTypeOf(ref.mutate).returns.resolves.toBeString();
   });
 
@@ -61,6 +63,7 @@ describe('each$', () => {
 
     expectTypeOf(ref.next).parameter(0).toBeString();
     expectTypeOf(ref.read).returns.resolves.toBeString();
+    expectTypeOf(ref.mutate).parameter(0).toBeNumber();
     expectTypeOf(ref.mutate).returns.toBeString();
   });
 
@@ -75,6 +78,7 @@ describe('each$', () => {
 
     expectTypeOf(ref.next).parameter(0).toBeString();
     expectTypeOf(ref.read).returns.toBeString();
+    expectTypeOf(ref.mutate).parameter(0).toBeNumber();
     expectTypeOf(ref.mutate).returns.resolves.toBeString();
   });
 });
