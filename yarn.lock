@@ -387,7 +387,7 @@ __metadata:
     "@microsoft/eslint-formatter-sarif": 3.0.0
     "@swc/cli": 0.1.62
     "@swc/core": 1.3.86
-    "@types/node": 16.18.52
+    "@types/node": 16.18.53
     "@typescript-eslint/eslint-plugin": 6.7.2
     "@typescript-eslint/parser": 6.7.2
     "@vitest/coverage-v8": 0.34.4
@@ -404,17 +404,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jujulego/event-tree@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@jujulego/event-tree@npm:4.1.0"
-  dependenciesMeta:
-    vitest@0.34.4:
-      unplugged: true
-  checksum: fca03a9d3f413fc407afd0e312a17b258f35d515fbf62a862c894f380148c13746ed2286c9ca0a597111b00809a8799ad0c646159d64f1680efc31726f15e033
-  languageName: node
-  linkType: hard
-
-"@jujulego/event-tree@npm:^4.1.1":
+"@jujulego/event-tree@npm:^4.1.0, @jujulego/event-tree@npm:^4.1.1":
   version: 4.1.1
   resolution: "@jujulego/event-tree@npm:4.1.1"
   dependenciesMeta:
@@ -948,10 +938,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.52":
-  version: 16.18.52
-  resolution: "@types/node@npm:16.18.52"
-  checksum: 6b1f27a848a69a70039cb27c2583317b5d051990933955c42bc2a2f299266ffa360f7cc3c7089d04fdf39144c476d475931900f00dabbc4f933eeb2d664f9778
+"@types/node@npm:16.18.53":
+  version: 16.18.53
+  resolution: "@types/node@npm:16.18.53"
+  checksum: 26c05cde59664360c22e0dda70776ca6f1b35f0b94e4f84d2c21e2afa2e69ac3a2c99bbb57b43405f81df1b2598f6d707ccc7c4c31865f90e45c4625d8400518
   languageName: node
   linkType: hard
 
