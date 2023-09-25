@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, vi } from 'vitest';
 
-import { pipe$, each$, ref$, var$, const$ } from '@/src/index.js';
+import { each$ } from '@/src/operators/each.js';
+import { pipe$ } from '@/src/pipe.js';
+import { const$ } from '@/src/refs/const.js';
+import { ref$ } from '@/src/refs/ref.js';
+import { var$ } from '@/src/refs/var.js';
 
 // Test
 describe('each$', () => {
   it('should call fn on each value emitted by base', () => {
-    const base = var$();
+    const base = var$('toto');
     const fn = vi.fn(() => 42);
     const spy = vi.fn();
 

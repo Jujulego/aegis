@@ -2,7 +2,11 @@
 import { source$ } from '@jujulego/event-tree';
 import { describe, expectTypeOf } from 'vitest';
 
-import { const$, each$, pipe$, ref$, var$ } from '@/src/index.js';
+import { each$ } from '@/src/operators/each.js';
+import { pipe$ } from '@/src/pipe.js';
+import { const$ } from '@/src/refs/const.js';
+import { ref$ } from '@/src/refs/ref.js';
+import { var$ } from '@/src/refs/var.js';
 
 // Tests
 describe('each$', () => {
