@@ -1,14 +1,6 @@
-import { off$, OffGroup, Observable as Obs } from '@jujulego/event-tree';
+import { off$, Observable as Obs } from '@jujulego/event-tree';
 
-// Types
-export interface PipeContext {
-  off: OffGroup;
-}
-
-export type PipeOperator<A extends Obs, B extends Obs> = (arg: A, context: PipeContext) => B;
-export type PipeOff<R extends Obs = Obs> = R & {
-  off(): void;
-}
+import { PipeOff, PipeOperator } from './defs/index.js';
 
 // Builder
 type PO<A extends Obs, B extends Obs> = PipeOperator<A, B>;
