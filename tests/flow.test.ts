@@ -2,10 +2,10 @@ import { Observable, source$ } from '@jujulego/event-tree';
 import { vi } from 'vitest';
 
 import { PipeContext } from '@/src/defs/pipe.js';
-import { pipe$ } from '@/src/pipe.js';
+import { flow$ } from '@/src/flow.js';
 
-describe('pipe$', () => {
-  it('should use op to prepare result', () => {
+describe('flow$', () => {
+  it('should pass down result from op to receiver at the end', () => {
     const ref = source$<string>();
     const op = vi.fn((base: Observable<string>, { off }: PipeContext) => {
       const res = source$<number>();
@@ -13,17 +13,17 @@ describe('pipe$', () => {
 
       return res;
     });
-    const spy = vi.fn();
+    const rcv = source$();
+    vi.spyOn(rcv, 'next');
 
-    // Setup pipe
-    const result = pipe$(ref, op);
+    // Setup flow
+    const off = flow$(ref, op, rcv);
 
-    expect(op).toHaveBeenCalledWith(ref, { off: result.off });
+    expect(op).toHaveBeenCalledWith(ref, { off });
 
     // Emit some data
-    result.subscribe(spy);
     ref.next('42');
 
-    expect(spy).toHaveBeenCalledWith(42);
+    expect(rcv.next).toHaveBeenCalledWith(42);
   });
 });

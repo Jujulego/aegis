@@ -1,4 +1,5 @@
 export * from './defs/index.js';
+export * from './flow.js';
 export * from './manager.js';
 export * from './operators/index.js';
 export * from './pipe.js';

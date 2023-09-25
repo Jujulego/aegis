@@ -6,11 +6,10 @@ import {
   MapMutateArg,
   MapReadValue, MapRefValue,
   Mutable,
-  MutableRef,
+  MutableRef, PipeOperator,
   Readable,
   Ref
 } from '../defs/index.js';
-import { PipeOperator } from '../pipe.js';
 import { awaitedCall } from '../utils/promise.js';
 
 // Types

@@ -1,6 +1,6 @@
 import { Observable as Obs, Source, source$ } from '@jujulego/event-tree';
 
-import { PipeOperator } from '../pipe.js';
+import { PipeOperator } from '../defs/index.js';
 
 // Operator
 export function filter$<DA, DB extends DA>(fn: (arg: DA) => arg is DB): PipeOperator<Obs<DA>, Source<DB>>;
