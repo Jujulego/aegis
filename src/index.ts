@@ -1,3 +1,4 @@
+export * from './bind.js';
 export * from './defs/index.js';
 export * from './flow.js';
 export * from './manager.js';
