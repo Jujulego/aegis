@@ -1,11 +1,16 @@
-import { EventKey, Listenable, Listener, multiplexer$, OffFn, off$, once$, source$ } from '@jujulego/event-tree';
+import { EventKey, Listenable, Listener, multiplexer$, OffFn, once$, source$ } from '@jujulego/event-tree';
 import { Query, queryfy, QueryState } from '@jujulego/utils';
 
 import { AsyncRef } from '../defs/index.js';
 
 // Types
 export type QueryFetcher<D> = () => PromiseLike<D>;
-export type QueryStrategy = 'keep' | 'replace';
+export const enum QueryStrategy {
+  /** Keep the current Query, and then fetcher will not be called. */
+  keep = 'keep',
+  /** Cancels the current Query and replace it. */
+  replace = 'replace',
+}
 
 export type QueryRefEventMap<D> = {
   pending: true;
@@ -15,7 +20,9 @@ export type QueryRefEventMap<D> = {
 
 export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>> {
   // Attributes
-  readonly data: D | undefined;
+  /**
+   * Last started query
+   */
   readonly query: Query<D> | undefined;
 
   // Methods
@@ -23,19 +30,10 @@ export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>
    * Triggers refresh of the q-ref. Will call fetcher to replace current Query according to its state and the selected
    * strategy. If the current Query is completed (done or failed) it will call fetcher to initiate a new Query.
    *
-   * When the current Query is still pending, two strategies are available:
-   * - `'keep'`: keep the current Query, and then fetcher will not be called.
-   * - `'replace'`: cancels the current Query and replace using fetcher.
-   *
-   * @param strategy
+   * @param {QueryStrategy} [strategy=QueryStrategy.replace] Strategy to use
    * @return Query the current pending query
    */
-  refresh(strategy: QueryStrategy): Query<D>;
-
-  /*
-   * Cancels current pending query
-   */
-  cancel(): void;
+  read(strategy?: QueryStrategy): Query<D>;
 
   /**
    * Unregister all listeners, or only "key" listeners if given
@@ -89,23 +87,9 @@ export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
     next(data: D) {
       events.emit('done', data);
     },
-    async read() {
-      const state = query?.state;
-
-      if (state?.status !== 'done') {
-        return new Promise<D>((resolve, reject) => {
-          const off = off$();
-
-          once$(events, 'done', resolve, { off });
-          once$(events, 'failed', reject, { off });
-        });
-      }
-
-      return state.data;
-    },
-    refresh(strategy: QueryStrategy) {
+    read(strategy: QueryStrategy = QueryStrategy.replace) {
       // Keep previous query
-      if (query?.status === 'pending' && strategy === 'keep') {
+      if (query?.status === 'pending' && strategy === QueryStrategy.keep) {
         return query;
       }
 
@@ -121,11 +105,7 @@ export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
 
       return query;
     },
-    cancel,
 
-    get data() {
-      return query?.data;
-    },
     get query() {
       return query;
     }
