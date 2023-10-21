@@ -1,7 +1,7 @@
 import { Query } from '@jujulego/utils';
 import { vi } from 'vitest';
 
-import { query$, QueryRef, QueryStrategy } from '@/src/index.js';
+import { query$, QueryRef, QueryStrategy } from '@/src/refs/query.js';
 
 // Setup
 let qref: QueryRef<number>;
