@@ -5,6 +5,11 @@ import { AsyncRef } from '../defs/index.js';
 
 // Types
 export type QueryFetcher<D> = () => PromiseLike<D>;
+
+export interface QueryOpts {
+  strategy?: QueryStrategy;
+}
+
 export const enum QueryStrategy {
   /** Keep the current Query, and then fetcher will not be called. */
   keep = 'keep',
@@ -30,10 +35,9 @@ export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>
    * Triggers refresh of the q-ref. Will call fetcher to replace current Query according to its state and the selected
    * strategy. If the current Query is completed (done or failed) it will call fetcher to initiate a new Query.
    *
-   * @param {QueryStrategy} [strategy=QueryStrategy.replace] Strategy to use
    * @return Query the current pending query
    */
-  read(strategy?: QueryStrategy): Query<D>;
+  read(): Query<D>;
 
   /**
    * Unregister all listeners, or only "key" listeners if given
@@ -43,7 +47,8 @@ export interface QueryRef<D> extends AsyncRef<D>, Listenable<QueryRefEventMap<D>
 }
 
 // Builder
-export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
+export function query$<D>(fetcher: QueryFetcher<D>, opts: QueryOpts = {}): QueryRef<D> {
+  const strategy = opts.strategy ?? QueryStrategy.replace;
   const events = multiplexer$({
     'pending': source$<true>(),
     'done': source$<D>(),
@@ -87,15 +92,18 @@ export function query$<D>(fetcher: QueryFetcher<D>): QueryRef<D> {
     next(data: D) {
       events.emit('done', data);
     },
-    read(strategy: QueryStrategy = QueryStrategy.replace) {
-      // Keep previous query
-      if (query?.status === 'pending' && strategy === QueryStrategy.keep) {
-        return query;
+    read() {
+      if (query?.status === 'pending') {
+        if (strategy === QueryStrategy.keep) {
+          // Keep previous query
+          return query;
+        } else {
+          // Cancel previous
+          cancel();
+        }
       }
 
-      // Cancel previous and start a new query
-      cancel();
-
+      // Start a new query
       query = queryfy(fetcher());
       emit(query.state);
 

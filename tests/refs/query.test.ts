@@ -26,7 +26,7 @@ describe('query$.read', () => {
     const query = new Query<number>();
     fetcher.mockReturnValue(query);
 
-    expect(qref.read(QueryStrategy.keep)).toBe(query);
+    expect(qref.read()).toBe(query);
     expect(qref.query).toBe(query);
 
     expect(spyPending).toHaveBeenCalledWith(true);
@@ -36,7 +36,7 @@ describe('query$.read', () => {
     const query = new Query<number>();
     fetcher.mockReturnValue(query);
 
-    qref.read(QueryStrategy.keep);
+    qref.read();
     query.done(42);
 
     expect(spyRef).toHaveBeenCalledWith(42);
@@ -47,23 +47,30 @@ describe('query$.read', () => {
     const error = new Error('Failed !');
     fetcher.mockReturnValue(query);
 
-    qref.read(QueryStrategy.keep);
+    qref.read();
     query.fail(error);
 
     expect(spyFailed).toHaveBeenCalledWith(error);
   });
 
   describe('keep strategy', () => {
+    beforeEach(() => {
+      qref = query$(fetcher, { strategy: QueryStrategy.keep });
+      qref.subscribe(spyRef);
+      qref.on('pending', spyPending);
+      qref.on('failed', spyFailed);
+    });
+
     it('should keep old pending query', () => {
       const q1 = new Query<number>();
       const q2 = new Query<number>();
 
       fetcher.mockReturnValue(q1);
-      qref.read(QueryStrategy.keep);
+      qref.read();
 
       fetcher.mockClear();
       fetcher.mockReturnValue(q2);
-      expect(qref.read(QueryStrategy.keep)).toBe(q1);
+      expect(qref.read()).toBe(q1);
 
       expect(qref.query).toBe(q1);
 
@@ -75,12 +82,12 @@ describe('query$.read', () => {
       const q2 = new Query<number>();
 
       fetcher.mockReturnValue(q1);
-      qref.read(QueryStrategy.keep);
+      qref.read();
       q1.done(42);
 
       fetcher.mockClear();
       fetcher.mockReturnValue(q2);
-      expect(qref.read(QueryStrategy.keep)).toBe(q2);
+      expect(qref.read()).toBe(q2);
       expect(qref.query).toBe(q2);
 
       expect(fetcher).toHaveBeenCalled();
@@ -91,12 +98,12 @@ describe('query$.read', () => {
       const q2 = new Query<number>();
 
       fetcher.mockReturnValue(q1);
-      qref.read(QueryStrategy.keep);
+      qref.read();
       q1.fail(new Error('Failed !'));
 
       fetcher.mockClear();
       fetcher.mockReturnValue(q2);
-      expect(qref.read(QueryStrategy.keep)).toBe(q2);
+      expect(qref.read()).toBe(q2);
       expect(qref.query).toBe(q2);
 
       expect(fetcher).toHaveBeenCalled();
@@ -104,6 +111,13 @@ describe('query$.read', () => {
   });
 
   describe('replace strategy', () => {
+    beforeEach(() => {
+      qref = query$(fetcher, { strategy: QueryStrategy.replace });
+      qref.subscribe(spyRef);
+      qref.on('pending', spyPending);
+      qref.on('failed', spyFailed);
+    });
+
     it('should cancel old pending query and replace it', () => {
       const q1 = new Query<number>();
       vi.spyOn(q1, 'cancel');
@@ -111,11 +125,11 @@ describe('query$.read', () => {
       const q2 = new Query<number>();
 
       fetcher.mockReturnValue(q1);
-      qref.read(QueryStrategy.replace);
+      qref.read();
 
       fetcher.mockClear();
       fetcher.mockReturnValue(q2);
-      expect(qref.read(QueryStrategy.replace)).toBe(q2);
+      expect(qref.read()).toBe(q2);
 
       expect(qref.query).toBe(q2);
 
