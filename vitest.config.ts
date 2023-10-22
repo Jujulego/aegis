@@ -1,6 +1,5 @@
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { swc } from 'rollup-plugin-swc3';
+import { swc } from '@jujulego/vite-plugin-swc';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -16,20 +15,7 @@ export default defineConfig({
     }
   },
   plugins: [
-    swc({
-      jsc: {
-        target: 'esnext',
-        parser: {
-          syntax: 'typescript'
-        },
-        baseUrl: dirname(fileURLToPath(import.meta.url)),
-        paths: {
-          '@/src/*': ['./src/*']
-        }
-      },
-      module: {
-        type: 'es6'
-      }
-    })
+    tsconfigPaths(),
+    swc()
   ]
 });
