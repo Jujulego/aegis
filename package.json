@@ -48,7 +48,7 @@
     "eslint-plugin-vitest": "0.3.6",
     "rollup-plugin-swc3": "0.10.3",
     "shx": "0.3.4",
-    "typescript": "5.1.6",
+    "typescript": "5.2.2",
     "vitest": "0.34.6"
   },
   "packageManager": "yarn@3.6.4"
