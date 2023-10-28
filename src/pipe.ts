@@ -16,6 +16,8 @@ export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs
 export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs, H extends Obs, I extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>): PipeOff<I>;
 export function pipe$<A extends Obs, B extends Obs, C extends Obs, D extends Obs, E extends Obs, F extends Obs, G extends Obs, H extends Obs, I extends Obs, J extends Obs>(obs: A, opA: PO<A, B>, opB: PO<B, C>, opC: PO<C, D>, opD: PO<D, E>, opE: PO<E, F>, opF: PO<F, G>, opG: PO<G, H>, opH: PO<H, I>, opI: PO<I, J>): PipeOff<J>;
 
+export function pipe$<O extends Obs>(obs: O, ...ops: PipeOperator<O, O>[]): PipeOff<O>;
+
 export function pipe$(obs: Obs, ...ops: PipeOperator<Obs, Obs>[]): PipeOff {
   const off = off$();
   const out = ops.reduce((step, op) => op(step, { off }), obs);
