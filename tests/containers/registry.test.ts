@@ -13,6 +13,14 @@ describe('registry$', () => {
     expect(builder).toHaveBeenCalledWith('life');
   });
 
+  it('should not use builder on a lazy call', () => {
+    const builder = vi.fn(() => const$(42));
+    const registry = registry$(builder);
+    registry.ref('life', true);
+
+    expect(builder).not.toHaveBeenCalled();
+  });
+
   it('should return the same reference for the same key', () => {
     const builder = vi.fn(() => const$(42));
     const registry = registry$(builder);
