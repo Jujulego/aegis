@@ -70,7 +70,7 @@ export function ref$<D, A>(arg: RefFn<D> | RefOpts<D, A>): Ref<D> {
     clear: events.clear,
 
     // Reference
-    next: (val: D) => void emit(val),
+    next: (val: D) => { emit(val); },
     read: () => awaitedCall(emit, opts.read())
   };
 
