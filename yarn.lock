@@ -408,12 +408,12 @@ __metadata:
   linkType: soft
 
 "@jujulego/event-tree@npm:^4.1.0, @jujulego/event-tree@npm:^4.1.1, @jujulego/event-tree@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "@jujulego/event-tree@npm:4.2.0"
+  version: 4.3.0
+  resolution: "@jujulego/event-tree@npm:4.3.0"
   dependenciesMeta:
     vitest@0.34.6:
       unplugged: true
-  checksum: a38ef01dc4497bff879b82729cf0c51304a83cd1197e3df1577dd50b44dd36ca06255b41b6833d32ccbbfe49b92219d5ceaf95385175cffe623ee3d423dfd340
+  checksum: 8ceb88b3aa794496b88b1e2e7cd1e8b84d071d93e288fdb1ba36ab19934167d1c1f32f28b513f505bc03c5c723a33728640d88342fa9f85e3b37c618d6cc9226
   languageName: node
   linkType: hard
 
