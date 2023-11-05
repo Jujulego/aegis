@@ -1,7 +1,17 @@
-import { MutableRef, SyncMutableRef } from '../defs/index.js';
+import { AsyncReadable, MutableRef } from '../defs/index.js';
 
 // Types
 export type MapFn<K, D, R extends MutableRef<D>> = (key: K, value: D) => R;
+
+export type RefMapValueItem<D, R extends MutableRef> = R extends AsyncReadable ? Promise<D> : D;
+export type RefMapValueIterable<D, R extends MutableRef> =
+  & IterableIterator<RefMapValueItem<D, R>>
+  & AsyncIterable<D>;
+
+export type RefMapEntryItem<K, D, R extends MutableRef> = R extends AsyncReadable ? [K, Promise<D>] : [K, D];
+export type RefMapEntryIterable<K, D, R extends MutableRef> =
+  & IterableIterator<RefMapEntryItem<K, D, R>>
+  & AsyncIterable<[K, D]>;
 
 /**
  * Map storing data using mutable references.
@@ -54,56 +64,64 @@ export class RefMap<K, D, R extends MutableRef<D>> {
     return this._references.values();
   }
 
+  values(): RefMapValueIterable<D, R> {
+    const refs = this._references.values();
+    
+    return {
+      next() {
+        const next = refs.next();
+
+        return next.done ? next : {
+          done: false,
+          value: next.value.read() as RefMapValueItem<D, R>,
+        };
+      },
+      [Symbol.asyncIterator]: () => ({
+        async next() {
+          const next = refs.next();
+
+          return next.done ? next : {
+            done: false,
+            value: await next.value.read(),
+          };
+        },
+      }),
+      [Symbol.iterator]() {
+        return this;
+      },
+    };
+  }
+
+  entries(): RefMapEntryIterable<K, D, R> {
+    const refs = this._references.entries();
+
+    return {
+      next() {
+        const next = refs.next();
+
+        return next.done ? next : {
+          done: false,
+          value: [next.value[0], next.value[1].read()] as RefMapEntryItem<K, D, R>,
+        };
+      },
+      [Symbol.asyncIterator]: () => ({
+        async next() {
+          const next = refs.next();
+
+          return next.done ? next : {
+            done: false,
+            value: [next.value[0], await next.value[1].read()],
+          };
+        },
+      }),
+      [Symbol.iterator]() {
+        return this;
+      },
+    };
+  }
+
   // Properties
   get size(): number {
     return this._references.size;
-  }
-}
-
-/**
- * Map of references with asynchronous iterators on values
- */
-export class AsyncRefMap<K, D, R extends MutableRef<D>> extends RefMap<K, D, R> {
-  // Methods
-  async *values(): AsyncGenerator<D> {
-    for (const ref of this.references()) {
-      yield await ref.read();
-    }
-  }
-
-  async *entries(): AsyncGenerator<[K, D]> {
-    for (const key of this.keys()) {
-      const ref = this.get(key)!;
-      yield [key, await ref.read()];
-    }
-  }
-}
-
-/**
- * Map of references with synchronous iterators on values
- */
-export class SyncRefMap<K, D, R extends SyncMutableRef<D>> extends RefMap<K, D, R> {
-  // Methods
-  *values(): Generator<D> {
-    for (const ref of this.references()) {
-      yield ref.read();
-    }
-  }
-
-  *entries(): Generator<[K, D]> {
-    for (const key of this.keys()) {
-      const ref = this.get(key)!;
-      yield [key, ref.read()];
-    }
-  }
-}
-
-export function map$<K, D, R extends SyncMutableRef<D>>(fn: MapFn<K, D, R>, opts: { sync: true }): SyncRefMap<K, D, R>;
-export function map$<K, D, R extends MutableRef<D>>(fn: MapFn<K, D, R>, opts?: { sync?: false }): AsyncRefMap<K, D, R>;
-export function map$<K, D, R extends MutableRef<D>>(fn: MapFn<K, D, R>, opts: { sync?: boolean } = {}): AsyncRefMap<K, D, R> | SyncRefMap<K, D, R & SyncMutableRef<D>> {
-  if (opts.sync) {
-    return new SyncRefMap(fn as MapFn<K, D, R & SyncMutableRef<D>>);
-  } else {
-    return new AsyncRefMap(fn);
   }
 }
