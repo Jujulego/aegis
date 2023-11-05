@@ -21,6 +21,10 @@ export class RefMap<K, D, R extends MutableRef<D>> {
     return this._references.get(key);
   }
 
+  has(key: K): boolean {
+    return this._references.has(key);
+  }
+
   set(key: K, value: D): R {
     let ref = this._references.get(key);
 
@@ -32,5 +36,22 @@ export class RefMap<K, D, R extends MutableRef<D>> {
     }
 
     return ref;
+  }
+
+  delete(key: K): boolean {
+    return this._references.delete(key);
+  }
+
+  clear(): void {
+    return this._references.clear();
+  }
+
+  keys() {
+    return this._references.keys();
+  }
+
+  // Properties
+  get size(): number {
+    return this._references.size;
   }
 }
