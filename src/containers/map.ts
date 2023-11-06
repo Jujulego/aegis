@@ -1,7 +1,7 @@
 import { AsyncReadable, MutableRef } from '../defs/index.js';
 
 // Types
-export type MapFn<K, D, R extends MutableRef<D>> = (key: K, value: D) => R;
+export type RefMapFn<K, D, R extends MutableRef<D>> = (key: K, value: D) => R;
 
 export type RefMapValueItem<D, R extends MutableRef> = R extends AsyncReadable ? Promise<D> : D;
 export type RefMapValueIterable<D, R extends MutableRef> =
@@ -18,17 +18,17 @@ export type RefMapEntryIterable<K, D, R extends MutableRef> =
  */
 export class RefMap<K, D, R extends MutableRef<D>> {
   // Attributes
-  private readonly _builder: MapFn<K, D, R>;
+  private readonly _builder: RefMapFn<K, D, R>;
   private readonly _references = new Map<K, R>();
 
   // Constructor
-  constructor(builder: MapFn<K, D, R>) {
+  constructor(builder: RefMapFn<K, D, R>) {
     this._builder = builder;
   }
 
   // Methods
-  get(key: K): R | undefined {
-    return this._references.get(key);
+  get(key: K): R | null {
+    return this._references.get(key) ?? null;
   }
 
   has(key: K): boolean {
@@ -124,4 +124,8 @@ export class RefMap<K, D, R extends MutableRef<D>> {
   get size(): number {
     return this._references.size;
   }
+}
+
+export function map$<K, D, R extends MutableRef<D>>(fn: RefMapFn<K, D, R>): RefMap<K, D, R> {
+  return new RefMap(fn);
 }
