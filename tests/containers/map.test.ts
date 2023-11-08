@@ -4,7 +4,6 @@ import { map$, RefMapFn, RefMap } from '@/src/containers/map.js';
 import { SyncMutableRef } from '@/src/defs/mutable-ref.js';
 import { var$ } from '@/src/refs/var.js';
 import { ref$ } from '@/src/refs/index.js';
-import { D } from 'vitest/dist/reporters-5f784f42.js';
 
 // Setup
 let map: RefMap<string, number, SyncMutableRef<number>>;
