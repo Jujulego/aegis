@@ -1,17 +1,27 @@
 import { AsyncReadable, MutableRef } from '../defs/index.js';
+import { awaitedCall } from '../utils/promise.js';
 
 // Types
 export type RefMapFn<K, D, R extends MutableRef<D>> = (key: K, value: D) => R;
 
-export type RefMapValueItem<D, R extends MutableRef> = R extends AsyncReadable ? Promise<D> : D;
-export type RefMapValueIterable<D, R extends MutableRef> =
-  & IterableIterator<RefMapValueItem<D, R>>
-  & AsyncIterable<D>;
+export type RefIteratorValue<D, R extends MutableRef> = R extends AsyncReadable ? Promise<D> : D;
+export type RefEntryIteratorValue<K, D, R extends MutableRef> = R extends AsyncReadable ? [K, Promise<D>] : [K, D];
 
-export type RefMapEntryItem<K, D, R extends MutableRef> = R extends AsyncReadable ? [K, Promise<D>] : [K, D];
-export type RefMapEntryIterable<K, D, R extends MutableRef> =
-  & IterableIterator<RefMapEntryItem<K, D, R>>
-  & AsyncIterable<[K, D]>;
+export type RefIteratorResult<D, R extends MutableRef> = R extends AsyncReadable ? Promise<IteratorResult<D>> : IteratorResult<D>;
+
+export interface RefIterator<D, R extends MutableRef> {
+  next(): RefIteratorResult<D, R>;
+}
+
+export interface RefIterableIterator<D, R extends MutableRef> extends RefIterator<D, R> {
+  [Symbol.asyncIterator](): AsyncIterableIterator<D>;
+  [Symbol.iterator](): IterableIterator<RefIteratorValue<D, R>>;
+}
+
+export interface RefEntryIterableIterator<K, D, R extends MutableRef> extends RefIterator<[K, D], R> {
+  [Symbol.asyncIterator](): AsyncIterableIterator<[K, D]>;
+  [Symbol.iterator](): IterableIterator<RefEntryIteratorValue<K, D, R>>;
+}
 
 /**
  * Map storing data using mutable references.
@@ -64,59 +74,83 @@ export class RefMap<K, D, R extends MutableRef<D>> {
     return this._references.values();
   }
 
-  values(): RefMapValueIterable<D, R> {
+  values(): RefIterableIterator<D, R> {
     const refs = this._references.values();
     
     return {
-      next() {
+      next(): RefIteratorResult<D, R> {
         const next = refs.next();
 
-        return next.done ? next : {
-          done: false,
-          value: next.value.read() as RefMapValueItem<D, R>,
-        };
+        if (next.done) {
+          return next as RefIteratorResult<D, R>;
+        } else {
+          return awaitedCall((value: D) => ({ done: false, value }), next.value.read()) as RefIteratorResult<D, R>;
+        }
       },
       [Symbol.asyncIterator]: () => ({
         async next() {
           const next = refs.next();
 
-          return next.done ? next : {
-            done: false,
-            value: await next.value.read(),
-          };
+          if (next.done) {
+            return next;
+          } else {
+            return { done: false, value: await next.value.read() };
+          }
         },
+        [Symbol.asyncIterator]() { return this; }
       }),
-      [Symbol.iterator]() {
-        return this;
-      },
+      [Symbol.iterator]: () => ({
+        next() {
+          const next = refs.next();
+
+          if (next.done) {
+            return next;
+          } else {
+            return { done: false, value: next.value.read() as RefIteratorValue<D, R> };
+          }
+        },
+        [Symbol.iterator]() { return this; }
+      })
     };
   }
 
-  entries(): RefMapEntryIterable<K, D, R> {
+  entries(): RefEntryIterableIterator<K, D, R> {
     const refs = this._references.entries();
 
     return {
-      next() {
+      next(): RefIteratorResult<[K, D], R> {
         const next = refs.next();
 
-        return next.done ? next : {
-          done: false,
-          value: [next.value[0], next.value[1].read()] as RefMapEntryItem<K, D, R>,
-        };
+        if (next.done) {
+          return next as RefIteratorResult<[K, D], R>;
+        } else {
+          return awaitedCall((value: D) => ({ done: false, value: [next.value[0], value] }), next.value[1].read()) as RefIteratorResult<[K, D], R>;
+        }
       },
       [Symbol.asyncIterator]: () => ({
         async next() {
           const next = refs.next();
 
-          return next.done ? next : {
-            done: false,
-            value: [next.value[0], await next.value[1].read()],
-          };
+          if (next.done) {
+            return next;
+          } else {
+            return { done: false, value: [next.value[0], await next.value[1].read()] };
+          }
         },
+        [Symbol.asyncIterator]() { return this; }
       }),
-      [Symbol.iterator]() {
-        return this;
-      },
+      [Symbol.iterator]: () => ({
+        next() {
+          const next = refs.next();
+
+          if (next.done) {
+            return next;
+          } else {
+            return { done: false, value: [next.value[0], next.value[1].read()] as RefEntryIteratorValue<K, D, R> };
+          }
+        },
+        [Symbol.iterator]() { return this; }
+      })
     };
   }
 
