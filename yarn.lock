@@ -383,7 +383,7 @@ __metadata:
   resolution: "@jujulego/aegis@workspace:."
   dependencies:
     "@jujulego/event-tree": "npm:^4.3.0"
-    "@jujulego/jill": "npm:2.3.3"
+    "@jujulego/jill": "npm:2.3.4"
     "@jujulego/utils": "npm:^2.0.0"
     "@jujulego/vite-plugin-swc": "npm:1.1.0"
     "@microsoft/eslint-formatter-sarif": "npm:3.0.0"
@@ -417,9 +417,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/jill@npm:2.3.3":
-  version: 2.3.3
-  resolution: "@jujulego/jill@npm:2.3.3"
+"@jujulego/jill@npm:2.3.4":
+  version: 2.3.4
+  resolution: "@jujulego/jill@npm:2.3.4"
   dependencies:
     "@jujulego/event-tree": "npm:^4.1.0"
     "@jujulego/tasks": "npm:^2.0.1"
@@ -427,25 +427,26 @@ __metadata:
     ajv: "npm:^8.12.0"
     chalk: "npm:^5.3.0"
     cosmiconfig: "npm:^8.2.0"
+    glob: "npm:^10.3.10"
     ink: "npm:^4.3.0"
     ink-spinner: "npm:^5.0.0"
     inversify: "npm:^6.0.1"
     inversify-inject-decorators: "npm:^3.1.0"
-    log-symbols: "npm:^5.1.0"
+    log-symbols: "npm:^6.0.0"
     moo: "npm:^0.5.2"
     normalize-package-data: "npm:^6.0.0"
+    path-scurry: "npm:^1.10.1"
     pretty-ms: "npm:^8.0.0"
     react: "npm:^18.2.0"
     reflect-metadata: "npm:^0.1.13"
     semver: "npm:^7.5.4"
     slugify: "npm:^1.6.6"
-    tiny-glob: "npm:^0.2.9"
     winston: "npm:^3.10.0"
     winston-transport: "npm:^4.5.0"
     yargs: "npm:^17.7.2"
   bin:
     jill: ./bin/jill.mjs
-  checksum: c9bf6883a09e4b1154c2850103a944e0bbbc239a272202ca471b8007ec4d18e615cd5530dc3e6de31e9cc70709ceddd47d8d956e2ef1c85d15a60fa7bc1f58e1
+  checksum: 424862db5b7e824e5cb92b0fb9d5ff1a1f6df88b0fa35316dcf7e902d653a58a51dde7e971d227e0820113531c68fe05add458a2af0c6de2c98f67a411808e45
   languageName: node
   linkType: hard
 
@@ -1528,7 +1529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^5.0.0, chalk@npm:^5.2.0, chalk@npm:^5.3.0":
+"chalk@npm:^5.2.0, chalk@npm:^5.3.0":
   version: 5.3.0
   resolution: "chalk@npm:5.3.0"
   checksum: 8297d436b2c0f95801103ff2ef67268d362021b8210daf8ddbe349695333eb3610a71122172ff3b0272f1ef2cf7cc2c41fdaa4715f52e49ffe04c56340feed09
@@ -2573,7 +2574,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2":
+"glob@npm:^10.2.2, glob@npm:^10.3.10":
   version: 10.3.10
   resolution: "glob@npm:10.3.10"
   dependencies:
@@ -2608,13 +2609,6 @@ __metadata:
   dependencies:
     type-fest: "npm:^0.20.2"
   checksum: fc05e184b3be59bffa2580f28551a12a758c3a18df4be91444202982c76f13f52821ad54ffaf7d3f2a4d2498fdf54aeaca8d4540fd9e860a9edb09d34ef4c507
-  languageName: node
-  linkType: hard
-
-"globalyzer@npm:0.1.0":
-  version: 0.1.0
-  resolution: "globalyzer@npm:0.1.0"
-  checksum: e16e47a5835cbe8a021423d4c7fcd9f5f85815b4190a7f50c1fdb95fc559d72e4fb30be96f106c66a99413f36d72da0f8323d19d27f60a8feec9d936139ec5a8
   languageName: node
   linkType: hard
 
@@ -3056,7 +3050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-unicode-supported@npm:^1.1.0":
+"is-unicode-supported@npm:^1.3.0":
   version: 1.3.0
   resolution: "is-unicode-supported@npm:1.3.0"
   checksum: b8674ea95d869f6faabddc6a484767207058b91aea0250803cbf1221345cb0c56f466d4ecea375dc77f6633d248d33c47bd296fb8f4cdba0b4edba8917e83d8a
@@ -3297,13 +3291,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"log-symbols@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "log-symbols@npm:5.1.0"
+"log-symbols@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "log-symbols@npm:6.0.0"
   dependencies:
-    chalk: "npm:^5.0.0"
-    is-unicode-supported: "npm:^1.1.0"
-  checksum: c14f8567c6618a7f96209c4c4b9fb3b794187116904712f7b526e465a5c9535728aec983735a5bef919247d0e54b9b72b6680a7fb9fc72d76b945dac4865e669
+    chalk: "npm:^5.3.0"
+    is-unicode-supported: "npm:^1.3.0"
+  checksum: 36636cacedba8f067d2deb4aad44e91a89d9efb3ead27e1846e7b82c9a10ea2e3a7bd6ce28a7ca616bebc60954ff25c67b0f92d20a6a746bb3cc52c3701891f6
   languageName: node
   linkType: hard
 
@@ -4827,16 +4821,6 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: 02805740c12851ea5982686810702e2f14369a5f4c5c40a836821e3eefc65ffeec3131ba324692a37608294b0fd8c1e55a2dd571ffed4909822787668ddbee5c
-  languageName: node
-  linkType: hard
-
-"tiny-glob@npm:^0.2.9":
-  version: 0.2.9
-  resolution: "tiny-glob@npm:0.2.9"
-  dependencies:
-    globalyzer: "npm:0.1.0"
-    globrex: "npm:^0.1.2"
-  checksum: cbe072f0d213a1395d30aa94845a051d4af18fe8ffb79c8e99ac1787cd25df69083f17791a53997cb65f469f48950cb61426ccc0683cc9df170ac2430e883702
   languageName: node
   linkType: hard
 
