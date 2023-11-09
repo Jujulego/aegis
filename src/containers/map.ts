@@ -1,11 +1,11 @@
 import { AsyncReadable, MutableRef } from '../defs/index.js';
+import { asyncIterMapper, iterMapper, yieldMapper } from '../utils/iterator.js';
 import { awaitedCall } from '../utils/promise.js';
 
 // Types
 export type RefMapFn<K, D, R extends MutableRef<D>> = (key: K, value: D) => R;
 
 export type RefIteratorValue<D, R extends MutableRef> = R extends AsyncReadable ? Promise<D> : D;
-export type RefEntryIteratorValue<K, D, R extends MutableRef> = R extends AsyncReadable ? [K, Promise<D>] : [K, D];
 
 export type RefIteratorResult<D, R extends MutableRef> = R extends AsyncReadable ? Promise<IteratorResult<D>> : IteratorResult<D>;
 
@@ -17,6 +17,8 @@ export interface RefIterableIterator<D, R extends MutableRef> extends RefIterato
   [Symbol.asyncIterator](): AsyncIterableIterator<D>;
   [Symbol.iterator](): IterableIterator<RefIteratorValue<D, R>>;
 }
+
+export type RefEntryIteratorValue<K, D, R extends MutableRef> = [K, RefIteratorValue<D, R>];
 
 export interface RefEntryIterableIterator<K, D, R extends MutableRef> extends RefIterator<[K, D], R> {
   [Symbol.asyncIterator](): AsyncIterableIterator<[K, D]>;
@@ -78,80 +80,20 @@ export class RefMap<K, D, R extends MutableRef<D>> {
     const refs = this._references.values();
     
     return {
-      next(): RefIteratorResult<D, R> {
-        const next = refs.next();
-
-        if (next.done) {
-          return next as RefIteratorResult<D, R>;
-        } else {
-          return awaitedCall((value: D) => ({ done: false, value }), next.value.read()) as RefIteratorResult<D, R>;
-        }
-      },
-      [Symbol.asyncIterator]: () => ({
-        async next() {
-          const next = refs.next();
-
-          if (next.done) {
-            return next;
-          } else {
-            return { done: false, value: await next.value.read() };
-          }
-        },
-        [Symbol.asyncIterator]() { return this; }
-      }),
-      [Symbol.iterator]: () => ({
-        next() {
-          const next = refs.next();
-
-          if (next.done) {
-            return next;
-          } else {
-            return { done: false, value: next.value.read() as RefIteratorValue<D, R> };
-          }
-        },
-        [Symbol.iterator]() { return this; }
-      })
-    };
+      next: yieldMapper(refs, (ref) => awaitedCall((value: D) => ({ value }), ref.read())),
+      [Symbol.asyncIterator]: () => asyncIterMapper(refs, async (ref) => ({ value: await ref.read() })),
+      [Symbol.iterator]: () => iterMapper(refs, (ref) => ({ value: ref.read() })),
+    } as RefIterableIterator<D, R>;
   }
 
   entries(): RefEntryIterableIterator<K, D, R> {
     const refs = this._references.entries();
 
     return {
-      next(): RefIteratorResult<[K, D], R> {
-        const next = refs.next();
-
-        if (next.done) {
-          return next as RefIteratorResult<[K, D], R>;
-        } else {
-          return awaitedCall((value: D) => ({ done: false, value: [next.value[0], value] }), next.value[1].read()) as RefIteratorResult<[K, D], R>;
-        }
-      },
-      [Symbol.asyncIterator]: () => ({
-        async next() {
-          const next = refs.next();
-
-          if (next.done) {
-            return next;
-          } else {
-            return { done: false, value: [next.value[0], await next.value[1].read()] };
-          }
-        },
-        [Symbol.asyncIterator]() { return this; }
-      }),
-      [Symbol.iterator]: () => ({
-        next() {
-          const next = refs.next();
-
-          if (next.done) {
-            return next;
-          } else {
-            return { done: false, value: [next.value[0], next.value[1].read()] as RefEntryIteratorValue<K, D, R> };
-          }
-        },
-        [Symbol.iterator]() { return this; }
-      })
-    };
+      next: yieldMapper(refs, ([key, ref]) => awaitedCall((value: D) => ({ value: [key, value] }), ref.read())),
+      [Symbol.asyncIterator]: () => asyncIterMapper(refs, async ([key, ref]) => ({ value: [key, await ref.read()] })),
+      [Symbol.iterator]: () => iterMapper(refs, ([key, ref]) => ({ value: [key, ref.read()] })),
+    } as RefEntryIterableIterator<K, D, R>;
   }
 
   // Properties
