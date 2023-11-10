@@ -383,7 +383,7 @@ __metadata:
   resolution: "@jujulego/aegis@workspace:."
   dependencies:
     "@jujulego/event-tree": "npm:^4.3.0"
-    "@jujulego/jill": "npm:2.3.4"
+    "@jujulego/jill": "npm:2.3.5"
     "@jujulego/utils": "npm:^2.0.0"
     "@jujulego/vite-plugin-swc": "npm:1.1.0"
     "@microsoft/eslint-formatter-sarif": "npm:3.0.0"
@@ -417,9 +417,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jujulego/jill@npm:2.3.4":
-  version: 2.3.4
-  resolution: "@jujulego/jill@npm:2.3.4"
+"@jujulego/jill@npm:2.3.5":
+  version: 2.3.5
+  resolution: "@jujulego/jill@npm:2.3.5"
   dependencies:
     "@jujulego/event-tree": "npm:^4.1.0"
     "@jujulego/tasks": "npm:^2.0.1"
@@ -446,7 +446,7 @@ __metadata:
     yargs: "npm:^17.7.2"
   bin:
     jill: ./bin/jill.mjs
-  checksum: 424862db5b7e824e5cb92b0fb9d5ff1a1f6df88b0fa35316dcf7e902d653a58a51dde7e971d227e0820113531c68fe05add458a2af0c6de2c98f67a411808e45
+  checksum: 0aed1a643a98cd3808d635878382d6b90a8c7a08053860117c23568b3062b342a39b1d0f841731a35bdc9233dc581dc195666f30325cd9aa7aafeaa15c931c56
   languageName: node
   linkType: hard
 
