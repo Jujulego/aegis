@@ -36,7 +36,7 @@
     "@jujulego/utils": "^2.0.0"
   },
   "devDependencies": {
-    "@jujulego/jill": "2.3.4",
+    "@jujulego/jill": "2.3.5",
     "@jujulego/vite-plugin-swc": "1.1.0",
     "@microsoft/eslint-formatter-sarif": "3.0.0",
     "@swc/cli": "0.1.62",
