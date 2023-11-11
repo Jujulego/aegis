@@ -31,4 +31,17 @@ describe('actions$', () => {
     expect(act.reset()).toStrictEqual({ id: 'test', life: 0 });
     expect(ref.mutate).toHaveBeenCalledWith({ id: 'test', life: 0 });
   });
+
+  it('should pass arguments to reducer', () => {
+    const reducer = vi.fn((to: number) => (old: TestData) => {
+      old.life = to;
+    });
+
+    const act = actions$(ref, {
+      reset: reducer
+    });
+
+    expect(act.reset(1)).toStrictEqual({ id: 'test', life: 1 });
+    expect(reducer).toHaveBeenCalledWith(1);
+  });
 });
