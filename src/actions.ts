@@ -4,8 +4,9 @@ import { AsyncMutable, AsyncReadable, MutableRef } from './defs/index.js';
 import { awaitedCall } from './utils/promise.js';
 
 // Types
-export type ActionReducer<P extends unknown[], D> = (...params: P) => (old: D) => void | D;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ActionReducers<D> = Record<string, ActionReducer<any[], D>>;
+export type ActionReducer<P extends unknown[], D> = (...params: P) => (old: D) => void | D;
 
 export type Action<P extends unknown[], D, R extends MutableRef<D>> = (...params: P) => ActionResult<D, R>;
 export type ActionResult<D, R extends MutableRef<D>> = R extends AsyncReadable<D> | AsyncMutable<D> ? Promise<D> : D;
@@ -17,6 +18,7 @@ export type ActionsRef<D, R extends MutableRef<D>, A extends Record<string, Acti
 export function actions<D, R extends MutableRef<D>, A extends ActionReducers<D>>(ref: R, actions: A): ActionsRef<D, R, A> {
   for (const [key, act] of Object.entries(actions)) {
     Object.assign(ref, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key]: (...params: any[]) => awaitedCall(
         (result: D) => ref.mutate(result),
         awaitedCall(
