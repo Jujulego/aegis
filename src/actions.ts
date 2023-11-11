@@ -1,30 +1,31 @@
 import { produce } from 'immer';
 
-import { SyncMutableRef } from './defs/index.js';
+import { AsyncMutable, AsyncReadable, MutableRef } from './defs/index.js';
+import { awaitedCall } from './utils/promise.js';
 
 // Types
-export type ActionReducer<P extends unknown[], T> = (...params: P) => (old: T) => void | T;
-export type Action<P extends unknown[], T> = (...params: P) => T;
+export type ActionReducer<P extends unknown[], D> = (...params: P) => (old: D) => void | D;
+export type ActionReducers<D> = Record<string, ActionReducer<any[], D>>;
 
-export type ActionsRef<T, A extends Record<string, ActionReducer<unknown[], T>>> = {
-  [K in keyof A]: A[K] extends ActionReducer<infer Args, T> ? Action<Args, T> : never;
-} & SyncMutableRef<T>;
+export type Action<P extends unknown[], D, R extends MutableRef<D>> = (...params: P) => ActionResult<D, R>;
+export type ActionResult<D, R extends MutableRef<D>> = R extends AsyncReadable<D> | AsyncMutable<D> ? Promise<D> : D;
 
-export function actions<T, A extends Record<string, ActionReducer<any[], T>>>(ref: SyncMutableRef<T>, actions: A): ActionsRef<T, A> {
-  const result: SyncMutableRef<T> = {
-    next: ref.next,
-    read: ref.read,
-    mutate: ref.mutate,
-    subscribe: ref.subscribe,
-    unsubscribe: ref.unsubscribe,
-    clear: ref.clear,
-  };
+export type ActionsRef<D, R extends MutableRef<D>, A extends Record<string, ActionReducer<unknown[], D>>> = R & {
+  [K in keyof A]: A[K] extends ActionReducer<infer P, D> ? Action<P, D, R> : never;
+};
 
+export function actions<D, R extends MutableRef<D>, A extends ActionReducers<D>>(ref: R, actions: A): ActionsRef<D, R, A> {
   for (const [key, act] of Object.entries(actions)) {
-    Object.assign(result, {
-      [key]: (...params: any[]) => ref.mutate(produce(ref.read(), act(...params))),
+    Object.assign(ref, {
+      [key]: (...params: any[]) => awaitedCall(
+        (result: D) => ref.mutate(result),
+        awaitedCall(
+          (old: D) => produce(old, act(...params)),
+          ref.read()
+        )
+      ),
     });
   }
 
-  return result as ActionsRef<T, A>;
+  return ref as ActionsRef<D, R, A>;
 }
