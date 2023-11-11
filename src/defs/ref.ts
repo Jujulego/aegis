@@ -5,7 +5,7 @@ import { AsyncReadable, MapReadValue, Readable, SyncReadable } from './readable.
 /**
  * Readonly reference
  */
-export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = R & Source<D>;
+export type Ref<D = unknown, R extends Readable<D> = Readable<D>> = Source<D> & R;
 
 /**
  * Readonly synchronous reference
