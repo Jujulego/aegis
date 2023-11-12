@@ -1,3 +1,4 @@
+export * from './actions.js';
 export * from './mutable.js';
 export * from './mutable-ref.js';
 export * from './pipe.js';

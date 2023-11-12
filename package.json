@@ -1,6 +1,6 @@
 {
   "name": "@jujulego/aegis",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "license": "MIT",
   "author": "Julien Capellari <julien.capellari@google.com>",
   "repository": {
@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "@jujulego/event-tree": "^4.3.0",
-    "@jujulego/utils": "^2.0.0"
+    "@jujulego/utils": "^2.0.0",
+    "immer": "^10.0.3"
   },
   "devDependencies": {
     "@jujulego/jill": "2.3.5",

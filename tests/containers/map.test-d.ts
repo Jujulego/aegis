@@ -1,8 +1,8 @@
 import { describe, assertType } from 'vitest';
 
 import { map$ } from '@/src/containers/map.js';
+import { ref$ } from '@/src/refs/ref.js';
 import { var$ } from '@/src/refs/var.js';
-import { ref$ } from '@/src/refs/index.js';
 
 // Tests
 describe('RefMap.values', () => {
