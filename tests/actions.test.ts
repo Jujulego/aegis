@@ -1,4 +1,4 @@
-import { Draft } from 'immer';
+import { Draft, Immer } from 'immer';
 import { beforeEach, vi } from 'vitest';
 
 import { actions$ } from '@/src/actions.js';
@@ -44,5 +44,19 @@ describe('actions$', () => {
 
     expect(act.reset(1)).toStrictEqual({ id: 'test', life: 1 });
     expect(reducer).toHaveBeenCalledWith(1);
+  });
+
+  it('should use given Immer instance', () => {
+    const immer = new Immer();
+    vi.spyOn(immer, 'produce');
+
+    const act = actions$(ref, {
+      reset: () => (old) => {
+        old.life = 0;
+      }
+    }, { immer });
+
+    expect(act.reset()).toStrictEqual({ id: 'test', life: 0 });
+    expect(immer.produce).toHaveBeenCalled();
   });
 });
