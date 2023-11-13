@@ -1,4 +1,5 @@
 import { ObservedValue } from '@jujulego/event-tree';
+import { Draft } from 'immer';
 
 import { AsyncMutable } from './mutable.js';
 import { SymmetricRef } from './mutable-ref.js';
@@ -7,7 +8,7 @@ import { AsyncReadable } from './readable.js';
 /**
  * Function returning a reducer modifying the current value of a reference
  */
-export type ActionReducer<P extends unknown[], D> = (...params: P) => (old: D) => void | D;
+export type ActionReducer<P extends unknown[], D> = (...params: P) => (old: Draft<D>) => Draft<D> | void;
 
 /**
  * Record of {@link ActionReducer}
