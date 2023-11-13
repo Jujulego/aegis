@@ -1,5 +1,5 @@
 import { ObservedValue } from '@jujulego/event-tree';
-import { produce } from 'immer';
+import { Immer } from 'immer';
 
 import { ActionReducers, ActionRef, SymmetricRef } from './defs/index.js';
 import { awaitedCall } from './utils/promise.js';
@@ -28,12 +28,14 @@ import { awaitedCall } from './utils/promise.js';
  * counter.reset(); // <= this will reset count to 0
  */
 export function actions$<R extends SymmetricRef, A extends ActionReducers<ObservedValue<R>>>(ref: R, actions: A): ActionRef<R, A> {
+  const immer = new Immer({ autoFreeze: false });
+
   for (const [key, act] of Object.entries(actions)) {
     Object.assign(ref, {
       [key]: (...params: unknown[]) => awaitedCall(
         (result) => ref.mutate(result),
         awaitedCall(
-          (old) => produce(old, act(...params)),
+          (old) => immer.produce(old, act(...params)),
           ref.read()
         )
       ),
