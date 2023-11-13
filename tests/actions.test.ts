@@ -1,3 +1,4 @@
+import { Draft } from 'immer';
 import { beforeEach, vi } from 'vitest';
 
 import { actions$ } from '@/src/actions.js';
@@ -6,8 +7,8 @@ import { var$ } from '@/src/refs/var.js';
 
 // Types
 interface TestData {
-  id: string;
-  life: number;
+  readonly id: string;
+  readonly life: number;
 }
 
 // Setup
@@ -33,7 +34,7 @@ describe('actions$', () => {
   });
 
   it('should pass arguments to reducer', () => {
-    const reducer = vi.fn((to: number) => (old: TestData) => {
+    const reducer = vi.fn((to: number) => (old: Draft<TestData>) => {
       old.life = to;
     });
 
