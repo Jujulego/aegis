@@ -47,7 +47,7 @@
     "@typescript-eslint/parser": "6.11.0",
     "@vitest/coverage-v8": "0.34.6",
     "eslint": "8.54.0",
-    "eslint-plugin-vitest": "0.3.9",
+    "eslint-plugin-vitest": "0.3.10",
     "jsdom": "22.1.0",
     "shx": "0.3.4",
     "typescript": "5.2.2",
