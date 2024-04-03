@@ -399,7 +399,7 @@ __metadata:
     jsdom: "npm:22.1.0"
     shx: "npm:0.3.4"
     typescript: "npm:5.3.3"
-    vite: "npm:5.1.5"
+    vite: "npm:5.1.7"
     vite-tsconfig-paths: "npm:4.3.1"
     vitest: "npm:0.34.6"
   dependenciesMeta:
@@ -5195,9 +5195,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.1.5, vite@npm:^3.0.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^3.1.0 || ^4.0.0 || ^5.0.0-0":
-  version: 5.1.5
-  resolution: "vite@npm:5.1.5"
+"vite@npm:5.1.7, vite@npm:^3.0.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^3.1.0 || ^4.0.0 || ^5.0.0-0":
+  version: 5.1.7
+  resolution: "vite@npm:5.1.7"
   dependencies:
     esbuild: "npm:^0.19.3"
     fsevents: "npm:~2.3.3"
@@ -5231,7 +5231,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 29be99ba0bec5e3ad50290510ba764b6c1016979a1ba70cf2071be9f1338f27e582a120836222e1fad6efb01c886a8fb57cb33471fadd0fceaa922bfc92bbbf7
+  checksum: f64e1d8bcb237f600790c303447b95f0972e7c5377c0e1c38c1e62ef4864df2bff00c83315994da6e2e64fb51166199403a740b685c5b69a4af648b9244fc69c
   languageName: node
   linkType: hard
 
