@@ -37,7 +37,7 @@
     "immer": "^10.0.3"
   },
   "devDependencies": {
-    "@jujulego/jill": "2.3.5",
+    "@jujulego/jill": "2.5.2",
     "@jujulego/vite-plugin-swc": "1.2.0",
     "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@swc/cli": "0.3.10",
